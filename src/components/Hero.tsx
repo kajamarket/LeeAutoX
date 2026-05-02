@@ -4,7 +4,7 @@ import { HERO_STATS } from '../constants';
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex flex-col justify-center px-6 md:px-12 pb-20 pt-32 overflow-hidden bg-black">
+    <section className="relative min-h-screen flex flex-col justify-center px-6 md:px-12 pb-20 pt-12 md:pt-32 overflow-hidden bg-black">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
