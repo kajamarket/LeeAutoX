@@ -10,8 +10,40 @@ export default function Testimonials() {
   const prev = () => setActive((prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
 
   return (
-    <section id="testimonials" className="px-6 md:px-12 py-24 bg-foreground text-background">
-      <div className="max-w-4xl mx-auto text-center">
+    <section id="testimonials" className="relative px-6 md:px-12 py-24 bg-foreground text-background overflow-hidden">
+      {/* Background Graffiti - Sophisticated Typography Layer */}
+      <div className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden opacity-[0.03]">
+        <div className="absolute -top-10 -left-20 text-[20vw] font-black leading-none tracking-tighter rotate-[-15deg] whitespace-nowrap">
+          TRUSTED
+        </div>
+        <div className="absolute top-1/2 -right-40 text-[18vw] font-serif font-bold leading-none rotate-[12deg] whitespace-nowrap">
+          SERVICE
+        </div>
+        <div className="absolute -bottom-20 -left-10 text-[25vw] font-black leading-none tracking-tighter rotate-[-5deg] whitespace-nowrap">
+          DELIVERY
+        </div>
+
+        {/* Random Pattern Accents */}
+        <div className="absolute top-[10%] left-[30%] rotate-[45deg] flex gap-2">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="w-[1px] h-32 bg-background" />
+          ))}
+        </div>
+        <div className="absolute bottom-[20%] right-[20%] grid grid-cols-4 gap-4 opacity-50">
+          {[...Array(16)].map((_, i) => (
+            <div key={i} className="w-1 h-1 rounded-full bg-background" />
+          ))}
+        </div>
+        <div className="absolute top-[40%] left-[5%] text-[10vw] font-light leading-none rotate-[-10deg]">
+          ++++++
+        </div>
+        <div className="absolute top-[60%] right-[10%] text-[8vw] font-light leading-none rotate-[20deg] border-t border-background pt-2">
+          002//X
+        </div>
+        <div className="absolute bottom-[10%] left-[45%] w-40 h-40 border border-background/40 rounded-full rotate-[30deg]" />
+      </div>
+
+      <div className="relative z-10 max-w-4xl mx-auto text-center">
         <Quote size={32} className="mx-auto mb-10 opacity-30" />
 
         <div className="min-h-[200px] flex items-center justify-center">

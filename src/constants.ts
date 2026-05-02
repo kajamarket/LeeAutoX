@@ -106,10 +106,10 @@ export const PROCESS_STEPS: ProcessStep[] = [
 ];
 
 export const PROCESS_STATS: Stat[] = [
-  { value: '500+', label: 'Vehicles delivered to Africa' },
+  { value: '50+', label: 'Vehicles delivered' },
   { value: '7+', label: 'Years in international procurement' },
   { value: '98%', label: 'On-time delivery rate' },
-  { value: '12+', label: 'African countries served' },
+  { value: '5+', label: 'Major North American Auctions' },
 ];
 
 export const TESTIMONIALS: Testimonial[] = [
@@ -125,8 +125,8 @@ export const TESTIMONIALS: Testimonial[] = [
   },
   {
     quote: 'Their installment plan made it possible for me to own a Ford F-150 that would have otherwise been out of reach. Professional, transparent, and reliable from start to finish.',
-    author: 'Kwame Asante',
-    role: 'Logistics Manager, Accra, Ghana',
+    author: 'Tunde Folawiyo',
+    role: 'CEO, Port Harcourt, Nigeria',
   },
 ];
 

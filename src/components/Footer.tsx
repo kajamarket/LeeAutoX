@@ -4,8 +4,33 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border px-6 md:px-12 py-16 bg-foreground text-background">
-      <div className="max-w-7xl mx-auto">
+    <footer className="relative border-t border-border px-6 md:px-12 py-16 bg-foreground text-background overflow-hidden">
+      {/* Background Graffiti - Sophisticated Typography Layer */}
+      <div className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden opacity-[0.03]">
+        <div className="absolute top-0 left-0 text-[15vw] font-black leading-none tracking-tighter rotate-[-5deg] whitespace-nowrap">
+          LEEAUTOX
+        </div>
+        <div className="absolute bottom-10 right-0 text-[12vw] font-serif font-bold leading-none rotate-[8deg] whitespace-nowrap">
+          VEHICLES
+        </div>
+
+        {/* Random Pattern Accents */}
+        <div className="absolute top-[20%] left-[20%] flex gap-1">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="w-10 h-[1px] bg-background" />
+          ))}
+        </div>
+        <div className="absolute bottom-[30%] left-[10%] grid grid-cols-2 gap-2 opacity-30">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="w-2 h-2 border border-background" />
+          ))}
+        </div>
+        <div className="absolute top-[40%] right-[15%] text-[5vw] font-mono leading-none rotate-[45deg]">
+          EST.2024
+        </div>
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between gap-12 mb-16">
           {/* Brand Column */}
           <div className="max-w-xs">

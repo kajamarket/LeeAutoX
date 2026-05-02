@@ -7,7 +7,39 @@ export default function WhyChooseUs() {
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section id="why-us" className="bg-black text-white px-6 md:px-12 py-24 overflow-hidden">
+    <section id="why-us" className="relative bg-black text-white px-6 md:px-12 py-24 overflow-hidden">
+      {/* Background Graffiti - Sophisticated Typography Layer */}
+      <div className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden opacity-[0.03]">
+        <div className="absolute -top-10 -left-20 text-[20vw] font-black leading-none tracking-tighter rotate-[-15deg] whitespace-nowrap">
+          LOGISTICS
+        </div>
+        <div className="absolute top-1/2 -right-40 text-[18vw] font-serif font-bold leading-none rotate-[12deg] whitespace-nowrap">
+          PREMIUM
+        </div>
+        <div className="absolute -bottom-20 -left-10 text-[25vw] font-black leading-none tracking-tighter rotate-[-5deg] whitespace-nowrap">
+          DIRECT
+        </div>
+
+        {/* Random Pattern Accents */}
+        <div className="absolute top-[10%] left-[30%] rotate-[45deg] flex gap-2">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="w-[1px] h-32 bg-white" />
+          ))}
+        </div>
+        <div className="absolute bottom-[20%] right-[20%] grid grid-cols-4 gap-4 opacity-50">
+          {[...Array(16)].map((_, i) => (
+            <div key={i} className="w-1 h-1 rounded-full bg-white" />
+          ))}
+        </div>
+        <div className="absolute top-[40%] left-[5%] text-[10vw] font-light leading-none rotate-[-10deg]">
+          ++++++
+        </div>
+        <div className="absolute top-[60%] right-[10%] text-[8vw] font-light leading-none rotate-[20deg] border-t border-white pt-2">
+          001//X
+        </div>
+        <div className="absolute bottom-[10%] left-[45%] w-40 h-40 border border-white/40 rounded-full rotate-[30deg]" />
+      </div>
+
       <motion.h2
         ref={ref}
         initial={{ y: 20, opacity: 0 }}
