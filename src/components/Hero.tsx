@@ -43,7 +43,7 @@ export default function Hero() {
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.35, duration: 0.7 }}
-          className="text-white/70 font-light text-base md:text-lg max-w-sm leading-relaxed mb-10"
+          className="hidden md:block text-white/70 font-light text-base md:text-lg max-w-sm leading-relaxed mb-10"
         >
           LeeAutoX connects African buyers to premium vehicles directly from top auctions in the USA and Canada — with full shipping, containerization, and logistics handled end-to-end.
         </motion.p>
@@ -65,7 +65,7 @@ export default function Hero() {
             href="#fleet"
             className="group flex items-center gap-3 text-sm font-medium cursor-pointer hover:opacity-70 transition-opacity text-white"
           >
-            <span className="tracking-wide">View our fleet</span>
+            <span className="tracking-wide">Available Vehicles</span>
             <div className="w-8 h-8 border border-white flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
               <ArrowDownRight size={16} />
             </div>

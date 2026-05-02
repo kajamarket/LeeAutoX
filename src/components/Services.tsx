@@ -11,7 +11,7 @@ export default function Services() {
         <h2 className="font-serif text-5xl md:text-6xl font-bold leading-tight">
           What we offer
         </h2>
-        <p className="text-muted-foreground text-sm max-w-xs leading-relaxed">
+        <p className="text-muted-foreground text-sm max-w-xs leading-relaxed md:font-serif md:font-bold">
           End-to-end vehicle procurement and import services — from auction floor to your driveway in Africa.
         </p>
       </div>

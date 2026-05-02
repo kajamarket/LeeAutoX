@@ -2,8 +2,8 @@ import { NavLink, Stat, Service, FleetItem, ProcessStep, Testimonial, FAQItem } 
 
 export const NAV_LINKS: NavLink[] = [
   { label: 'Services', href: '#services' },
-  { label: 'Fleet', href: '#fleet' },
-  { label: 'Process', href: '#process' },
+  { label: 'Vehicles', href: '#fleet' },
+  { label: 'How It Works', href: '#process' },
   { label: 'Testimonials', href: '#testimonials' },
   { label: 'Contact', href: '#contact' },
 ];

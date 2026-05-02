@@ -12,7 +12,7 @@ export default function Fleet() {
           <h2 className="font-serif text-5xl md:text-6xl font-bold leading-tight">
             What we source
           </h2>
-          <p className="text-muted-foreground text-sm max-w-xs leading-relaxed">
+          <p className="text-muted-foreground text-sm max-w-xs leading-relaxed md:font-serif md:font-bold">
             From luxury sedans to heavy-duty commercial vehicles — we source it all and ship it straight to you.
           </p>
         </div>

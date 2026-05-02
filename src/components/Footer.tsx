@@ -13,7 +13,7 @@ export default function Footer() {
               LeeAutoX
             </a>
             <p className="text-sm text-background/60 leading-relaxed">
-              Premium vehicle procurement and international shipping from North America to Nigeria and Africa. Based in Ontario, Canada.
+              Premium vehicle procurement and international shipping from North America to Nigeria and Africa.
             </p>
             <div className="text-xs text-background/40 mt-4 leading-relaxed">
               Gadgets & tech imports?{' '}
@@ -70,7 +70,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-background/10 pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="text-xs text-background/40 font-mono">
-            © {currentYear} LeeAutoX. All rights reserved. Ontario, Canada.
+            © {currentYear} LeeAutoX. All rights reserved.
           </div>
           <div className="text-xs text-background/40 font-mono">
             Trusted vehicle sourcing across Africa.
