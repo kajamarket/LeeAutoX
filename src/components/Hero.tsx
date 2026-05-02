@@ -78,7 +78,7 @@ export default function Hero() {
         initial={{ x: 40, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ delay: 0.9, duration: 0.6 }}
-        className="absolute bottom-10 right-6 md:right-12 z-10 bg-black/60 backdrop-blur-sm border border-white/10 flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-white/10"
+        className="absolute bottom-5 right-6 md:right-12 z-10 bg-black/60 backdrop-blur-sm border border-white/10 flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-white/10"
       >
         {HERO_STATS.map((stat) => (
           <div key={stat.label} className="px-5 py-4 text-center">
