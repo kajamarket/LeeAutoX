@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-background: oklch(0.98 0 0);
+  --color-foreground: oklch(0.08 0 0);
+  
+  --color-muted: oklch(0.94 0 0);
+  --color-muted-foreground: oklch(0.45 0 0);
+  
+  --color-border: oklch(0.85 0 0);
+  --color-card: oklch(1 0 0);
+  
+  --color-primary: oklch(0.08 0 0);
+  --color-primary-foreground: oklch(0.98 0 0);
+
+  --radius-none: 0rem;
+}
+
+@layer base {
+  :root {
+    --background: 0.98 0 0;
+    --foreground: 0.08 0 0;
+    --muted: 0.94 0 0;
+    --muted-foreground: 0.45 0 0;
+    --border: 0.85 0 0;
+    --card: 1 0 0;
+    --primary: 0.08 0 0;
+    --primary-foreground: 0.98 0 0;
+    --radius: 0rem;
+  }
+
+  .dark {
+    --background: 0.145 0 0;
+    --foreground: 0.985 0 0;
+    --muted: 0.2 0 0;
+    --muted-foreground: 0.6 0 0;
+    --border: 0.25 0 0;
+    --card: 0.16 0 0;
+    --primary: 0.985 0 0;
+    --primary-foreground: 0.145 0 0;
+  }
+
+  * {
+    @apply border-border;
+    border-radius: var(--radius);
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0%); }
+  to { transform: translateX(-33.33%); }
+}
+
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+
+/* Custom Utilities */
+.text-balance {
+  text-wrap: balance;
+}
