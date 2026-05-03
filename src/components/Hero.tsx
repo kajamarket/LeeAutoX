@@ -12,6 +12,53 @@ export default function Hero() {
           alt="Luxury vehicle"
           className="w-full h-full object-cover"
         />
+
+        {/* Refined Geometric Motif */}
+        <div className="absolute inset-0 z-0 opacity-40 pointer-events-none">
+          {/* Top Right Concentration */}
+          <div className="absolute top-0 right-0 w-full h-full md:w-2/3 md:h-1/2">
+            {/* Gear Assembly Aspect 1 */}
+            <svg className="absolute top-[10%] right-[15%] w-64 h-64 text-white/[0.03] rotate-[15deg]" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="1 3" />
+              <circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" strokeWidth="0.2" />
+              {[...Array(12)].map((_, i) => (
+                <line
+                  key={i}
+                  x1="50" y1="15" x2="50" y2="22"
+                  transform={`rotate(${i * 30} 50 50)`}
+                  stroke="currentColor" strokeWidth="1"
+                />
+              ))}
+            </svg>
+
+            {/* Precision Contours */}
+            <svg className="absolute top-[5%] right-[-5%] w-[80%] h-full text-white/[0.05]" viewBox="0 0 400 400">
+              <path d="M400,50 Q300,60 200,150 T0,200" fill="none" stroke="url(#line-grad)" strokeWidth="0.5" />
+              <path d="M400,80 Q320,95 240,180 T20,240" fill="none" stroke="url(#line-grad)" strokeWidth="0.3" />
+              <defs>
+                <linearGradient id="line-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="white" stopOpacity="0" />
+                  <stop offset="50%" stopColor="white" stopOpacity="0.5" />
+                  <stop offset="100%" stopColor="white" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+            </svg>
+
+            {/* Headlight Silhouettes */}
+            <div className="absolute top-[15%] right-[25%] w-48 h-12 rotate-[-10deg]">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.08] to-transparent rounded-full blur-[2px] border border-white/[0.05]" />
+              <div className="absolute left-[10%] top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border border-white/[0.1] shadow-[0_0_15px_rgba(255,255,255,0.1)]" />
+            </div>
+          </div>
+
+          {/* Scattered Elements */}
+          <div className="absolute bottom-[20%] left-[5%] w-32 h-32 text-white/[0.02]">
+            <svg className="w-full h-full" viewBox="0 0 100 100">
+              <rect x="10" y="10" width="80" height="80" fill="none" stroke="currentColor" strokeWidth="0.2" className="rotate-45 transform-gpu" />
+              <circle cx="50" cy="50" r="1" fill="currentColor" />
+            </svg>
+          </div>
+        </div>
         
         {/* Animated Headlights */}
         <div className="absolute inset-0 pointer-events-none">
