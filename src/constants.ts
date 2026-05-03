@@ -9,8 +9,8 @@ export const NAV_LINKS: NavLink[] = [
 ];
 
 export const HERO_STATS: Stat[] = [
-  { value: '500+', label: 'VEHICLES DELIVERED' },
-  { value: '12+', label: 'AFRICAN COUNTRIES' },
+  { value: '50+', label: 'VEHICLES DELIVERED' },
+  { value: '5+', label: 'Major Vehicle Auctions' },
   { value: '98%', label: 'ON-TIME DELIVERY' },
 ];
 
