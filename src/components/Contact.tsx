@@ -1,15 +1,35 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import type { FormEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 
 export default function Contact() {
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    vehicle: '',
+    details: ''
+  });
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    // Simulate submission
+    
+    // Construct WhatsApp message
+    const message = `Hello my name is "${formData.name}", my phone number is "${formData.phone}" and I would like to make an enquiry on a "${formData.vehicle}". ${formData.details}`;
+    
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/14160000000?text=${encodedMessage}`;
+    
+    // Open WhatsApp in a new tab
+    window.open(whatsappUrl, '_blank');
+    
     setSubmitted(true);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({ ...prev, [id]: value }));
   };
 
   return (
@@ -74,20 +94,24 @@ export default function Contact() {
                     id="name"
                     type="text"
                     required
+                    value={formData.name}
+                    onChange={handleChange}
                     placeholder="John Smith"
                     className="w-full border-b border-border bg-transparent py-3 text-sm outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground/30"
                   />
                 </div>
 
                 <div className="group">
-                  <label htmlFor="email" className="text-xs font-mono tracking-[0.2em] uppercase text-muted-foreground block mb-2">
-                    EMAIL ADDRESS
+                  <label htmlFor="phone" className="text-xs font-mono tracking-[0.2em] uppercase text-muted-foreground block mb-2">
+                    PHONE NUMBER
                   </label>
                   <input
-                    id="email"
-                    type="email"
+                    id="phone"
+                    type="tel"
                     required
-                    placeholder="example@gmail.com"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="+234 ..."
                     className="w-full border-b border-border bg-transparent py-3 text-sm outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground/30"
                   />
                 </div>
@@ -99,6 +123,8 @@ export default function Contact() {
                   <input
                     id="vehicle"
                     type="text"
+                    value={formData.vehicle}
+                    onChange={handleChange}
                     placeholder="e.g. 2022 Toyota Land Cruiser, Ford F-150..."
                     className="w-full border-b border-border bg-transparent py-3 text-sm outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground/30"
                   />
@@ -111,6 +137,8 @@ export default function Contact() {
                   <textarea
                     id="details"
                     rows={3}
+                    value={formData.details}
+                    onChange={handleChange}
                     placeholder="Budget, delivery location, preferred payment plan..."
                     className="w-full border-b border-border bg-transparent py-3 text-sm outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground/30 resize-none"
                   />
@@ -134,9 +162,9 @@ export default function Contact() {
                 <div className="w-10 h-10 bg-foreground flex items-center justify-center">
                   <ArrowRight size={18} className="text-background" />
                 </div>
-                <h3 className="font-serif text-2xl font-bold">Request received.</h3>
+                <h3 className="font-serif text-2xl font-bold">Enquiry sent via WhatsApp.</h3>
                 <p className="text-muted-foreground text-sm">
-                  Our team will reach out within 24 hours with options and pricing.
+                  We've received your request. Our team will also reach out within 24 hours with more options.
                 </p>
                 <button 
                   onClick={() => setSubmitted(false)}

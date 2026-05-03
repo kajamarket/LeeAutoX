@@ -11,26 +11,31 @@ import MapWhatsApp from './components/MapWhatsApp';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
+import ThemeToggle from './components/ThemeToggle';
+import { ThemeProvider } from './context/ThemeContext';
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-      <Navbar />
-      <main>
-        <Hero />
-        <Marquee />
-        <WhyChooseUs />
-        <Services />
-        <Fleet />
-        <Process />
-        <Testimonials />
-        <FAQ />
-        <MapWhatsApp />
-        <Contact />
-      </main>
-      <Footer />
-      <ScrollToTop />
-    </div>
+    <ThemeProvider>
+      <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+        <Navbar />
+        <main>
+          <Hero />
+          <Marquee />
+          <WhyChooseUs />
+          <Services />
+          <Fleet />
+          <Process />
+          <Testimonials />
+          <FAQ />
+          <MapWhatsApp />
+          <Contact />
+        </main>
+        <Footer />
+        <ScrollToTop />
+        <ThemeToggle />
+      </div>
+    </ThemeProvider>
   );
 }
 
