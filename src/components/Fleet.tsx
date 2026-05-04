@@ -9,7 +9,7 @@ export default function Fleet() {
     <section id="fleet" className="px-6 md:px-12 py-24 bg-muted/40">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-          <h2 className="font-serif text-5xl md:text-6xl font-bold leading-tight">
+          <h2 className="font-serif text-5xl md:text-6xl font-bold leading-tight text-[#2B59FF]">
             What we source
           </h2>
           <p className="text-muted-foreground text-sm max-w-xs leading-relaxed md:font-serif md:font-bold">
@@ -51,7 +51,7 @@ const FleetCard: React.FC<FleetCardProps> = ({ item, index }) => {
           className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
         />
         <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/10 transition-all duration-300" />
-        <div className="absolute top-4 right-4 w-9 h-9 bg-background flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="absolute top-4 right-4 w-9 h-9 bg-background flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[#2B59FF] shadow-lg">
           <ArrowUpRight size={16} />
         </div>
       </div>
@@ -60,7 +60,7 @@ const FleetCard: React.FC<FleetCardProps> = ({ item, index }) => {
           <h3 className="font-serif text-xl font-bold">{item.title}</h3>
           <p className="text-xs text-muted-foreground tracking-wide mt-0.5">{item.category}</p>
         </div>
-        <span className="font-mono text-xs text-muted-foreground">{item.label}</span>
+        <span className="font-mono text-xs text-[#2B59FF] font-bold">{item.label}</span>
       </div>
     </motion.div>
   );

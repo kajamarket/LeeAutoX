@@ -38,7 +38,7 @@ export default function Contact() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24">
         {/* Left Column */}
         <div>
-          <h2 className="font-serif text-5xl md:text-6xl font-bold leading-tight mb-6 mt-0">
+          <h2 className="font-serif text-5xl md:text-6xl font-bold leading-tight mb-6 mt-0 text-[#2B59FF]">
             Ready to order<br />
             <span className="italic font-normal">your next vehicle?</span>
           </h2>
@@ -155,7 +155,7 @@ export default function Contact() {
 
                 <button
                   type="submit"
-                  className="flex items-center gap-3 text-sm font-medium px-6 py-3 bg-foreground text-background hover:bg-foreground/80 transition-colors cursor-pointer"
+                  className="flex items-center gap-3 text-sm font-medium px-6 py-3 bg-[#2B59FF] text-white hover:bg-[#1a41cc] transition-colors cursor-pointer"
                 >
                   <span>Send enquiry</span>
                   <ArrowRight size={16} />

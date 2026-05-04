@@ -125,7 +125,7 @@ export default function Hero() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.1, duration: 0.6 }}
-          className="text-xs font-mono tracking-[0.3em] text-white/50 uppercase mb-6"
+          className="text-xs font-mono tracking-[0.3em] text-[#2B59FF] uppercase mb-6"
         >
           BUY — BID — EXPORT
         </motion.p>
@@ -160,7 +160,7 @@ export default function Hero() {
         >
           <a
             href="#contact"
-            className="px-7 py-3 bg-black text-white text-sm font-semibold border border-white hover:bg-white hover:text-black transition-colors cursor-pointer tracking-wide"
+            className="px-7 py-3 bg-[#2B59FF] text-white text-sm font-semibold border border-[#2B59FF] hover:bg-transparent hover:text-white transition-colors cursor-pointer tracking-wide"
           >
             Get a Free Quote
           </a>
@@ -185,7 +185,7 @@ export default function Hero() {
       >
         {HERO_STATS.map((stat) => (
           <div key={stat.label} className="px-5 py-4 text-center">
-            <div className="font-serif text-2xl font-bold text-white leading-none mb-1">
+            <div className="font-serif text-2xl font-bold text-[#2B59FF] leading-none mb-1">
               {stat.value}
             </div>
             <div className="font-mono text-[10px] tracking-[0.18em] text-white/40 uppercase">

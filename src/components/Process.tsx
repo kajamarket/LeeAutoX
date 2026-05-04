@@ -10,7 +10,7 @@ export default function Process() {
         initial={{ y: 20, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         viewport={{ once: true }}
-        className="font-serif text-5xl md:text-6xl font-bold leading-tight mb-16"
+        className="font-serif text-5xl md:text-6xl font-bold leading-tight mb-16 text-[#2B59FF]"
       >
         How it works
       </motion.h2>
@@ -30,7 +30,7 @@ export default function Process() {
             viewport={{ once: true }}
             transition={{ delay: index * 0.1 }}
           >
-            <div className="font-serif text-5xl font-bold">{stat.value}</div>
+            <div className="font-serif text-5xl font-bold text-[#2B59FF]">{stat.value}</div>
             <div className="text-xs text-muted-foreground mt-2 tracking-wide">{stat.label}</div>
           </motion.div>
         ))}
@@ -53,7 +53,7 @@ const ProcessStepCard: React.FC<ProcessStepCardProps> = ({ step, index }) => {
       transition={{ delay: index * 0.12, duration: 0.6 }}
       className="border-t border-border pt-8 pr-8 pb-8 flex flex-col gap-4"
     >
-      <span className="font-mono text-xs tracking-[0.25em] text-muted-foreground">
+      <span className="font-mono text-xs tracking-[0.25em] text-[#2B59FF] font-bold">
         {step.id}
       </span>
       <h3 className="font-serif text-2xl font-bold">{step.title}</h3>

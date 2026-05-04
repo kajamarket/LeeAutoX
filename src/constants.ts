@@ -21,7 +21,7 @@ export const CONTACT_INFO = {
   email1: 'info@leeautox.com',
   email2: 'leeautox@gmail.com',
   instagram: 'leeautox',
-  base: 'Ontario, Canada',
+  base: 'Lagos, Nigeria | Ontario, Canada',
   corpNumber: '1761065-3',
 };
 

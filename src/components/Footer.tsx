@@ -34,7 +34,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between gap-12 mb-16">
           {/* Brand Column */}
           <div className="max-w-xs">
-            <a href="#" className="font-serif text-2xl font-bold block mb-4">
+            <a href="#" className="font-serif text-2xl font-bold block mb-4 text-[#2B59FF]">
               LeeAutoX
             </a>
             <p className="text-sm text-background/60 leading-relaxed">

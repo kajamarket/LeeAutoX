@@ -26,7 +26,7 @@ export default function Navbar() {
           transition={{ duration: 0.6, ease: 'easeOut' }}
           className="flex items-center justify-between w-full"
         >
-          <a href="#" className="font-serif text-xl font-bold tracking-tight text-white">
+          <a href="#" className="font-serif text-xl font-bold tracking-tight text-[#2B59FF]">
             LeeAutoX
           </a>
 
@@ -36,14 +36,14 @@ export default function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-white/60 hover:text-white transition-colors tracking-wide"
+                className="text-sm font-medium text-white/60 hover:text-[#2B59FF] transition-colors tracking-wide"
               >
                 {link.label}
               </a>
             ))}
             <a
               href="#contact"
-              className="text-sm font-medium px-5 py-2 bg-white text-black hover:bg-white/90 transition-colors"
+              className="text-sm font-medium px-5 py-2 bg-[#2B59FF] text-white hover:bg-[#1a41cc] transition-colors"
             >
               Get a Quote
             </a>
@@ -92,7 +92,7 @@ export default function Navbar() {
             <a
               href="#contact"
               onClick={() => setIsOpen(false)}
-              className="text-base font-medium px-8 py-3 bg-white text-black mt-4"
+              className="text-base font-medium px-8 py-3 bg-[#2B59FF] text-white mt-4"
             >
               Get a Quote
             </a>

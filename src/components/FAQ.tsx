@@ -86,7 +86,7 @@ const FAQAccordionItem: React.FC<FAQAccordionItemProps> = ({ item, theme }) => {
           {item.question}
         </span>
         <div className={`shrink-0 transition-colors ${
-          theme === 'dark' ? 'text-white/40 group-hover:text-white/70' : 'text-black/40 group-hover:text-black/70'
+          theme === 'dark' ? 'text-[#2B59FF] group-hover:text-[#4d73ff]' : 'text-[#2B59FF] group-hover:text-[#1a41cc]'
         }`}>
           {isOpen ? <Minus size={16} /> : <Plus size={16} />}
         </div>

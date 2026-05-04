@@ -54,9 +54,7 @@ export default function Testimonials() {
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto text-center">
-        <Quote size={32} className={`mx-auto mb-10 opacity-30 transition-colors duration-500 ${
-          theme === 'dark' ? 'text-white' : 'text-black'
-        }`} />
+        <Quote size={32} className={`mx-auto mb-10 opacity-60 transition-colors duration-500 text-[#2B59FF]`} />
 
         <div className="min-h-[200px] flex items-center justify-center">
           <AnimatePresence mode="wait">
