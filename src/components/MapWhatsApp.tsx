@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import { MapPin, MessageCircle } from 'lucide-react';
+import { CONTACT_INFO } from '../constants';
 
 export default function MapWhatsApp() {
   return (
@@ -53,7 +54,7 @@ export default function MapWhatsApp() {
           </div>
 
           <a
-            href="https://wa.me/14160000000"
+            href={`https://wa.me/${CONTACT_INFO.whatsappRaw}`}
             target="_blank"
             rel="noopener noreferrer"
             className="shrink-0 flex items-center gap-2 bg-[#25D366] text-black font-bold text-sm px-6 py-3 hover:brightness-110 transition-all cursor-pointer whitespace-nowrap"

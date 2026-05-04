@@ -127,7 +127,7 @@ export default function Hero() {
           transition={{ delay: 0.1, duration: 0.6 }}
           className="text-xs font-mono tracking-[0.3em] text-white/50 uppercase mb-6"
         >
-          ONTARIO, CANADA — SERVING NIGERIA & AFRICA
+          BUY — BID — EXPORT
         </motion.p>
 
         {/* Headline */}

@@ -95,7 +95,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-background/10 pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="text-xs text-background/40 font-mono">
-            © {currentYear} LeeAutoX. All rights reserved.
+            © {currentYear} LeeAutoX. All rights reserved. | Corporation No: 1761065-3
           </div>
           <div className="text-xs text-background/40 font-mono">
             Trusted vehicle sourcing across Africa.

@@ -14,6 +14,17 @@ export const HERO_STATS: Stat[] = [
   { value: '98%', label: 'ON-TIME DELIVERY' },
 ];
 
+export const CONTACT_INFO = {
+  phone: '+1 (647) 389-6162',
+  whatsapp: '+1 (647) 389-6162',
+  whatsappRaw: '16473896162',
+  email1: 'info@leeautox.com',
+  email2: 'leeautox@gmail.com',
+  instagram: 'leeautox',
+  base: 'Ontario, Canada',
+  corpNumber: '1761065-3',
+};
+
 export const MARQUEE_ITEMS: string[] = [
   'Luxury Vehicles',
   'Car Auctions',

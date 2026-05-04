@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { FormEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
+import { CONTACT_INFO } from '../constants';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -19,7 +20,7 @@ export default function Contact() {
     const message = `Hello my name is "${formData.name}", my phone number is "${formData.phone}" and I would like to make an enquiry on a "${formData.vehicle}". ${formData.details}`;
     
     const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/14160000000?text=${encodedMessage}`;
+    const whatsappUrl = `https://wa.me/${CONTACT_INFO.whatsappRaw}?text=${encodedMessage}`;
     
     // Open WhatsApp in a new tab
     window.open(whatsappUrl, '_blank');
@@ -48,15 +49,23 @@ export default function Contact() {
           <div className="space-y-4 text-sm">
             <div>
               <span className="font-medium text-foreground">Email: </span>
-              <a href="mailto:info@leeautox.com" className="text-muted-foreground hover:text-foreground">info@leeautox.com</a>
+              <div className="inline-flex flex-wrap gap-x-2">
+                <a href={`mailto:${CONTACT_INFO.email1}`} className="text-muted-foreground hover:text-foreground">{CONTACT_INFO.email1}</a>
+                <span className="text-muted-foreground/30">|</span>
+                <a href={`mailto:${CONTACT_INFO.email2}`} className="text-muted-foreground hover:text-foreground">{CONTACT_INFO.email2}</a>
+              </div>
             </div>
             <div>
-              <span className="font-medium text-foreground">WhatsApp: </span>
-              <a href="https://wa.me/14160000000" className="text-muted-foreground hover:text-foreground">+1 (416) 000-0000</a>
+              <span className="font-medium text-foreground">WhatsApp / Call: </span>
+              <a href={`https://wa.me/${CONTACT_INFO.whatsappRaw}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">{CONTACT_INFO.whatsapp}</a>
+            </div>
+            <div>
+              <span className="font-medium text-foreground">Instagram: </span>
+              <a href={`https://instagram.com/${CONTACT_INFO.instagram}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">@{CONTACT_INFO.instagram}</a>
             </div>
             <div>
               <span className="font-medium text-foreground">Base: </span>
-              <span className="text-muted-foreground">Ontario, Canada</span>
+              <span className="text-muted-foreground">{CONTACT_INFO.base}</span>
             </div>
           </div>
 
