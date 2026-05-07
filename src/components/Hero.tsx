@@ -5,15 +5,20 @@ import { HERO_STATS } from '../constants';
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col justify-center px-6 md:px-12 pb-20 pt-3 md:pt-32 overflow-hidden bg-black">
-      {/* Background Video */}
+      {/* Background Image */}
       <div className="absolute inset-0">
+        <img
+          src="https://images.unsplash.com/photo-1750380328422-fbe02f196300?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920"
+          alt="Luxury vehicle"
+          className="w-full h-full object-cover hidden md:block"
+        />
         <video
           src="https://leeplugshub.com/wp-content/uploads/2026/05/leeautox2.mp4"
           autoPlay
-          muted
           loop
+          muted
           playsInline
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover md:hidden"
         />
 
         {/* Refined Geometric Motif */}
