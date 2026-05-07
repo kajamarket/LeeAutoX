@@ -37,7 +37,7 @@ export const MARQUEE_ITEMS: string[] = [
 ];
 
 export const WHY_CHOOSE_LABELS: string[] = [
-  'Self-Drive Experience',
+  'Secure Vehicle Export',
   'Doorstep Delivery',
   'Premium Selection',
   'Transparent Pricing',
@@ -71,25 +71,25 @@ export const FLEET: FleetItem[] = [
     title: 'Luxury & Premium',
     category: 'SUVs · Sedans · Sports Cars',
     label: 'New & Used',
-    image: 'https://images.unsplash.com/photo-1563721923422-b8ab92f88ab8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NzIwMTN8MHwxfHNlYXJjaHw5fHxsdXh1cnklMjBTVVYlMjBibGFjayUyMHdoaXRlJTIwbWluaW1hbHxlbnwwfHx8fDE3Nzc3MDIyNTZ8MA&ixlib=rb-4.1.0&q=80&w=1080',
+    image: 'https://leeplugshub.com/wp-content/uploads/2026/05/Luxury.jpg',
   },
   {
     title: 'Commercial Vehicles',
     category: 'Trucks · Vans · Heavy Duty',
     label: 'New & Used',
-    image: 'https://images.unsplash.com/photo-1720014432727-3ec661c27568?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NzIwMTN8MHwxfHNlYXJjaHwxMHx8Y2FyJTIwaW1wb3J0JTIwZXhwb3J0JTIwaW50ZXJuYXRpb25hbCUyMGZyZWlnaHR8ZW58MHx8fHwxNzc3NzAyMjU2fDA&ixlib=rb-4.1.0&q=80&w=1080',
+    image: 'https://leeplugshub.com/wp-content/uploads/2026/05/Vans.jpeg',
   },
   {
     title: 'Auction Sourced',
     category: 'USA & Canada Auctions',
     label: 'Pre-Order',
-    image: 'https://images.unsplash.com/photo-1775948465753-38c8ff55104f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NzIwMTN8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBjYXIlMjBhdWN0aW9uJTIwZGVhbGVyc2hpcHxlbnwwfHx8fDE3Nzc3MDIyNTV8MA&ixlib=rb-4.1.0&q=80&w=1080',
+    image: 'https://leeplugshub.com/wp-content/uploads/2026/05/Auction.jpeg',
   },
   {
     title: 'Shipping & Logistics',
     category: 'Containerization · Port Clearance',
     label: 'Full Service',
-    image: 'https://images.unsplash.com/photo-1761028218114-a2fefe9c9252?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NzIwMTN8MHwxfHNlYXJjaHw1fHx2ZWhpY2xlJTIwc2hpcHBpbmclMjBjb250YWluZXIlMjBwb3J0JTIwbG9naXN0aWNzfGVufDB8fHx8MTc3NzcwMjI1NXww&ixlib=rb-4.1.0&q=80&w=1080',
+    image: 'https://leeplugshub.com/wp-content/uploads/2026/05/Shipping.jpeg',
   },
 ];
 

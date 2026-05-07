@@ -12,6 +12,7 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import ThemeToggle from './components/ThemeToggle';
+import WhatsAppFloat from './components/WhatsAppFloat';
 import { ThemeProvider } from './context/ThemeContext';
 
 export default function App() {
@@ -33,6 +34,7 @@ export default function App() {
         </main>
         <Footer />
         <ScrollToTop />
+        <WhatsAppFloat />
         <ThemeToggle />
       </div>
     </ThemeProvider>

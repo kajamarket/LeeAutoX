@@ -34,7 +34,12 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between gap-12 mb-16">
           {/* Brand Column */}
           <div className="max-w-xs">
-            <a href="#" className="font-serif text-2xl font-bold block mb-4 text-[#2B59FF]">
+            <a href="#" className="flex items-center gap-2 font-serif text-2xl font-bold block mb-4 text-[#2B59FF]">
+              <img 
+                src="https://leeplugshub.com/wp-content/uploads/2026/05/LeeAutoX-lcon-1-scaled.png" 
+                alt="LeeAutoX Icon" 
+                className="h-[1.1em] w-auto object-contain"
+              />
               LeeAutoX
             </a>
             <p className="text-sm text-background/60 leading-relaxed">

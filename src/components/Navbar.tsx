@@ -26,7 +26,12 @@ export default function Navbar() {
           transition={{ duration: 0.6, ease: 'easeOut' }}
           className="flex items-center justify-between w-full"
         >
-          <a href="#" className="font-serif text-xl font-bold tracking-tight text-[#2B59FF]">
+          <a href="#" className="flex items-center gap-2 font-serif text-xl font-bold tracking-tight text-[#2B59FF]">
+            <img 
+              src="https://leeplugshub.com/wp-content/uploads/2026/05/LeeAutoX-lcon-1-scaled.png" 
+              alt="LeeAutoX Icon" 
+              className="h-[1.1em] w-auto object-contain"
+            />
             LeeAutoX
           </a>
 
