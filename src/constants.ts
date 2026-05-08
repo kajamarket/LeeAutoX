@@ -147,18 +147,6 @@ export const FAQ_ITEMS: FAQItem[] = [
     answer: 'Yes. LeeAutoX handles full door-to-door logistics from the auction or dealership in the USA/Canada to your location in Nigeria or across Africa. This includes containerization, international freight, port clearance, and last-mile delivery.',
   },
   {
-    question: 'What documents do I need to book?',
-    answer: 'You\'ll need a valid government-issued ID and proof of address. For commercial or bulk orders, we may require business registration documents. Our team guides you through the full documentation process at no extra charge.',
-  },
-  {
-    question: 'Is it self-drive or chauffeur-driven?',
-    answer: 'All vehicles we source are for personal ownership — they are yours to keep and drive. We are a vehicle procurement and international import service, not a car rental company.',
-  },
-  {
-    question: 'Is fuel included in the delivery?',
-    answer: 'Vehicles are delivered with sufficient fuel for initial use. A full inspection and cleaning is completed before delivery so your car arrives ready to drive.',
-  },
-  {
     question: 'Can I choose a specific make, model, and year?',
     answer: 'Absolutely. Submit your request with exact specifications — make, model, year, trim, colour, and budget — and we\'ll source it from auctions and dealers across North America.',
   },
