@@ -8,5 +8,5 @@
   RewriteRule ^ - [L]
 
   # 2. Pass all other page requests seamlessly to your WordPress subdomain
-  RewriteRule ^(.*)$ leeplugshub.com [P,L]
+  RewriteRule ^(.*)$ leeautox.leeplugshub.com [P,L]
 </IfModule>
