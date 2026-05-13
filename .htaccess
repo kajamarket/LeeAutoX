@@ -12,6 +12,6 @@
 
   # 3. If it's a deep link (like /about-us/), bypass Vite completely and fetch it from the WordPress subdomain
    # Alternative fallback if Proxy [P] flag fails
-  RewriteRule ^(.*)$ leeplugshub.com [R=301,L]
+  RewriteRule ^(.*)$ leeautox.leeplugshub.com [R=301,L]
 
 </IfModule>
