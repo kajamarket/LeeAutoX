@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 1. If the request is for a real Vite file, image, or folder, serve it immediately
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # 2. Pass all other page requests seamlessly to your WordPress subdomain
+  RewriteRule ^(.*)$ leeplugshub.com [P,L]
+</IfModule>
