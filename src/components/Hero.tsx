@@ -173,7 +173,7 @@ export default function Hero() {
             Get a Free Quote
           </a>
           <a
-            href="#fleet"
+            href="#catalogue"
             className="group flex items-center gap-3 text-sm font-medium cursor-pointer hover:opacity-70 transition-opacity text-white"
           >
             <span className="tracking-wide">Available Vehicles</span>

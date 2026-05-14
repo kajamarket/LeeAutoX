@@ -1,9 +1,16 @@
 import { NavLink, Stat, Service, FleetItem, ProcessStep, Testimonial, FAQItem } from './types';
 
 export const NAV_LINKS: NavLink[] = [
-  { label: 'Services', href: '#services' },
-  { label: 'Vehicles', href: '#fleet' },
-  { label: 'How It Works', href: '#process' },
+  { 
+    label: 'Services', 
+    href: '#services',
+    children: [
+      { label: 'What We Offer', href: '#fleet' },
+      { label: 'How It Works', href: '#process' },
+    ]
+  },
+  { label: 'Cars For Sale', href: '#catalogue' },
+  { label: 'Parts & Accessories', href: '#store' },
   { label: 'Testimonials', href: '#testimonials' },
   { label: 'Contact', href: '#contact' },
 ];
@@ -143,19 +150,90 @@ export const TESTIMONIALS: Testimonial[] = [
 
 export const FAQ_ITEMS: FAQItem[] = [
   {
-    question: 'Do you deliver the car to my location?',
-    answer: 'Yes. LeeAutoX handles full door-to-door logistics from the auction or dealership in the USA/Canada to your location in Nigeria or across Africa. This includes containerization, international freight, port clearance, and last-mile delivery.',
+    question: 'How long does shipping take from Canada to Nigeria?',
+    answer: 'Typically, shipping takes between 4 to 6 weeks from the date of container loading. This includes ocean transit and port handling time.',
   },
   {
-    question: 'Can I choose a specific make, model, and year?',
-    answer: 'Absolutely. Submit your request with exact specifications — make, model, year, trim, colour, and budget — and we\'ll source it from auctions and dealers across North America.',
+    question: 'Do you handle customs clearance in Nigeria?',
+    answer: 'Yes, we provide end-to-end logistics. Our clearing agents handle all documentation and payments at the port to Ensure a smooth release of your vehicle.',
   },
   {
-    question: 'Do you offer installment payment plans?',
-    answer: 'Yes. We offer flexible installment plans that make premium North American vehicles accessible without requiring full upfront payment. Contact us to discuss terms tailored to your situation.',
+    question: 'Can I pay for my vehicle in installments?',
+    answer: 'Yes, we offer a flexible installment plan. A commitment deposit is required to secure the vehicle, with the balance spread across the shipping and clearing period.',
   },
   {
-    question: 'How long does shipping take?',
-    answer: 'Typical transit time from USA/Canada to Nigeria is 6–10 weeks, depending on the port of destination and current shipping schedules. We provide live tracking updates throughout the entire journey.',
+    question: 'Are the vehicles inspected before purchase?',
+    answer: 'Every vehicle undergoes a rigorous 150-point inspection. We provide you with detailed photos, videos, and a full condition report before finalizing any auction bid.',
   },
+];
+
+export const CATALOGUE_VEHICLES = [
+  {
+    id: 1,
+    name: '2023 Mercedes-Benz GLE 450',
+    price: 'Contact for Pricing',
+    image: 'https://images.unsplash.com/photo-1621259182978-f09e5e2ca041?q=80&w=1000&auto=format&fit=crop',
+    specs: 'AWD • 3.0L Inline-6 • Premium Package',
+  },
+  {
+    id: 2,
+    name: '2022 Toyota Land Cruiser 300',
+    price: 'Contact for Pricing',
+    image: 'https://images.unsplash.com/photo-1618245472896-3c0663488775?q=80&w=1000&auto=format&fit=crop',
+    specs: 'V6 Twin-Turbo • Sahara Edition • Black',
+  },
+  {
+    id: 3,
+    name: '2021 Ford F-150 Raptor',
+    price: 'Contact for Pricing',
+    image: 'https://images.unsplash.com/photo-1594957640243-7f2a9693172e?q=80&w=1000&auto=format&fit=crop',
+    specs: 'EcoBoost • Luxury Package • Carbon Grey',
+  },
+  {
+    id: 4,
+    name: '2024 Lexus RX 350h',
+    price: 'Contact for Pricing',
+    image: 'https://leeplugshub.com/wp-content/uploads/2026/05/Luxury.jpg',
+    specs: 'Hybrid • Luxury Trim • Ultrasonic Blue',
+  },
+];
+
+export const STORE_PRODUCTS = [
+  {
+    id: 1,
+    name: 'Heavy Duty Oil Filters',
+    category: 'Parts',
+    price: '$25.00',
+    image: 'https://images.unsplash.com/photo-1486006396193-a41f7134373e?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 2,
+    name: 'Professional Socket Wrench Set',
+    category: 'Tools',
+    price: '$120.00',
+    image: 'https://images.unsplash.com/photo-1563889362352-b0492c224f63?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 3,
+    name: 'All-Weather Floor Mats',
+    category: 'Accessories',
+    price: '$85.00',
+    image: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 4,
+    name: 'Performance Brake Pads',
+    category: 'Parts',
+    price: '$75.00',
+    image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=800&auto=format&fit=crop',
+  },
+];
+
+export const INSTAGRAM_POSTS = [
+  { id: 1, image: 'https://leeplugshub.com/wp-content/uploads/2026/05/Auction.jpeg' },
+  { id: 2, image: 'https://leeplugshub.com/wp-content/uploads/2026/05/Luxury.jpg' },
+  { id: 3, image: 'https://leeplugshub.com/wp-content/uploads/2026/05/Vans.jpeg' },
+  { id: 4, image: 'https://leeplugshub.com/wp-content/uploads/2026/05/Shipping.jpeg' },
+  { id: 5, image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=800&auto=format&fit=crop' },
+  { id: 6, image: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=800&auto=format&fit=crop' },
 ];
