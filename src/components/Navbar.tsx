@@ -122,23 +122,41 @@ export default function Navbar() {
               {NAV_LINKS.map((link) => (
                 <div key={link.label} className="flex flex-col">
                   {link.children ? (
-                    <>
-                      <span className="text-3xl font-serif font-bold text-white mb-4">
-                        {link.label}
-                      </span>
-                      <div className="flex flex-col gap-6 pl-4 border-l border-white/10">
-                        {link.children.map((child) => (
-                          <a
-                            key={child.href}
-                            href={child.href}
-                            onClick={() => setIsOpen(false)}
-                            className="text-2xl font-serif font-bold text-white hover:text-[#2B59FF] transition-colors"
+                    <div className="flex flex-col">
+                      <button 
+                        onClick={() => setActiveDropdown(activeDropdown === link.label ? null : link.label)}
+                        className="flex items-center justify-between w-full text-3xl font-serif font-bold text-white mb-2"
+                      >
+                        <span>{link.label}</span>
+                        <ChevronDown 
+                          size={24} 
+                          className={`text-[#2B59FF] transition-transform duration-300 ${activeDropdown === link.label ? 'rotate-180' : ''}`} 
+                        />
+                      </button>
+                      
+                      <AnimatePresence>
+                        {activeDropdown === link.label && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="overflow-hidden flex flex-col gap-4 pl-4 border-l border-white/10 mt-2"
                           >
-                            {child.label}
-                          </a>
-                        ))}
-                      </div>
-                    </>
+                            {link.children.map((child) => (
+                              <a
+                                key={child.href}
+                                href={child.href}
+                                onClick={() => setIsOpen(false)}
+                                className="text-sm font-semibold text-white/60 hover:text-[#2B59FF] transition-all tracking-widest uppercase py-2"
+                              >
+                                {child.label}
+                              </a>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   ) : (
                     <a
                       href={link.href}
