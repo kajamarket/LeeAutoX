@@ -204,28 +204,28 @@ export const STORE_PRODUCTS = [
     name: 'Genuine Brake Pads (Toyota)',
     category: 'Parts',
     price: '₦44,000',
-    image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=800&auto=format&fit=crop',
+    image: 'https://www.jdmgarageuk.com/media/catalog/product/cache/b5954bc909c1daab6dc178132f542fbc/2/0/20240422_083608_copy.jpg',
   },
   {
     id: 2,
     name: 'Full Synthetic Motor Oil',
     category: 'Parts',
     price: '₦16,000',
-    image: 'https://images.unsplash.com/photo-1486006396193-a41f7134373e?q=80&w=800&auto=format&fit=crop',
+    image: 'https://autoimage.capitalone.com/cms/Auto/assets/images/1835-hero-difference-between-conventional-and-synthetic-oil.jpg',
   },
   {
     id: 3,
     name: 'Professional Mechanic Tool Kit',
     category: 'Tools',
     price: '₦88,000',
-    image: 'https://images.unsplash.com/photo-1540103359328-3e91ae950663?q=80&w=800&auto=format&fit=crop',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvMgOdrtRwf4D9PPSM0ePFAfIzC-Niripwfg&s',
   },
   {
     id: 4,
     name: 'Premium All-Weather Floor Mats',
     category: 'Accessories',
     price: '₦36,000',
-    image: 'https://images.unsplash.com/photo-1533106497176-45ae19e68ba2?q=80&w=800&auto=format&fit=crop',
+    image: 'https://images.weathertech.com/829c0ef3-1a07-44e4-81b7-b3e8013a4541/vw_atlas_25_w655-original-file.jpg?width=800&height=800&fit=bounds',
   },
 ];
 
