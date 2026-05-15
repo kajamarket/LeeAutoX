@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://leeautox.com/sitemap_lee.xml
+Sitemap: https://leeautox.com/sitemap.xml
