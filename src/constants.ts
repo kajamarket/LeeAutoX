@@ -193,7 +193,7 @@ export const CATALOGUE_VEHICLES = [
     id: 4,
     name: '2011 Toyota Venza',
     price: '₦13,000,000',
-    image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=800&auto=format&fit=crop',
+    image: 'https://cs.copart.com/v1/AUTH_svc.pdoc00001/ids-c-prod-lpp/0326/7732bd8557c14091bc21f8b05b92c42d_ful.jpg',
     specs: 'Clean Title • Premium Leather • Reliable Crossover',
   },
 ];

@@ -36,7 +36,7 @@ export const getVehicles = async (): Promise<any[]> => {
   if (!products || !Array.isArray(products)) return [];
   
   return products.map(product => {
-    const priceValue = product.prices?.price ? (parseInt(product.prices.price) / 100).toLocaleString() : '0';
+    const priceValue = product.prices?.price ? parseInt(product.prices.price).toLocaleString() : '0';
     const currency = '₦';
     
     return {
@@ -58,7 +58,7 @@ export const getProducts = async (): Promise<any[]> => {
   if (!products || !Array.isArray(products)) return [];
   
   return products.map(product => {
-    const priceValue = product.prices?.price ? (parseInt(product.prices.price) / 100).toLocaleString() : '0';
+    const priceValue = product.prices?.price ? parseInt(product.prices.price).toLocaleString() : '0';
     // User requested USD sign changed to Naira
     const currency = '₦';
 
