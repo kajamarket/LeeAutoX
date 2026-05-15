@@ -84,7 +84,7 @@ export default function VehicleCatalogue() {
               <p className="text-sm font-mono tracking-widest uppercase">Fetching latest inventory...</p>
             </div>
           ) : (
-            vehicles.map((vehicle, index) => (
+            vehicles.slice(0, 4).map((vehicle, index) => (
               <motion.a
                 key={vehicle.id}
                 href={vehicle.link || "https://leeautox.leeplugshub.com"}

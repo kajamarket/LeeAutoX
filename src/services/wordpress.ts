@@ -30,19 +30,24 @@ async function fetchWP(endpoint: string) {
 }
 
 export const getVehicles = async (): Promise<any[]> => {
-  // Using the new auto-listing endpoint as requested
-  const listings = await fetchWP('/wp/v2/auto-listing?_embed&per_page=4');
+  // Using the Store API endpoint as requested for vehicle catalog, limited to 4 items
+  const products = await fetchWP('/wc/store/products?per_page=4&offset=4');
   
-  if (!listings || !Array.isArray(listings)) return [];
+  if (!products || !Array.isArray(products)) return [];
   
-  return listings.map(item => ({
-    id: item.id,
-    name: item.title?.rendered || 'Premium Vehicle',
-    price: item.meta?.price || 'Contact for Pricing',
-    image: item._embedded?.['wp:featuredmedia']?.[0]?.source_url || 'https://leeplugshub.com/wp-content/uploads/2026/05/Luxury.jpg',
-    specs: item.excerpt?.rendered ? item.excerpt.rendered.replace(/<[^>]*>?/gm, '').substring(0, 80) + '...' : 'Exclusive vehicle listing',
-    link: item.link
-  }));
+  return products.map(product => {
+    const priceValue = product.prices?.price ? (parseInt(product.prices.price) / 100).toLocaleString() : '0';
+    const currency = '₦';
+    
+    return {
+      id: product.id,
+      name: product.name,
+      price: `${currency}${priceValue}`,
+      image: product.images?.[0]?.src || 'https://leeplugshub.com/wp-content/uploads/2026/05/Luxury.jpg',
+      specs: product.short_description ? product.short_description.replace(/<[^>]*>?/gm, '').substring(0, 80) + '...' : 'Premium vehicle listing',
+      link: product.permalink
+    };
+  });
 };
 
 export const getProducts = async (): Promise<any[]> => {
@@ -54,7 +59,8 @@ export const getProducts = async (): Promise<any[]> => {
   
   return products.map(product => {
     const priceValue = product.prices?.price ? (parseInt(product.prices.price) / 100).toLocaleString() : '0';
-    const currency = product.prices?.currency_symbol || '$';
+    // User requested USD sign changed to Naira
+    const currency = '₦';
 
     return {
       id: product.id,
