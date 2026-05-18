@@ -68,7 +68,7 @@ export default function VehicleCatalogue() {
             </p>
           </div>
           <a
-            href="https://leeautox.leeplugshub.com/listings"
+            href="https://leeautox.leeplugshub.com/product-category/cars/"
             target="_blank"
             rel="noopener noreferrer"
             className="group flex items-center gap-2 text-sm font-bold text-[#2B59FF] uppercase tracking-widest hover:translate-x-2 transition-transform"
@@ -134,7 +134,7 @@ export default function VehicleCatalogue() {
         {/* Mobile CTA */}
         <div className="mt-12 md:hidden">
            <a
-            href="https://leeautox.leeplugshub.com/listings"
+            href="https://leeautox.leeplugshub.com/product-category/cars/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-3 w-full py-4 bg-[#2B59FF] text-white text-sm font-bold uppercase tracking-widest"
