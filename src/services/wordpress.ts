@@ -30,25 +30,35 @@ async function fetchWP(endpoint: string) {
 }
 
 export const getVehicles = async (): Promise<any[]> => {
-  // Using the Store API endpoint as requested for vehicle catalog, limited to 4 items
-  const products = await fetchWP('/wc/store/products?per_page=4&offset=4');
+  // 1. Fetch a larger set to find matching categories
+  const products = await fetchWP('/wc/store/products?per_page=20');
   
   if (!products || !Array.isArray(products)) return [];
   
-  return products.map(product => {
-    const priceValue = product.prices?.price ? parseInt(product.prices.price).toLocaleString() : '0';
-    const currency = '₦';
-    
-    return {
-      id: product.id,
-      name: product.name,
-      price: `${currency}${priceValue}`,
-      image: product.images?.[0]?.src || 'https://leeplugshub.com/wp-content/uploads/2026/05/Luxury.jpg',
-      specs: product.short_description ? product.short_description.replace(/<[^>]*>?/gm, '').substring(0, 80) + '...' : 'Premium vehicle listing',
-      link: product.permalink
-    };
-  });
+  return products
+    // 2. Filter products that belong to the 'cars' category
+    .filter(product => 
+      product.categories?.some((cat: any) => 
+        cat.name.toLowerCase() === 'cars' || cat.slug === 'cars'
+      )
+    )
+    // 3. Take only the first 4 matching items
+    .slice(0, 4) 
+    .map(product => {
+      const priceValue = product.prices?.price ? parseInt(product.prices.price).toLocaleString() : '0';
+      const currency = '₦';
+      
+      return {
+        id: product.id,
+        name: product.name,
+        price: `${currency}${priceValue}`,
+        image: product.images?.[0]?.src || 'https://leeplugshub.com/wp-content/uploads/2026/05/Luxury.jpg',
+        specs: product.short_description ? product.short_description.replace(/<[^>]*>?/gm, '').substring(0, 80) + '...' : 'Premium vehicle listing',
+        link: product.permalink
+      };
+    });
 };
+
 
 export const getProducts = async (): Promise<any[]> => {
   // Fetch with offset for the parts section to show different items
