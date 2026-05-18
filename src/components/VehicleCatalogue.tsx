@@ -87,7 +87,7 @@ export default function VehicleCatalogue() {
             vehicles.slice(0, 4).map((vehicle, index) => (
               <motion.a
                 key={vehicle.id}
-                href={vehicle.link || "https://leeautox.leeplugshub.com"}
+                href={vehicle.link || "https://leeautox.leeplugshub.com/product-category/cars/"}
                 target="_blank"
                 rel="noopener noreferrer"
                 initial={{ y: 20, opacity: 0 }}
