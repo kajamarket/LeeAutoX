@@ -8,7 +8,7 @@ export default function Hero() {
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
-          src="https://images.unsplash.com/photo-1750380328422-fbe02f196300?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920"
+          src="https://leeplugshub.com/wp-content/uploads/2026/05/leeautoxhero.png"
           alt="Luxury vehicle"
           className="w-full h-full object-cover hidden md:block"
         />
