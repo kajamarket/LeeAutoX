@@ -228,7 +228,7 @@ export default function DeliveriesTimeline() {
     if (!isIntersecting) return;
     const interval = setInterval(() => {
       next();
-    }, 6000); // changes slides every 6 seconds
+    }, 10000); // changes slides every 10 seconds
     return () => clearInterval(interval);
   }, [isIntersecting]);
 
