@@ -33,6 +33,7 @@ export default function App() {
           <VehicleCatalogue />
           <AutoStore />
           <Process />
+          <DeliveriesTimeline />
           <Testimonials />
           <InstagramFeed />
           <FAQ />
