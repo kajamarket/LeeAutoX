@@ -11,7 +11,7 @@ export const NAV_LINKS: NavLink[] = [
   },
   { label: 'Cars For Sale', href: '#catalogue' },
   { label: 'Parts & Accessories', href: '#store' },
-  { label: 'Testimonials', href: '#testimonials' },
+  { label: 'Testimonials', href: '#deliveries' },
   { label: 'Contact', href: '#contact' },
 ];
 
