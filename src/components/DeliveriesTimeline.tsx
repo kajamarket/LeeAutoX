@@ -67,27 +67,27 @@ export default function DeliveriesTimeline() {
       stages: [
         {
           stage: 'STAGE 1',
-          title: 'Luxury Sourcing & Consultation Match',
+          title: 'Auction Purchase',
           description: 'Matching a highly specific client search for the elite "Ultimate" trim. Secured directly from a top-tier Canadian dealer auction featuring premium tech upgrades.',
-          image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=800'
+          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260521-WA0007.jpg'
         },
         {
           stage: 'STAGE 2',
-          title: 'Top-Spec Feature Verification',
+          title: 'Pickup from Copart Yard',
           description: 'On-site lot confirmation of the Sonata Ultimate\'s premium accessories: panoramic sunroof, 360 camera lines, head-up display (HUD), ambient lighting grids, and self-parking feature checks.',
           image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260512-WA0021-scaled.jpg'
         },
         {
           stage: 'STAGE 3',
-          title: 'Export Logistics & Sea Freight Splicing',
+          title: 'Shipping & Trucking',
           description: 'Protected within a heavy duty cargo container, transit begins across global seas. Rigorous logistics checklists prevent any movement or environmental wear during deep sea transit.',
-          image: 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?auto=format&fit=crop&q=80&w=800'
+          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260522-WA0019-scaled.jpg'
         },
         {
           stage: 'STAGE 4',
-          title: 'Apapa Clearing & Client Doorstep Handover',
+          title: 'Port Clearance in Nigeria',
           description: 'Customs cleared directly from Lagos port, detailed to a mirror showroom finish, and delivered straight to the happy client\'s hands. An uncompromised milestone of professional service.',
-          image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=800'
+          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260512-WA0014-scaled.jpg'
         }
       ]
     }
