@@ -204,14 +204,14 @@ export const STORE_PRODUCTS = [
     name: 'Autel MaxiCOM MK808BT Pro',
     category: 'Tools',
     price: '₦700,000',
-    image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/NVTXCK1-150x150.jpg',
+    image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/NVTXCK1.jpg',
   },
   {
     id: 2,
     name: 'CarPro CQuartz UK 3.0 Ceramic Coating',
     category: 'Detailing',
     price: '₦160,000',
-    image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/AABVZT1-150x150.jpg',
+    image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/AABVZT1.jpg',
   },
   {
     id: 3,
