@@ -36,27 +36,27 @@ export default function DeliveriesTimeline() {
       stages: [
         {
           stage: 'STAGE 1',
-          title: 'Auction Purchase & Budget Sourcing',
+          title: 'Auction Purchase',
           description: 'A custom enquiry was processed for a clean "Run and Drive" 2021 Sonata. Our procurement specialists researched vehicle histories, reviewed bid files, and successfully won the car at a competitive dealer-only auction.',
-          image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=800'
+          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260521-WA0007.jpg'
         },
         {
           stage: 'STAGE 2',
-          title: 'Verification & Copart Yard Inspection',
+          title: 'Pickup from Copart Yard',
           description: 'The Sonata was transferred to the Copart auction lot, where on-site technicians verified vehicle details, structural integrity, 4 CYL engine performance, and the guaranteed 85,000 mileage prior to transport clearance.',
           image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260515-WA0001.jpg'
         },
         {
           stage: 'STAGE 3',
-          title: 'Secure Marine Containerization & Shipping',
+          title: 'Secure Shipping',
           description: 'Loaded securely into a steel export container, bound for West Africa. Full documentation, custom seals, and maritime tracking keys were issued to keep both our team and the customer fully informed.',
-          image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=800'
+          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/XRecorder_23052026_124117-scaled.jpg'
         },
         {
           stage: 'STAGE 4',
-          title: 'Port Clearance & Handover in Nigeria',
+          title: 'Port Clearance in Nigeria',
           description: 'Arrived at the Lagos port (Apapa/Tin Can). Our clearing agency managed customs papers, port levies, and secure local transport. The car is now delivered safely to our lot, fully cleared and pristine.',
-          image: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&q=80&w=800'
+          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260515-WA0000.jpg'
         }
       ]
     },
