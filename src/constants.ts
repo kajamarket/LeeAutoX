@@ -218,14 +218,14 @@ export const STORE_PRODUCTS = [
     name: 'Battery Charger',
     category: 'Tools',
     price: '₦100,000',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWrIuqbCrV7K6kvu9Qnc-nn89wyEPG9VqLjA&s',
+    image: 'https://image.made-in-china.com/2f0j00eVubfjSglKkN/E-Fast-Motorcycle-Battery-Charger-12V-6A-for-Truck-Car-Battery-Charge.webp',
   },
   {
     id: 4,
     name: 'ASPERX AX2000 Jump Starter',
     category: 'Tools',
     price: '₦200,000',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZNVSHqgk0Be5KR9YSWtGWPNaTUv-UP2qr8Q&s',
+    image: 'https://m.media-amazon.com/images/I/41y7WM2Q0fL.__AC_SR200,225___.jpg',
   },
 ];
 
