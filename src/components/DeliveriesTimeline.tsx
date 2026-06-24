@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Compass, ShieldCheck, Ship, MapPin } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
-
 
 interface TimelineStage {
   stage: string;
@@ -11,7 +10,6 @@ interface TimelineStage {
   image: string;
 }
 
-
 interface VehicleTimeline {
   id: number;
   name: string;
@@ -19,13 +17,11 @@ interface VehicleTimeline {
   stages: TimelineStage[];
 }
 
-
 export default function DeliveriesTimeline() {
   const { theme } = useTheme();
   const [activeSlide, setActiveSlide] = useState(0);
   const [isIntersecting, setIsIntersecting] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
-
 
   // Define the 5 cars as ordered, displaying 2 and commenting out/disabling the other 3.
   const VEHICLES_DATA: VehicleTimeline[] = [
@@ -36,27 +32,27 @@ export default function DeliveriesTimeline() {
       stages: [
         {
           stage: 'STAGE 1',
-          title: 'Auction Purchase',
+          title: 'Auction Purchase & Budget Sourcing',
           description: 'A custom enquiry was processed for a clean "Run and Drive" 2021 Sonata. Our procurement specialists researched vehicle histories, reviewed bid files, and successfully won the car at a competitive dealer-only auction.',
-          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260521-WA0007.jpg'
+          image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=800'
         },
         {
           stage: 'STAGE 2',
-          title: 'Pickup from Copart Yard',
+          title: 'Verification & Copart Yard Inspection',
           description: 'The Sonata was transferred to the Copart auction lot, where on-site technicians verified vehicle details, structural integrity, 4 CYL engine performance, and the guaranteed 85,000 mileage prior to transport clearance.',
           image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260515-WA0001.jpg'
         },
         {
           stage: 'STAGE 3',
-          title: 'Secure Shipping',
+          title: 'Secure Marine Containerization & Shipping',
           description: 'Loaded securely into a steel export container, bound for West Africa. Full documentation, custom seals, and maritime tracking keys were issued to keep both our team and the customer fully informed.',
-          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/XRecorder_23052026_124117-scaled.jpg'
+          image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=800'
         },
         {
           stage: 'STAGE 4',
-          title: 'Port Clearance in Nigeria',
+          title: 'Port Clearance & Handover in Nigeria',
           description: 'Arrived at the Lagos port (Apapa/Tin Can). Our clearing agency managed customs papers, port levies, and secure local transport. The car is now delivered safely to our lot, fully cleared and pristine.',
-          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260515-WA0000.jpg'
+          image: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&q=80&w=800'
         }
       ]
     },
@@ -67,32 +63,32 @@ export default function DeliveriesTimeline() {
       stages: [
         {
           stage: 'STAGE 1',
-          title: 'Auction Purchase',
+          title: 'Luxury Sourcing & Consultation Match',
           description: 'Matching a highly specific client search for the elite "Ultimate" trim. Secured directly from a top-tier Canadian dealer auction featuring premium tech upgrades.',
-          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260521-WA0007.jpg'
+          image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=800'
         },
         {
           stage: 'STAGE 2',
-          title: 'Pickup from Copart Yard',
+          title: 'Top-Spec Feature Verification',
           description: 'On-site lot confirmation of the Sonata Ultimate\'s premium accessories: panoramic sunroof, 360 camera lines, head-up display (HUD), ambient lighting grids, and self-parking feature checks.',
           image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260512-WA0021-scaled.jpg'
         },
         {
           stage: 'STAGE 3',
-          title: 'Shipping & Trucking',
+          title: 'Export Logistics & Sea Freight Splicing',
           description: 'Protected within a heavy duty cargo container, transit begins across global seas. Rigorous logistics checklists prevent any movement or environmental wear during deep sea transit.',
-          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260522-WA0019-scaled.jpg'
+          image: 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?auto=format&fit=crop&q=80&w=800'
         },
         {
           stage: 'STAGE 4',
-          title: 'Port Clearance in Nigeria',
+          title: 'Apapa Clearing & Client Doorstep Handover',
           description: 'Customs cleared directly from Lagos port, detailed to a mirror showroom finish, and delivered straight to the happy client\'s hands. An uncompromised milestone of professional service.',
-          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260512-WA0014-scaled.jpg'
+          image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=800'
         }
       ]
     }
     /*
-    // CAR 3: 2017 HYUNDAI SONATA (Created and commented out as requested)
+    // CAR 3: 2017 HYUNDAI SONATA (Created but commented out as requested)
     ,
     {
       id: 3,
@@ -127,7 +123,7 @@ export default function DeliveriesTimeline() {
     }
     */
     /*
-    // CAR 4: 2011 TOYOTA VENZA (Created and commented out as requested)
+    // CAR 4: 2011 TOYOTA VENZA (Created but commented out as requested)
     ,
     {
       id: 4,
@@ -162,7 +158,7 @@ export default function DeliveriesTimeline() {
     }
     */
     /*
-    // CAR 5: 2024 LEXUS RX 350H (Created and commented out as requested)
+    // CAR 5: 2024 LEXUS RX 350H (Created but commented out as requested)
     ,
     {
       id: 5,
@@ -198,13 +194,10 @@ export default function DeliveriesTimeline() {
     */
   ];
 
-
   const totalSlides = VEHICLES_DATA.length;
-
 
   const next = () => setActiveSlide((prev) => (prev + 1) % totalSlides);
   const prev = () => setActiveSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
-
 
   // Setup observer for scrolling focus / viewport tracking for auto sliding
   useEffect(() => {
@@ -222,7 +215,6 @@ export default function DeliveriesTimeline() {
     };
   }, []);
 
-
   // Safe auto sliding when section is focused (in view)
   useEffect(() => {
     if (!isIntersecting) return;
@@ -232,9 +224,7 @@ export default function DeliveriesTimeline() {
     return () => clearInterval(interval);
   }, [isIntersecting]);
 
-
   const activeVehicle = VEHICLES_DATA[activeSlide];
-
 
   return (
     <section 
@@ -294,7 +284,6 @@ export default function DeliveriesTimeline() {
         }`} />
       </div>
 
-
       <div className="relative z-10 max-w-6xl mx-auto">
         {/* Header section with SEO optimized Title & Subtitle */}
         <div className="text-center mb-16">
@@ -312,7 +301,6 @@ export default function DeliveriesTimeline() {
             Follow the transparent lifecycle journey of our premium vehicles as they move seamlessly from auction yards to port clearance and client handovers in Lagos.
           </p>
         </div>
-
 
         {/* Outer slider box */}
         <div className="relative min-h-[500px] mb-12">
@@ -339,14 +327,12 @@ export default function DeliveriesTimeline() {
                 </p>
               </div>
 
-
               {/* TIMELINE TIMELINE WRAPPER (Adapting the journey structure to React) */}
               <div className="relative max-w-4xl mx-auto">
                 {/* Horizontal / Vertical Timeline Center Line */}
                 <div className={`absolute left-[20px] md:left-1/2 top-0 bottom-0 w-0.5 transform md:-translate-x-1/2 transition-colors duration-500 ${
                   theme === 'dark' ? 'bg-zinc-800' : 'bg-slate-200'
                 }`} />
-
 
                 <div className="space-y-12 relative">
                   {activeVehicle.stages.map((item, idx) => {
@@ -377,7 +363,6 @@ export default function DeliveriesTimeline() {
                               {item.title}
                             </h4>
 
-
                             {/* EVIDENCE IMAGE underneath the text for proof */}
                             <div className={`mt-4 border overflow-hidden select-none transition-colors duration-500 ${
                               theme === 'dark' ? 'border-zinc-800 bg-zinc-950' : 'border-slate-100 bg-slate-50'
@@ -392,12 +377,10 @@ export default function DeliveriesTimeline() {
                           </div>
                         </div>
 
-
                         {/* Dot representation in center line */}
                         <div className="absolute left-[20px] md:left-1/2 w-4 h-4 bg-[#2B59FF] border-2 border-white rounded-full transform -translate-x-[9px] md:-translate-x-1/2 top-6 z-10 flex items-center justify-center shadow-lg shadow-[#2B59FF]/50 scale-125">
                           <span className="w-1.5 h-1.5 bg-white rounded-full" />
                         </div>
-
 
                         {/* Empty spacing for desktop flex alignment */}
                         <div className="hidden md:block w-[45%]" />
@@ -409,7 +392,6 @@ export default function DeliveriesTimeline() {
             </motion.div>
           </AnimatePresence>
         </div>
-
 
         {/* Slider Button Controls and Indicators */}
         <div className="flex items-center justify-center gap-6 mt-12 relative z-10">
@@ -424,7 +406,6 @@ export default function DeliveriesTimeline() {
           >
             <ChevronLeft size={20} />
           </button>
-
 
           {/* Dots indicating slide progress */}
           <div className="flex items-center gap-2.5">
@@ -442,7 +423,6 @@ export default function DeliveriesTimeline() {
             ))}
           </div>
 
-
           <button
             onClick={next}
             className={`w-12 h-12 border transition-all cursor-pointer flex items-center justify-center ${
@@ -456,7 +436,6 @@ export default function DeliveriesTimeline() {
           </button>
         </div>
 
-
         {/* Verified Quote Badge */}
         <div className={`text-center italic font-serif text-sm mt-16 pt-8 border-t max-w-md mx-auto transition-colors duration-500 ${
           theme === 'dark' ? 'text-zinc-500 border-zinc-850' : 'text-slate-500 border-slate-200'
@@ -467,5 +446,3 @@ export default function DeliveriesTimeline() {
     </section>
   );
 }
-
-

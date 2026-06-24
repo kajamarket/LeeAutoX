@@ -3,16 +3,16 @@ import { NavLink, Stat, Service, FleetItem, ProcessStep, Testimonial, FAQItem } 
 export const NAV_LINKS: NavLink[] = [
   { 
     label: 'Services', 
-    href: '#services',
+    href: '/services/',
     children: [
-      { label: 'What We Offer', href: '#fleet' },
-      { label: 'How It Works', href: '#process' },
+      { label: 'What We Offer', href: '/services/' },
+      { label: 'How It Works', href: '/how-it-works/' },
     ]
   },
-  { label: 'Cars For Sale', href: '#catalogue' },
-  { label: 'Parts & Accessories', href: '#store' },
-  { label: 'Testimonials', href: '#deliveries' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Cars For Sale', href: '/vehicles/' },
+  { label: 'Parts & Accessories', href: '/vehicles/' },
+  { label: 'Testimonials', href: '/testimonials/' },
+  { label: 'Contact', href: '/contact/' },
 ];
 
 export const HERO_STATS: Stat[] = [
@@ -235,5 +235,4 @@ export const INSTAGRAM_POSTS = [
   { id: 3, image: 'https://leeplugshub.com/wp-content/uploads/2026/05/Vans.jpeg' },
   { id: 4, image: 'https://leeplugshub.com/wp-content/uploads/2026/05/Shipping.jpeg' },
   { id: 5, image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=800&auto=format&fit=crop' },
-  { id: 6, image: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=800&auto=format&fit=crop' },
-];
+  { id: 6, image: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=800&auto=format&fit=crop' },];

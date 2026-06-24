@@ -2,5 +2,5 @@
   "name": "LeeAutoX",
   "description": "Premium vehicle sourcing from USA & Canada to Africa. Luxury cars, commercial trucks, and full logistics.",
   "requestFramePermissions": [],
-  "majorCapabilities": []
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

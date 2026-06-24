@@ -1,18 +1,62 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, ChevronDown } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import { NAV_LINKS } from '../constants';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const isHome = location.pathname === '/';
+
+  const getMenuLinkProps = (label: string, defaultHref: string) => {
+    if (!isHome) {
+      return { to: defaultHref, isRouterLink: true };
+    }
+    switch (label) {
+      case 'Services':
+        return { to: '#services', isRouterLink: false };
+      case 'What We Offer':
+        return { to: '#services', isRouterLink: false };
+      case 'How It Works':
+        return { to: '#process', isRouterLink: false };
+      case 'Cars For Sale':
+        return { to: '#catalogue', isRouterLink: false };
+      case 'Parts & Accessories':
+        return { to: '#store', isRouterLink: false };
+      case 'Testimonials':
+        return { to: '#testimonials', isRouterLink: false };
+      case 'Contact':
+        return { to: '#contact', isRouterLink: false };
+      default:
+        return { to: defaultHref, isRouterLink: true };
+    }
+  };
+
+  const renderLink = (label: string, defaultHref: string, className: string, onClick?: () => void) => {
+    const props = getMenuLinkProps(label, defaultHref);
+    if (props.isRouterLink) {
+      return (
+        <Link to={props.to} className={className} onClick={onClick}>
+          {label}
+        </Link>
+      );
+    }
+    return (
+      <a href={props.to} className={className} onClick={onClick}>
+        {label}
+      </a>
+    );
+  };
 
   return (
     <>
@@ -27,14 +71,14 @@ export default function Navbar() {
           transition={{ duration: 0.6, ease: 'easeOut' }}
           className="flex items-center justify-between w-full"
         >
-          <a href="#" className="flex items-center gap-2 font-serif text-xl font-bold tracking-tight text-[#2B59FF]">
+          <Link to="/" className="flex items-center gap-2 font-serif text-xl font-bold tracking-tight text-[#2B59FF]">
             <img 
               src="https://leeplugshub.com/wp-content/uploads/2026/05/LeeAutoX-lcon-1-scaled.png" 
               alt="LeeAutoX Icon" 
               className="h-[1.1em] w-auto object-contain"
             />
             LeeAutoX
-          </a>
+          </Link>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
@@ -46,12 +90,11 @@ export default function Navbar() {
                 onMouseLeave={() => setActiveDropdown(null)}
               >
                 <div className="flex items-center gap-1 cursor-pointer">
-                  <a
-                    href={link.href}
-                    className="text-sm font-medium text-white/70 hover:text-white transition-colors tracking-wide py-2"
-                  >
-                    {link.label}
-                  </a>
+                  {renderLink(
+                    link.label,
+                    link.href,
+                    "text-sm font-medium text-white/70 hover:text-white transition-colors tracking-wide py-2"
+                  )}
                   {link.children && <ChevronDown size={14} className={`text-white/40 transition-transform duration-300 ${activeDropdown === link.label ? 'rotate-180' : ''}`} />}
                 </div>
 
@@ -67,13 +110,13 @@ export default function Navbar() {
                         className="absolute top-full left-0 mt-2 w-56 bg-black/90 backdrop-blur-xl border border-white/10 p-2 shadow-2xl"
                       >
                         {link.children.map((child) => (
-                          <a
-                            key={child.href}
-                            href={child.href}
-                            className="block px-4 py-3 text-xs font-semibold text-white/60 hover:text-[#2B59FF] hover:bg-white/5 transition-all tracking-widest uppercase"
-                          >
-                            {child.label}
-                          </a>
+                          <div key={child.href}>
+                            {renderLink(
+                              child.label,
+                              child.href,
+                              "block px-4 py-3 text-xs font-semibold text-white/60 hover:text-[#2B59FF] hover:bg-white/5 transition-all tracking-widest uppercase"
+                            )}
+                          </div>
                         ))}
                       </motion.div>
                     )}
@@ -81,12 +124,21 @@ export default function Navbar() {
                 )}
               </div>
             ))}
-            <a
-              href="#contact"
-              className="text-sm font-bold px-6 py-2.5 bg-[#2B59FF] text-white hover:bg-[#1a41cc] transition-all tracking-widest uppercase shadow-[0_0_20px_rgba(43,89,255,0.3)]"
-            >
-              Get a Quote
-            </a>
+            {isHome ? (
+              <a
+                href="#contact"
+                className="text-sm font-bold px-6 py-2.5 bg-[#2B59FF] text-white hover:bg-[#1a41cc] transition-all tracking-widest uppercase shadow-[0_0_20px_rgba(43,89,255,0.3)]"
+              >
+                Get a Quote
+              </a>
+            ) : (
+              <Link
+                to="/contact/"
+                className="text-sm font-bold px-6 py-2.5 bg-[#2B59FF] text-white hover:bg-[#1a41cc] transition-all tracking-widest uppercase shadow-[0_0_20px_rgba(43,89,255,0.3)]"
+              >
+                Get a Quote
+              </Link>
+            )}
           </div>
 
           {/* Mobile Toggle */}
@@ -144,38 +196,49 @@ export default function Navbar() {
                             className="overflow-hidden flex flex-col gap-4 pl-4 border-l border-white/10 mt-2"
                           >
                             {link.children.map((child) => (
-                              <a
-                                key={child.href}
-                                href={child.href}
-                                onClick={() => setIsOpen(false)}
-                                className="text-sm font-semibold text-white/60 hover:text-[#2B59FF] transition-all tracking-widest uppercase py-2"
-                              >
-                                {child.label}
-                              </a>
+                              <div key={child.href}>
+                                {renderLink(
+                                  child.label,
+                                  child.href,
+                                  "text-sm font-semibold text-white/60 hover:text-[#2B59FF] transition-all tracking-widest uppercase py-2",
+                                  () => setIsOpen(false)
+                                )}
+                              </div>
                             ))}
                           </motion.div>
                         )}
                       </AnimatePresence>
                     </div>
                   ) : (
-                    <a
-                      href={link.href}
-                      onClick={() => setIsOpen(false)}
-                      className="text-3xl font-serif font-bold text-white hover:text-[#2B59FF] transition-colors"
-                    >
-                      {link.label}
-                    </a>
+                    <div key={link.label}>
+                      {renderLink(
+                        link.label,
+                        link.href,
+                        "text-3xl font-serif font-bold text-white hover:text-[#2B59FF] transition-colors",
+                        () => setIsOpen(false)
+                      )}
+                    </div>
                   )}
                 </div>
               ))}
               
-              <a
-                href="#contact"
-                onClick={() => setIsOpen(false)}
-                className="text-center font-bold px-8 py-4 bg-[#2B59FF] text-white mt-8 tracking-widest uppercase"
-              >
-                Get a Quote
-              </a>
+              {isHome ? (
+                <a
+                  href="#contact"
+                  onClick={() => setIsOpen(false)}
+                  className="text-center font-bold px-8 py-4 bg-[#2B59FF] text-white mt-8 tracking-widest uppercase"
+                >
+                  Get a Quote
+                </a>
+              ) : (
+                <Link
+                  to="/contact/"
+                  onClick={() => setIsOpen(false)}
+                  className="text-center font-bold px-8 py-4 bg-[#2B59FF] text-white mt-8 tracking-widest uppercase"
+                >
+                  Get a Quote
+                </Link>
+              )}
             </div>
           </motion.div>
         )}

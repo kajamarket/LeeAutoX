@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { NAV_LINKS } from '../constants';
 
 export default function Footer() {
@@ -34,14 +35,14 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between gap-12 mb-16">
           {/* Brand Column */}
           <div className="max-w-xs">
-            <a href="#" className="flex items-center gap-2 font-serif text-2xl font-bold block mb-4 text-[#2B59FF]">
+            <Link to="/" className="flex items-center gap-2 font-serif text-2xl font-bold block mb-4 text-[#2B59FF]">
               <img 
                 src="https://leeplugshub.com/wp-content/uploads/2026/05/LeeAutoX-lcon-1-scaled.png" 
                 alt="LeeAutoX Icon" 
                 className="h-[1.1em] w-auto object-contain"
               />
               LeeAutoX
-            </a>
+            </Link>
             <p className="text-sm text-background/60 leading-relaxed">
               Premium vehicle procurement and international shipping from North America to Nigeria and Africa.
             </p>
@@ -65,33 +66,34 @@ export default function Footer() {
                 Services
               </h4>
               <ul className="space-y-2">
-                <li><a href="#services" className="text-sm text-background/70 hover:text-background transition-colors">Car Sourcing</a></li>
-                <li><a href="#services" className="text-sm text-background/70 hover:text-background transition-colors">Pre-Orders</a></li>
-                <li><a href="#services" className="text-sm text-background/70 hover:text-background transition-colors">Shipping & Logistics</a></li>
-                <li><a href="#services" className="text-sm text-background/70 hover:text-background transition-colors">Installment Plans</a></li>
+                <li><Link to="/services/vehicle-sourcing/" className="text-sm text-background/70 hover:text-background transition-colors">Car Sourcing</Link></li>
+                <li><Link to="/vehicles/pre-order/" className="text-sm text-background/70 hover:text-background transition-colors">Pre-Orders</Link></li>
+                <li><Link to="/services/shipping-containerization/" className="text-sm text-background/70 hover:text-background transition-colors">Logistics</Link></li>
+                <li><Link to="/services/installment-plans/" className="text-sm text-background/70 hover:text-background transition-colors">Installment Plans</Link></li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-xs font-mono tracking-[0.2em] uppercase text-background/40 mb-4">
-                Imports
+                Resources
               </h4>
               <ul className="space-y-2">
-                <li><span className="text-sm text-background/70">Luxury Vehicles</span></li>
-                <li><span className="text-sm text-background/70">Commercial Vehicles</span></li>
-                <li><a href="https://leeplugshub.com" className="text-sm text-background/70 hover:text-background">Gadgets & Phones</a></li>
-                <li><span className="text-sm text-background/70">Heavy Duty Trucks</span></li>
+                <li><Link to="/about/" className="text-sm text-background/70 hover:text-background transition-colors">About Us</Link></li>
+                <li><Link to="/faq/" className="text-sm text-background/70 hover:text-background transition-colors">FAQ Hub</Link></li>
+                <li><Link to="/guides/" className="text-sm text-background/70 hover:text-background transition-colors">Import Guides</Link></li>
+                <li><Link to="/blog/" className="text-sm text-background/70 hover:text-background transition-colors">Technical Blog</Link></li>
               </ul>
             </div>
 
             <div className="col-span-2 sm:col-span-1">
               <h4 className="text-xs font-mono tracking-[0.2em] uppercase text-background/40 mb-4">
-                Legal
+                Regional Hubs
               </h4>
               <ul className="space-y-2">
-                <li><button className="text-sm text-background/70 hover:text-background transition-colors">Privacy Policy</button></li>
-                <li><button className="text-sm text-background/70 hover:text-background transition-colors">Terms of Use</button></li>
-                <li><button className="text-sm text-background/70 hover:text-background transition-colors">Cookie Policy</button></li>
+                <li><Link to="/nigeria/lagos/" className="text-sm text-background/70 hover:text-background transition-colors">Lagos, Nigeria</Link></li>
+                <li><Link to="/ghana/accra/" className="text-sm text-background/70 hover:text-background transition-colors">Accra, Ghana</Link></li>
+                <li><Link to="/canada/toronto/" className="text-sm text-background/70 hover:text-background transition-colors">Toronto, Canada</Link></li>
+                <li><Link to="/nigeria/import-duty-calculator/" className="text-sm text-background/70 hover:text-[#2B59FF] font-semibold transition-colors">Customs Calculator</Link></li>
               </ul>
             </div>
           </div>
