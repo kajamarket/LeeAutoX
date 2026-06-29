@@ -20,6 +20,7 @@ import VehiclesPage from './pages/VehiclesPage';
 import ServicesPage from './pages/ServicesPage';
 import GuidesPage from './pages/GuidesPage';
 import BlogPage from './pages/BlogPage';
+import LeeAutoPage from './pages/LeeAutoPage';
 
 // Scroll Restoration Helper Component
 function ScrollToTopOnNavigate() {
@@ -63,6 +64,10 @@ export default function App() {
               <Route path="/contact/" element={<ContactPage />} />
               <Route path="/testimonials" element={<TestimonialsPage />} />
               <Route path="/testimonials/" element={<TestimonialsPage />} />
+              
+              {/* Lee Auto Lagos Subsidiary Page */}
+              <Route path="/lee-auto" element={<LeeAutoPage />} />
+              <Route path="/lee-auto/" element={<LeeAutoPage />} />
 
               {/* Sourcing Location Hubs */}
               <Route path="/nigeria" element={<GeoPage />} />

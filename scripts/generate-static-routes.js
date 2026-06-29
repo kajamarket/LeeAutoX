@@ -4,8 +4,8 @@ import path from 'path';
 // Centralized static definition of our 40+ routes for pre-injection (matching seoData.ts)
 const ROUTES_SEO = {
   '/': {
-    title: 'LeeAutoX | Premium Car Sourcing & Shipping USA/Canada to Nigeria',
-    desc: 'Procure luxury cars, SUVs, and trucks from major auto auctions (Copart, IAAI) in the USA/Canada. Secure container shipping, port clearance, and doorstep delivery in Nigeria.',
+    title: 'Car Import from Canada to Nigeria & Ghana | LeeAutoX',
+    desc: 'Source and ship luxury cars, SUVs, and trucks from top Canadian and US auctions directly to Lagos, Nigeria or Accra, Ghana. Installment plans, full port clearance, doorstep delivery.',
     keywords: 'car sourcing, copart cars, shipping cars to nigeria, import cars from canada, luxury car procurement lagos, tokunbo cars',
     schema: {
       '@context': 'https://schema.org',
@@ -16,8 +16,8 @@ const ROUTES_SEO = {
     }
   },
   '/about/': {
-    title: 'About LeeAutoX | Trusted North American Vehicle Exporters',
-    desc: 'Learn about LeeAutoX, a fully registered Canadian corporation (No: 1761065-3) specializing in buying, shipping, and clearing vehicles for clients in Nigeria and across West Africa.',
+    title: 'Vehicle Exporters in Lagos Nigeria & Ontario Canada | About LeeAutoX',
+    desc: 'LeeAutoX is a registered Canadian corporation (No: 1761065-3) with operations in Lagos, Nigeria. Specialising in vehicle sourcing, containerisation, and customs clearance for West African buyers.',
     keywords: 'leeautox registered, car exporters canada, buy car from canada to nigeria, professional car procurement, emeka okonkwo car',
     schema: {
       '@context': 'https://schema.org',
@@ -30,8 +30,8 @@ const ROUTES_SEO = {
     }
   },
   '/how-it-works/': {
-    title: 'How It Works | Sourcing and Shipping Process | LeeAutoX',
-    desc: 'Discover our step-by-step vehicle import flow: from custom requests, vehicle verification, and bidding on dealer-only auctions to containerized ocean shipping and customs clearance in Lagos.',
+    title: 'How to Import Cars from Canada to Nigeria | LeeAutoX',
+    desc: 'Step-by-step guide to importing a car from Canada or USA to Nigeria. From auction bidding and VIN inspection to container shipping and Lagos port clearance.',
     keywords: 'how to import car, copart bidding process, marine containerization process, apapa port clearance',
     schema: {
       '@context': 'https://schema.org',
@@ -40,8 +40,8 @@ const ROUTES_SEO = {
     }
   },
   '/faq/': {
-    title: 'FAQ | Vehicle Importation & Customs Clearance Questions',
-    desc: 'Frequently asked questions regarding buying vehicles from North American auctions, ocean transit times, customs duty payments in Nigeria, and flexible installment plans.',
+    title: 'Car Import FAQ for Nigeria & Ghana Buyers | LeeAutoX',
+    desc: 'Answers to the most common questions about importing vehicles from Canada to Nigeria and Ghana. Shipping times, customs duty, installment plans, and port clearance explained.',
     keywords: 'car import faq, car shipping cost, customs clear cost nigeria, copart auction safety',
     schema: {
       '@context': 'https://schema.org',
@@ -132,8 +132,8 @@ const ROUTES_SEO = {
   },
   // VEHICLES
   '/vehicles/': {
-    title: 'Car Catalogue | Direct Pre-Order & Luxury Imports | LeeAutoX',
-    desc: 'Browse our catalogue of verified cars, SUVs, and commercial vehicles. Choose from custom auction pre-orders or on-ground Tokunbo cars cleared in Lagos.',
+    title: 'Cars for Sale | Nigeria & Ghana Delivery | LeeAutoX',
+    desc: 'Browse pre-order and on-ground vehicles sourced from North American auctions. Luxury cars, family SUVs, and commercial trucks with delivery to Lagos, Abuja, Accra, and Kumasi.',
     keywords: 'imported cars for sale, hyundai sonata price, buy clean car nigeria, tokunbo suv listing'
   },
   '/vehicles/luxury-cars/': {
@@ -163,8 +163,8 @@ const ROUTES_SEO = {
   },
   // SERVICES
   '/services/': {
-    title: 'Import Services | Sourcing, Shipping & Installments | LeeAutoX',
-    desc: 'Explore our multi-channel auto import services. We cover vehicle sourcing, premium containerized ocean shipping, customs clearance, and flexible payment options.',
+    title: 'Car Import Services in Nigeria & Ghana | LeeAutoX',
+    desc: 'End-to-end vehicle import services for Nigerian and Ghanaian buyers. Auction sourcing, ocean containerisation, customs clearance in Lagos, and flexible Naira installment plans.',
     keywords: 'car import service, secure shipping, installment cars nigeria, global vehicle logistics'
   },
   '/services/vehicle-sourcing/': {
@@ -189,8 +189,8 @@ const ROUTES_SEO = {
   },
   // GUIDES
   '/guides/': {
-    title: 'Vehicle Importing Guides | Sourcing & Clearance Tutorials | LeeAutoX',
-    desc: 'Expert, highly technical guides on bidding, inspecting, shipping, and clearing passenger and commercial vehicles from North America to West Africa.',
+    title: 'Car Import Guides for Nigeria & Ghana | LeeAutoX',
+    desc: 'Comprehensive importing guides for first-time buyers, importers, dealers, and diaspora customers. Covers auctions, shipping, port clearance, and tokunbo vehicle buying in Nigeria and Ghana.',
     keywords: 'import tutorials, copart bidding course, clearing vehicles handbook, tokunbo car import guides'
   },
   '/guides/import-car-canada-to-nigeria/': {
@@ -199,8 +199,8 @@ const ROUTES_SEO = {
     keywords: 'how to import car from canada to nigeria, shipping cost toronto to lagos, vehicle clearing steps'
   },
   '/guides/tokunbo-buyers-guide/': {
-    title: 'Tokunbo Cars Complete Buyers Guide 2026 | LeeAutoX',
-    desc: 'Complete 2026 tokunbo buyers guide for Nigeria. Learn how to buy a clean tokunbo car and import safely with LeeAutoX. Check prices now!',
+    title: 'Tokunbo Buyers Guide 2026 in Nigeria | LeeAutoX',
+    desc: 'Complete 2026 guide to buying a tokunbo car in Nigeria. Inspection tips, price ranges in Naira, best brands, and how LeeAutoX sources clean tokunbo vehicles from Canadian auctions.',
     keywords: 'tokunbo car guide lagos, check car mileage nigeria, flood damage salvage, buy cheap cars berger'
   },
   '/guides/vehicle-clearing-process-nigeria/': {
@@ -235,8 +235,8 @@ const ROUTES_SEO = {
   },
   // BLOG
   '/blog/': {
-    title: 'Auto Logistics & Auction Bid Blog | LeeAutoX Insights',
-    desc: 'Stay updated on automotive import trends, ocean container shipping fee updates, and expert auction tips from the LeeAutoX leadership team.',
+    title: 'Car Import Blog for Nigeria & Ghana | LeeAutoX',
+    desc: 'Expert articles on tokunbo cars, auction bidding, shipping costs to Lagos, customs duty, and vehicle import trends for Nigerian and Ghanaian buyers.',
     keywords: 'car logistics blog, shipping cost news nigeria, copart bid winning secrets, tokunbo car import trends'
   },
   '/blog/how-to-buy-clean-title-salvage-copart/': {
@@ -253,6 +253,26 @@ const ROUTES_SEO = {
     title: 'Toyota vs. Hyundai: Battle of Durability on Nigerian Roads | LeeAutoX',
     desc: 'An expert comparison of Toyota and Hyundai durability, maintenance, fuel efficiency, and resale value on Nigerian terrain. Find your perfect ride.',
     keywords: 'toyota vs hyundai nigeria, car durability, maintenance costs, resale value nigeria'
+  },
+  '/blog/best-tokunbo-suvs-nigeria-2026/': {
+    title: 'Best Tokunbo SUVs to Buy in Nigeria 2026 | LeeAutoX',
+    desc: 'Ranked list of the top 7 tokunbo SUVs to buy in Nigeria in 2026. Explore Naira price ranges, reliability ratings, parts availability, and fuel efficiency comparisons.',
+    keywords: 'best tokunbo SUV nigeria 2026, buy used SUV lagos, tokunbo toyota prado price nigeria'
+  },
+  '/blog/shipping-car-canada-nigeria-complete-guide-2026/': {
+    title: 'Shipping a Car from Canada to Nigeria in 2026 | Complete Guide | LeeAutoX',
+    desc: 'The definitive 2026 guide to shipping a car from Canada to Nigeria. Learn about port-to-port routes, container freight options, documentation, and total shipping costs.',
+    keywords: 'shipping car from canada to nigeria, how long does it take to ship car to nigeria, container shipping cost canada nigeria 2026'
+  },
+  '/blog/how-to-import-car-for-dealers-nigeria/': {
+    title: 'How Nigerian Car Dealers Can Import Vehicles from Canada | LeeAutoX',
+    desc: 'Wholesale vehicle sourcing guide for Nigerian car dealers and fleet operators. Volume bidding, light prep at Lee Auto, multi-car container loading, and dealer financing.',
+    keywords: 'car dealer import canada nigeria, wholesale car sourcing nigeria, fleet procurement canada africa'
+  },
+  '/lee-auto/': {
+    title: 'Lee Auto Nigeria | Dealer Car Servicing & Inspection in Lagos | LeeAutoX',
+    desc: 'Lee Auto is the dealer-facing vehicle servicing division of LeeAutoX in Lagos, Nigeria. Pre-sale inspections, light mechanical prep, cosmetic detailing, and VIN verification for imported vehicles.',
+    keywords: 'lee auto nigeria, lee auto lagos, lee autos nigeria, car servicing for dealers lagos, vehicle inspection lagos, imported car servicing nigeria'
   }
 };
 

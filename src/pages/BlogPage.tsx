@@ -54,6 +54,49 @@ const BLOG_CONTENT: Record<string, {
       'Maintenance and Spare Part Availability: Both brands are highly supported in West Africa. Toyota spare parts are universal, sold in every major market across Lagos (from Ladipo to Berger). Hyundai parts are equally accessible and often represent more affordable purchase pricing, giving Hyundai excellent secondary cost-to-benefit ratios.',
       'Resale Value: Toyota holds its value tenaciously in the local used car market. However, Hyundai Sonatas (specifically 2011 to 2021) are closing the gap, offering high-spec cabins (panoramic sunroofs, 360-degree cameras) at millions of Naira less than corresponding Toyotas, representing excellent initial value for modern buyers.'
     ]
+  },
+  '/blog/best-tokunbo-suvs-nigeria-2026/': {
+    title: 'Best Tokunbo SUVs to Buy in Nigeria 2026',
+    author: 'LeeAutoX Sourcing Desk',
+    readTime: '10 min read',
+    date: 'May 15, 2026',
+    category: 'Reviews',
+    summary: 'An expert, ranked guide to the top 7 foreign-used (Tokunbo) SUVs for Nigerian roads in 2026. Explore pricing in Naira, maintenance costs, and fuel efficiency comparisons.',
+    paragraphs: [
+      'When looking to buy used SUV lagos or elsewhere in Nigeria, choosing the right model requires balancing luxury, suspension durability, and parts availability. Based on actual shipping volumes and dealer sales data, we have compiled the definitive list of the best Tokunbo SUVs for 2026.',
+      '1. Toyota Prado (The King of Nigerian Terrains). Known for its bulletproof V6 engine and massive ground clearance, the tokunbo toyota prado price nigeria is a premium investment that holds its value tenaciously. It handles flooded streets and potholes with ease.',
+      '2. Lexus RX350 (Unmatched Luxury and Reliability). The RX350 remains the best tokunbo SUV nigeria 2026 for drivers who want premium executive comfort without high maintenance costs. It shares powertrain parts with Toyota, making servicing extremely cheap.',
+      '3. Toyota Highlander & RAV4. Excellent mid-sized options that offer high fuel efficiency and easy daily drivability. To see how these compare mechanically with other brands, check out our comprehensive Toyota vs. Hyundai comparison.',
+      'Before purchasing any vehicle, we highly recommend utilizing our physical diagnostic guidelines in the Copart Pre-Purchase 150-Point Inspection Checklist to ensure you do not buy a water-damaged or mileage-tampered unit.'
+    ]
+  },
+  '/blog/shipping-car-canada-nigeria-complete-guide-2026/': {
+    title: 'Shipping a Car from Canada to Nigeria in 2026 | Complete Guide',
+    author: 'LeeAutoX Logistics Desk',
+    readTime: '11 min read',
+    date: 'June 2, 2026',
+    category: 'Shipping',
+    summary: 'The definitive 2026 handbook for shipping cars from Canadian terminals to Lagos ports. Discover transit times, container consolidation secrets, and how to estimate total clearing fees.',
+    paragraphs: [
+      'Are you planning on shipping car from canada to nigeria in 2026? Navigating the international marine freight pipeline requires understanding cost parameters, documentation, and customs valuation checks.',
+      'How long does it take to ship car to nigeria? Ocean transit from Montreal or Halifax terminals to Lagos PTML or Tin Can Island typically takes between 28 to 42 days, depending on sea weather and shipping line routing. Once the vessel docks, expect 5 to 7 days for physical port offloading and custom clearance.',
+      'Let\'s break down container shipping cost canada nigeria 2026. Splicing multiple vehicles inside a 40ft high-cube cargo container is the safest and most cost-effective method. It protects your premium cars from marine salt spray and transit scratches. To estimate your landing and port clearance duty fees, you can use our interactive Nigeria Custom Car Import Duty Calculator 2026.',
+      'To guarantee an absolute legally cleared vehicle, always verify your Customs Single Goods Declaration (SGD) papers. Our guide on Chassis VIN and Custom Verification Guide Nigeria provides step-by-step instructions on verifying customs records on the NCS portal.'
+    ]
+  },
+  '/blog/how-to-import-car-for-dealers-nigeria/': {
+    title: 'How Nigerian Car Dealers Can Import Vehicles from Canada',
+    author: 'LeeAutoX Dealer Services Division',
+    readTime: '12 min read',
+    date: 'June 10, 2026',
+    category: 'Dealer Operations',
+    summary: 'A high-volume wholesale procurement guide for Nigerian car dealers and fleet operators. Learn how to source vehicles from Canadian auctions, utilize Lee Auto Lagos for pre-sale prep, and access bulk shipping discounts.',
+    paragraphs: [
+      'For professional car dealer import canada nigeria operations, maximizing showroom profit margins requires an efficient, wholesale sourcing and logistics pipeline. This guide outlines how volume dealers leverage Copart and IAAI auctions to source high-demand Tokunbo inventory.',
+      'Step 1: Direct Bidding on Canadian Dealer Auctions. Buying in bulk from Toronto or Scarborough auctions allows dealers to secure cars at true dealer cost. Working with a licensed exporter like LeeAutoX avoids steep retail markups.',
+      'Step 2: Lagos Servicing and Preparation. Upon container arrival in Lagos, vehicles undergo transit-grime detailing and mechanical diagnostics. This is where our dealer-facing Lagos subsidiary, Lee Auto Nigeria, provides critical pre-sale inspections, cosmetic polishing, and NCS VIN clearing verification.',
+      'Step 3: Flexible Fleet Sourcing & Splicing. Dealers can load up to four sedans inside a single 40ft high-cube container to minimize freight cost per unit. To discuss custom dealer service SLAs or volume transport pricing, get in touch with our team via our Contact Page.'
+    ]
   }
 };
 

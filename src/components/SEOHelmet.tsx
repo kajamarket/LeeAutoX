@@ -61,7 +61,7 @@ export default function SEOHelmet() {
       metaOgImage.setAttribute('property', 'og:image');
       document.head.appendChild(metaOgImage);
     }
-    metaOgImage.setAttribute('content', 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/cropped-LeeAutoX-lcon-1-430x260-1.png');
+    metaOgImage.setAttribute('content', data.defaultImage || 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/cropped-LeeAutoX-lcon-1-430x260-1.png');
 
     let metaOgUrl = document.querySelector('meta[property="og:url"]');
     if (!metaOgUrl) {
@@ -94,6 +94,47 @@ export default function SEOHelmet() {
       document.head.appendChild(metaOgDesc);
     }
     metaOgDesc.setAttribute('content', data.description);
+
+    // 7. Update Twitter Card tags dynamically
+    let metaTwitterCard = document.querySelector('meta[name="twitter:card"]');
+    if (!metaTwitterCard) {
+      metaTwitterCard = document.createElement('meta');
+      metaTwitterCard.setAttribute('name', 'twitter:card');
+      document.head.appendChild(metaTwitterCard);
+    }
+    metaTwitterCard.setAttribute('content', 'summary_large_image');
+
+    let metaTwitterTitle = document.querySelector('meta[name="twitter:title"]');
+    if (!metaTwitterTitle) {
+      metaTwitterTitle = document.createElement('meta');
+      metaTwitterTitle.setAttribute('name', 'twitter:title');
+      document.head.appendChild(metaTwitterTitle);
+    }
+    metaTwitterTitle.setAttribute('content', data.twitterTitle || data.ogTitle || data.title);
+
+    let metaTwitterDesc = document.querySelector('meta[name="twitter:description"]');
+    if (!metaTwitterDesc) {
+      metaTwitterDesc = document.createElement('meta');
+      metaTwitterDesc.setAttribute('name', 'twitter:description');
+      document.head.appendChild(metaTwitterDesc);
+    }
+    metaTwitterDesc.setAttribute('content', data.twitterDescription || data.ogDescription || data.description);
+
+    let metaTwitterImage = document.querySelector('meta[name="twitter:image"]');
+    if (!metaTwitterImage) {
+      metaTwitterImage = document.createElement('meta');
+      metaTwitterImage.setAttribute('name', 'twitter:image');
+      document.head.appendChild(metaTwitterImage);
+    }
+    metaTwitterImage.setAttribute('content', data.defaultImage || 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/cropped-LeeAutoX-lcon-1-430x260-1.png');
+
+    let metaTwitterSite = document.querySelector('meta[name="twitter:site"]');
+    if (!metaTwitterSite) {
+      metaTwitterSite = document.createElement('meta');
+      metaTwitterSite.setAttribute('name', 'twitter:site');
+      document.head.appendChild(metaTwitterSite);
+    }
+    metaTwitterSite.setAttribute('content', '@leeautox');
 
     // Cleanup logic (optional, keep schema on unmount or let next route overwrite)
   }, [pathname]);

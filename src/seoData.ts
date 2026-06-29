@@ -8,12 +8,27 @@ export interface SEOPageData {
   heading: string;
   subheading?: string;
   richContent?: string; // Markdown or HTML-like text
+  primaryKeyword: string;
+  secondaryKeywords: string[];
+  geoTarget: string[];
+  entityTarget: string;
+  schemaType: string;
+  ogTitle: string;
+  ogDescription: string;
+  twitterTitle: string;
+  twitterDescription: string;
+  defaultImage: string;
+  lastUpdated: string;
+  relatedGuides?: string[];
+  internalLinks?: { anchor: string; href: string }[];
+  audienceTarget?: string[];
+  commercialIntent?: 'high' | 'medium' | 'low' | 'informational';
 }
 
-export const SEO_DATA: Record<string, SEOPageData> = {
+export const RAW_SEO_DATA: Record<string, any> = {
   '/': {
-    title: 'LeeAutoX | Premium Car Sourcing & Shipping USA/Canada to Nigeria',
-    description: 'Procure luxury cars, SUVs, and trucks from major auto auctions (Copart, IAAI) in the USA/Canada. Secure container shipping, port clearance, and doorstep delivery in Nigeria.',
+    title: 'Car Import from Canada to Nigeria & Ghana | LeeAutoX',
+    description: 'Source and ship luxury cars, SUVs, and trucks from top Canadian and US auctions directly to Lagos, Nigeria or Accra, Ghana. Installment plans, full port clearance, doorstep delivery.',
     keywords: 'car sourcing, copart cars, shipping cars to nigeria, import cars from canada, luxury car procurement lagos, tokunbo cars',
     canonical: 'https://leeautox.com/',
     breadcrumbs: [{ name: 'Home', item: 'https://leeautox.com/' }],
@@ -46,8 +61,8 @@ export const SEO_DATA: Record<string, SEOPageData> = {
     }
   },
   '/about/': {
-    title: 'About LeeAutoX | Trusted North American Vehicle Exporters',
-    description: 'Learn about LeeAutoX, a fully registered Canadian corporation (No: 1761065-3) specializing in buying, shipping, and clearing vehicles for clients in Nigeria and across West Africa.',
+    title: 'Vehicle Exporters in Lagos Nigeria & Ontario Canada | About LeeAutoX',
+    description: 'LeeAutoX is a registered Canadian corporation (No: 1761065-3) with operations in Lagos, Nigeria. Specialising in vehicle sourcing, containerisation, and customs clearance for West African buyers.',
     keywords: 'leeautox registered, car exporters canada, buy car from canada to nigeria, professional car procurement, emeka okonkwo car',
     canonical: 'https://leeautox.com/about/',
     breadcrumbs: [
@@ -75,8 +90,8 @@ export const SEO_DATA: Record<string, SEOPageData> = {
     }
   },
   '/how-it-works/': {
-    title: 'How It Works | Sourcing and Shipping Process | LeeAutoX',
-    description: 'Discover our step-by-step vehicle import flow: from custom requests, vehicle verification, and bidding on dealer-only auctions to containerized ocean shipping and customs clearance in Lagos.',
+    title: 'How to Import Cars from Canada to Nigeria | LeeAutoX',
+    description: 'Step-by-step guide to importing a car from Canada or USA to Nigeria. From auction bidding and VIN inspection to container shipping and Lagos port clearance.',
     keywords: 'how to import car, copart bidding process, marine containerization process, apapa port clearance',
     canonical: 'https://leeautox.com/how-it-works/',
     breadcrumbs: [
@@ -118,8 +133,8 @@ export const SEO_DATA: Record<string, SEOPageData> = {
     }
   },
   '/faq/': {
-    title: 'FAQ | Vehicle Importation & Customs Clearance Questions',
-    description: 'Frequently asked questions regarding buying vehicles from North American auctions, ocean transit times, customs duty payments in Nigeria, and flexible installment plans.',
+    title: 'Car Import FAQ for Nigeria & Ghana Buyers | LeeAutoX',
+    description: 'Answers to the most common questions about importing vehicles from Canada to Nigeria and Ghana. Shipping times, customs duty, installment plans, and port clearance explained.',
     keywords: 'car import faq, car shipping cost, customs clear cost nigeria, copart auction safety',
     canonical: 'https://leeautox.com/faq/',
     breadcrumbs: [
@@ -474,8 +489,8 @@ export const SEO_DATA: Record<string, SEOPageData> = {
   },
   // VEHICLES HUBS
   '/vehicles/': {
-    title: 'Car Catalogue | Direct Pre-Order & Luxury Imports | LeeAutoX',
-    description: 'Browse our catalogue of verified cars, SUVs, and commercial vehicles. Choose from custom auction pre-orders or on-ground Tokunbo cars cleared in Lagos.',
+    title: 'Cars for Sale | Nigeria & Ghana Delivery | LeeAutoX',
+    description: 'Browse pre-order and on-ground vehicles sourced from North American auctions. Luxury cars, family SUVs, and commercial trucks with delivery to Lagos, Abuja, Accra, and Kumasi.',
     keywords: 'imported cars for sale, hyundai sonata price, buy clean car nigeria, tokunbo suv listing',
     canonical: 'https://leeautox.com/vehicles/',
     breadcrumbs: [
@@ -576,8 +591,8 @@ export const SEO_DATA: Record<string, SEOPageData> = {
   },
   // SERVICES HUBS
   '/services/': {
-    title: 'Import Services | Sourcing, Shipping & Installments | LeeAutoX',
-    description: 'Explore our multi-channel auto import services. We cover vehicle sourcing, premium containerized ocean shipping, customs clearance, and flexible payment options.',
+    title: 'Car Import Services in Nigeria & Ghana | LeeAutoX',
+    description: 'End-to-end vehicle import services for Nigerian and Ghanaian buyers. Auction sourcing, ocean containerisation, customs clearance in Lagos, and flexible Naira installment plans.',
     keywords: 'car import service, secure shipping, installment cars nigeria, global vehicle logistics',
     canonical: 'https://leeautox.com/services/',
     breadcrumbs: [
@@ -670,8 +685,8 @@ export const SEO_DATA: Record<string, SEOPageData> = {
   },
   // GUIDES HUBS
   '/guides/': {
-    title: 'Vehicle Importing Guides | Sourcing & Clearance Tutorials | LeeAutoX',
-    description: 'Expert, highly technical guides on bidding, inspecting, shipping, and clearing passenger and commercial vehicles from North America to West Africa.',
+    title: 'Car Import Guides for Nigeria & Ghana | LeeAutoX',
+    description: 'Comprehensive importing guides for first-time buyers, importers, dealers, and diaspora customers. Covers auctions, shipping, port clearance, and tokunbo vehicle buying in Nigeria and Ghana.',
     keywords: 'import tutorials, copart bidding course, clearing vehicles handbook, tokunbo car import guides',
     canonical: 'https://leeautox.com/guides/',
     breadcrumbs: [
@@ -708,8 +723,8 @@ export const SEO_DATA: Record<string, SEOPageData> = {
     }
   },
   '/guides/tokunbo-buyers-guide/': {
-    title: 'Tokunbo Cars Complete Buyers Guide 2026 | LeeAutoX',
-    description: 'Complete 2026 tokunbo buyers guide for Nigeria. Learn how to buy a clean tokunbo car and import safely with LeeAutoX. Check prices now!',
+    title: 'Tokunbo Buyers Guide 2026 in Nigeria | LeeAutoX',
+    description: 'Complete 2026 guide to buying a tokunbo car in Nigeria. Inspection tips, price ranges in Naira, best brands, and how LeeAutoX sources clean tokunbo vehicles from Canadian auctions.',
     keywords: 'tokunbo car guide lagos, check car mileage nigeria, flood damage salvage, buy cheap cars berger',
     canonical: 'https://leeautox.com/guides/tokunbo-buyers-guide/',
     breadcrumbs: [
@@ -856,8 +871,8 @@ export const SEO_DATA: Record<string, SEOPageData> = {
   },
   // BLOG
   '/blog/': {
-    title: 'Auto Logistics & Auction Bid Blog | LeeAutoX Insights',
-    description: 'Stay updated on automotive import trends, ocean container shipping fee updates, and expert auction tips from the LeeAutoX leadership team.',
+    title: 'Car Import Blog for Nigeria & Ghana | LeeAutoX',
+    description: 'Expert articles on tokunbo cars, auction bidding, shipping costs to Lagos, customs duty, and vehicle import trends for Nigerian and Ghanaian buyers.',
     keywords: 'car logistics blog, shipping cost news nigeria, copart bid winning secrets, tokunbo car import trends',
     canonical: 'https://leeautox.com/blog/',
     breadcrumbs: [
@@ -937,5 +952,194 @@ export const SEO_DATA: Record<string, SEOPageData> = {
         'name': 'LeeAutoX Review Team'
       }
     }
+  },
+  '/blog/best-tokunbo-suvs-nigeria-2026/': {
+    title: 'Best Tokunbo SUVs to Buy in Nigeria 2026 | LeeAutoX',
+    description: 'Ranked list of the top 7 tokunbo SUVs to buy in Nigeria in 2026. Explore Naira price ranges, reliability ratings, parts availability, and fuel efficiency comparisons.',
+    keywords: 'best tokunbo SUV nigeria 2026, buy used SUV lagos, tokunbo toyota prado price nigeria',
+    canonical: 'https://leeautox.com/blog/best-tokunbo-suvs-nigeria-2026/',
+    breadcrumbs: [
+      { name: 'Home', item: 'https://leeautox.com/' },
+      { name: 'Blog', item: 'https://leeautox.com/blog/' },
+      { name: 'Best Tokunbo SUVs 2026', item: 'https://leeautox.com/blog/best-tokunbo-suvs-nigeria-2026/' }
+    ],
+    heading: 'Top 7 Best Tokunbo SUVs to Buy in Nigeria (2026 Rankings)',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      'headline': 'Best Tokunbo SUVs to Buy in Nigeria 2026',
+      'author': {
+        '@type': 'Organization',
+        'name': 'LeeAutoX Content Team'
+      }
+    }
+  },
+  '/blog/shipping-car-canada-nigeria-complete-guide-2026/': {
+    title: 'Shipping a Car from Canada to Nigeria in 2026 | Complete Guide | LeeAutoX',
+    description: 'The definitive 2026 guide to shipping a car from Canada to Nigeria. Learn about port-to-port routes, container freight options, documentation, and total shipping costs.',
+    keywords: 'shipping car from canada to nigeria, how long does it take to ship car to nigeria, container shipping cost canada nigeria 2026',
+    canonical: 'https://leeautox.com/blog/shipping-car-canada-nigeria-complete-guide-2026/',
+    breadcrumbs: [
+      { name: 'Home', item: 'https://leeautox.com/' },
+      { name: 'Blog', item: 'https://leeautox.com/blog/' },
+      { name: 'Shipping Guide 2026', item: 'https://leeautox.com/blog/shipping-car-canada-nigeria-complete-guide-2026/' }
+    ],
+    heading: 'Shipping a Car from Canada to Nigeria: The Definitive 2026 Logistics Manual',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      'headline': 'Shipping a Car from Canada to Nigeria in 2026',
+      'author': {
+        '@type': 'Organization',
+        'name': 'LeeAutoX Sourcing Team'
+      }
+    }
+  },
+  '/blog/how-to-import-car-for-dealers-nigeria/': {
+    title: 'How Nigerian Car Dealers Can Import Vehicles from Canada | LeeAutoX',
+    description: 'Wholesale vehicle sourcing guide for Nigerian car dealers and fleet operators. Volume bidding, light prep at Lee Auto, multi-car container loading, and dealer financing.',
+    keywords: 'car dealer import canada nigeria, wholesale car sourcing nigeria, fleet procurement canada africa',
+    canonical: 'https://leeautox.com/blog/how-to-import-car-for-dealers-nigeria/',
+    breadcrumbs: [
+      { name: 'Home', item: 'https://leeautox.com/' },
+      { name: 'Blog', item: 'https://leeautox.com/blog/' },
+      { name: 'Dealer Sourcing Guide', item: 'https://leeautox.com/blog/how-to-import-car-for-dealers-nigeria/' }
+    ],
+    heading: 'The Wholesale Car Sourcing Manual for Nigerian Automotive Dealers',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      'headline': 'How Nigerian Car Dealers Can Import Vehicles from Canada',
+      'author': {
+        '@type': 'Organization',
+        'name': 'LeeAutoX B2B Team'
+      }
+    }
+  },
+  '/lee-auto/': {
+    title: 'Lee Auto Nigeria | Dealer Car Servicing & Inspection in Lagos | LeeAutoX',
+    description: 'Lee Auto is the dealer-facing vehicle servicing division of LeeAutoX in Lagos, Nigeria. Pre-sale inspections, light mechanical prep, cosmetic detailing, and VIN verification for imported vehicles.',
+    keywords: 'lee auto nigeria, lee auto lagos, lee autos nigeria, car servicing for dealers lagos, vehicle inspection lagos, imported car servicing nigeria',
+    canonical: 'https://leeautox.com/lee-auto/',
+    breadcrumbs: [
+      { name: 'Home', item: 'https://leeautox.com/' },
+      { name: 'Lee Auto Nigeria', item: 'https://leeautox.com/lee-auto/' }
+    ],
+    heading: 'Lee Auto Nigeria — Vehicle Servicing for Dealers in Lagos',
+    primaryKeyword: 'lee auto nigeria',
+    secondaryKeywords: ['lee auto lagos', 'lee autos nigeria', 'car servicing for dealers lagos', 'vehicle inspection lagos', 'imported car servicing nigeria'],
+    geoTarget: ['Lagos', 'Nigeria'],
+    commercialIntent: 'high',
+    audienceTarget: ['dealer', 'importer'],
+    schema: {
+      '@context': 'https://schema.org',
+      '@type': 'LocalBusiness',
+      'name': 'Lee Auto',
+      'address': {
+        '@type': 'PostalAddress',
+        'addressLocality': 'Lagos',
+        'addressCountry': 'NG'
+      },
+      'parentOrganization': {
+        'name': 'LeeAutoX',
+        'url': 'https://leeautox.com'
+      }
+    }
   }
 };
+
+export const SEO_DATA: Record<string, SEOPageData> = {};
+
+for (const [route, data] of Object.entries(RAW_SEO_DATA)) {
+  const primaryKeyword = data.primaryKeyword || (data.keywords ? data.keywords.split(',')[0].trim() : 'car import');
+  const secondaryKeywords = data.secondaryKeywords || (data.keywords ? data.keywords.split(',').slice(1).map((k: string) => k.trim()) : []);
+  
+  let geoTarget = data.geoTarget || [];
+  if (geoTarget.length === 0) {
+    const rLower = route.toLowerCase();
+    if (rLower.includes('nigeria') || rLower.includes('lagos') || rLower.includes('abuja') || rLower.includes('port-harcourt')) {
+      geoTarget = ['Nigeria'];
+    } else if (rLower.includes('ghana') || rLower.includes('accra') || rLower.includes('kumasi')) {
+      geoTarget = ['Ghana'];
+    } else if (rLower.includes('canada') || rLower.includes('toronto') || rLower.includes('scarborough') || rLower.includes('ontario')) {
+      geoTarget = ['Canada'];
+    } else {
+      geoTarget = ['Canada', 'Nigeria', 'Ghana'];
+    }
+  }
+
+  const entityTarget = data.entityTarget || data.heading || data.title.split('|')[0].trim();
+  
+  let schemaType = data.schemaType || 'WebPage';
+  if (data.schema && data.schema['@type']) {
+    schemaType = data.schema['@type'];
+  } else if (data.schema && data.schema['@graph']) {
+    const graphType = data.schema['@graph'].find((item: any) => item['@type'])?.[ '@type' ];
+    if (graphType) schemaType = graphType;
+  }
+
+  const ogTitle = data.ogTitle || data.title;
+  const ogDescription = data.ogDescription || data.description;
+  const twitterTitle = data.twitterTitle || data.title;
+  const twitterDescription = data.twitterDescription || data.description;
+  const defaultImage = data.defaultImage || 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/cropped-LeeAutoX-lcon-1-430x260-1.png';
+  const lastUpdated = data.lastUpdated || '2026-06-29';
+
+  let commercialIntent: 'high' | 'medium' | 'low' | 'informational' = data.commercialIntent;
+  if (!commercialIntent) {
+    const rLower = route.toLowerCase();
+    if (
+      rLower.includes('/vehicles') || 
+      rLower.includes('/contact') || 
+      rLower.includes('/import-duty-calculator') || 
+      rLower.includes('/services') ||
+      rLower.includes('/lee-auto')
+    ) {
+      commercialIntent = 'high';
+    } else if (
+      rLower.includes('/nigeria') || 
+      rLower.includes('/ghana') || 
+      rLower.includes('/canada')
+    ) {
+      commercialIntent = 'medium';
+    } else if (
+      rLower.includes('/guides') || 
+      rLower.includes('/blog')
+    ) {
+      commercialIntent = 'informational';
+    } else {
+      commercialIntent = 'low';
+    }
+  }
+
+  let audienceTarget = data.audienceTarget;
+  if (!audienceTarget) {
+    const rLower = route.toLowerCase();
+    if (rLower.includes('/guides') || rLower.includes('/blog')) {
+      audienceTarget = ['first-time-buyer', 'importer'];
+    } else if (rLower.includes('/lee-auto')) {
+      audienceTarget = ['dealer', 'importer'];
+    } else {
+      audienceTarget = ['first-time-buyer', 'diaspora', 'dealer'];
+    }
+  }
+
+  SEO_DATA[route] = {
+    ...data,
+    primaryKeyword,
+    secondaryKeywords,
+    geoTarget,
+    entityTarget,
+    schemaType,
+    ogTitle,
+    ogDescription,
+    twitterTitle,
+    twitterDescription,
+    defaultImage,
+    lastUpdated,
+    commercialIntent,
+    audienceTarget,
+    relatedGuides: data.relatedGuides || [],
+    internalLinks: data.internalLinks || []
+  };
+}

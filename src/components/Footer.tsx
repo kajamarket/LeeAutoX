@@ -70,6 +70,7 @@ export default function Footer() {
                 <li><Link to="/vehicles/pre-order/" className="text-sm text-background/70 hover:text-background transition-colors">Pre-Orders</Link></li>
                 <li><Link to="/services/shipping-containerization/" className="text-sm text-background/70 hover:text-background transition-colors">Logistics</Link></li>
                 <li><Link to="/services/installment-plans/" className="text-sm text-background/70 hover:text-background transition-colors">Installment Plans</Link></li>
+                <li><Link to="/lee-auto/" className="text-sm text-background/70 hover:text-[#2B59FF] font-semibold transition-colors">Lee Auto Lagos</Link></li>
               </ul>
             </div>
 

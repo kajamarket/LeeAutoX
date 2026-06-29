@@ -7,6 +7,7 @@ export const NAV_LINKS: NavLink[] = [
     children: [
       { label: 'What We Offer', href: '/services/' },
       { label: 'How It Works', href: '/how-it-works/' },
+      { label: 'Lee Auto (Lagos)', href: '/lee-auto/' },
     ]
   },
   { label: 'Cars For Sale', href: '/vehicles/' },
