@@ -701,9 +701,9 @@ export const RAW_SEO_DATA: Record<string, any> = {
     }
   },
   '/guides/import-car-canada-to-nigeria/': {
-    title: 'Ultimate Guide to Importing Cars from Canada to Nigeria | LeeAutoX',
-    description: 'The complete step-by-step masterclass on how to buy, strap, containerize, clear, and deliver a vehicle from Canada to Apapa port. Costs, tips, and risks.',
-    keywords: 'how to import car from canada to nigeria, shipping cost toronto to lagos, vehicle clearing steps',
+    title: 'Guide to Shipping to Nigeria from Canada | Importing cars from canada to Nigeria | LeeAutoX',
+    description: '2026 guide on Air Freight from Canada to Nigeria (CN |Ocean shipping From Canada to Nigeria |How to Import cars from CANADA to Nigeria| How to Export to Nigeria from CANADA | Shipping Cars to Nigeria from CANADA |Cargo Shipping to Nigeria from CANADA |Cargo Service to Nigeria from CANADA Shipping to Nigeria from CANADA | clear vehicles from Canada to Nigeria. Get container shipping rates, transit times, and use our custom duty calculator.',
+    keywords: 'how to import car from canada to nigeria, shipping cost toronto to lagos, vehicle clearing steps, air freight canada nigeria, cargo shipping to nigeria',
     canonical: 'https://leeautox.com/guides/import-car-canada-to-nigeria/',
     breadcrumbs: [
       { name: 'Home', item: 'https://leeautox.com/' },
