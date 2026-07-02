@@ -1,469 +1,507 @@
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useLocation, Link } from 'react-router-dom';
+import PageHeader from '../components/PageHeader';
+import ImportDutyCalculator from '../components/ImportDutyCalculator';
+import { SEO_DATA } from '../seoData';
 import { useTheme } from '../context/ThemeContext';
+import { BookOpen, Calendar, User, Clock, ArrowLeft, MessageSquare, ChevronRight } from 'lucide-react';
+import { CONTACT_INFO } from '../constants';
 
-
-interface TimelineStage {
-  stage: string;
+// Detailed Guide Content Map to serve real content
+const GUIDES_CONTENT: Record<string, {
   title: string;
-  description: string;
-  image: string;
-}
+  author: string;
+  readTime: string;
+  date: string;
+  category: string;
+  summary: string;
+  paragraphs: string[];
+}> = {
+  '/guides/import-car-canada-to-nigeria/': {
+    title: 'Ultimate Guide to Importing Cars from Canada to Nigeria',
+    author: 'LeeAutoX Logistics Desk',
+    readTime: '18 min read',
+    date: 'June 29, 2026',
+    category: 'Logistics',
+    summary: 'The complete 2026 masterclass on shipping cars and cargo from Canada to Nigeria. Covers air freight transit times, ocean container pricing (20ft and 40ft), LCL rates, required import documents (Form M, PAAR, SGD), and the full step-by-step process from Toronto auction pickup to Lagos doorstep delivery.',
+    paragraphs: [
+      'Importing a car, personal effects, or commercial cargo from Canada to Nigeria requires navigating a highly complex international logistics pipeline. Whether you are a first-time buyer ordering a single tokunbo vehicle, a diaspora customer sending household goods, or a commercial importer moving fleet trucks, understanding exact shipping costs, transit timelines, and required documentation upfront is the difference between a smooth delivery and an expensive port delay. This guide covers everything: air freight rates, ocean container pricing (20ft and 40ft), Less than Container Load (LCL) options, required documents like Form M and PAAR, prohibited items, and our full five-phase vehicle procurement pipeline from Toronto, Ontario to Lagos, Abuja, Port Harcourt, Enugu, Ibadan, and Owerri.',
 
+      '## Air Freight vs. Ocean Shipping to Nigeria from Canada',
 
-interface VehicleTimeline {
-  id: number;
-  name: string;
-  price: string;
-  stages: TimelineStage[];
-}
+      'When planning how to export to Nigeria from Canada, you must choose between two main logistics pipelines depending on your shipment weight, budget, and urgency:',
 
+      '### 1. Air Freight from Canada to Nigeria (CN)',
 
-export default function DeliveriesTimeline() {
+      'For high-value items, critical automotive spare parts, documentation, or express electronics, Air Freight from Canada to Nigeria represents the ultimate premium option. Standard transit times for air cargo from Toronto or Montreal to Murtala Muhammed International Airport (LOS) in Lagos typically run 3 to 5 business days. Deliveries to other Nigerian states including Abuja, Port Harcourt, Enugu, Ibadan, and Owerri add approximately 2 additional working days for inland distribution. Air freight rates from Canada to Nigeria start from approximately $11 CAD per kilogram for standard cargo. The minimum shipment size for air cargo service is 50kg. This fast cargo service to Nigeria from Canada guarantees absolute cargo security, automated flight tracking, and full customs handling with door-to-door delivery options.',
+
+      '### 2. Ocean Shipping from Canada to Nigeria',
+
+      'For cars, heavy machinery, SUVs, and high-volume commercial inventories, ocean shipping from Canada to Nigeria is the most practical and cost-effective channel. Containers depart from major Canadian ports including Toronto (via Montreal), Halifax, and Vancouver. Standard ocean transit to Lagos ports — PTML, Tin Can Island, and Apapa — takes approximately 3 to 6 weeks (21 to 42 days) depending on the routing and shipping line schedule. Here are the current 2026 ocean container shipping rates from Canada to Nigeria for reference:',
+
+      '- 20ft Full Container Load (FCL): $2,700 to $2,900 CAD (excluding Nigerian customs clearance)\n- 40ft Full Container Load (FCL): $5,300 to $5,500 CAD (excluding Nigerian customs clearance)\n- Less than Container Load (LCL): $80 to $150 CAD per cubic metre (CBM) — ideal for single vehicles or partial loads',
+
+      'Note: These rates are indicative. Container shipping prices fluctuate with global fuel surcharges and shipping line capacity. Contact our logistics desk via WhatsApp for a current live quote. Nigerian customs clearance fees are not included in the above freight rates and are assessed separately at the port of entry. Importers benefit from secure containerization, protecting vehicles and heavy freight from corrosive marine salt spray and transit scratches.',
+
+      '## How to Import Cars from Canada to Nigeria: Step-by-Step Masterclass',
+
+      'If you are looking at shipping cars to Nigeria from Canada, navigating the procurement and delivery pipeline successfully requires following a highly structured five-phase protocol:',
+
+      '### Phase 1: Direct Auction Sourcing and VIN History Audits',
+
+      'The import process starts with licensed broker access to premier dealer-only Canadian auto auctions, including Copart Cookstown, Impact Auto Auctions, and ADESA Toronto. Prior to placing any bids, it is imperative to run a meticulous historical audit via Carfax to verify the vehicle\'s chassis VIN, protecting you from collision-damaged salvage, frame fatigue, and odometer rollback scams.',
+
+      '### Phase 2: Local Flatbed Hauling and Scarborough Consolidation',
+
+      'Once a vehicle is won, our local inland flatbed carrier transports the unit directly to our secure consolidation lot in Scarborough, Ontario. To optimize your container shipping rates, we specialize in high-cube container splicing, safely packing and strapping up to four vehicles inside a single 40ft steel cargo container using heavy-duty industrial nylon straps and bracing blocks.',
+
+      '### Container Options: 20ft vs 40ft vs LCL Shared Container',
+
+      'Choosing the right container type depends on how many vehicles you are shipping and your budget. A standard 20ft container accommodates 2 to 3 average-sized passenger cars (sedans or small SUVs). A 40ft high-cube container can hold up to 4 to 6 vehicles depending on their dimensions, making it the preferred option for dealers ordering multiple units in a single consignment. For buyers importing a single vehicle, we coordinate LCL (Less than Container Load) shared container consolidation, where your car shares space inside a sealed container with other cargo bound for Nigeria. LCL shipping reduces your per-unit cost significantly but may add 1 to 2 weeks to your transit window due to consolidation scheduling. Our Scarborough depot offers complimentary GTA pickup at no additional charge for vehicles located within the Greater Toronto Area prior to container loading.',
+
+      '### Phase 3: Ocean Marine Freight Transit & Tracking',
+
+      'The loaded container is transferred to the terminal in Montreal or Halifax, where it is loaded onto an ocean liner. Importers are issued an official 11-digit ocean container Bill of Lading (BoL) to trace the marine vessel position in real-time as it crosses the Atlantic Ocean toward West Africa.',
+
+      '### Required Import Documents: Form M, PAAR, and CRA Explained',
+
+      'Shipping a vehicle or cargo from Canada to Nigeria requires specific documentation that must be processed before your goods clear at the Lagos port. Failing to prepare these documents in advance is the primary cause of costly port delays and demurrage fees:',
+
+      '- Form M: A mandatory Central Bank of Nigeria (CBN) foreign exchange approval document. It must be opened by a Nigerian bank on behalf of the importer before the vessel departs Canada. Without a valid Form M, your vehicle cannot be legally assessed or released at the port.\n- PAAR (Pre-Arrival Assessment Report): Generated by the Nigeria Customs Service based on the vehicle VIN, model, and year. It establishes the official duty valuation before the ship arrives. Importers without a PAAR face post-arrival delays and potential penalties.\n- CRA (Clean Report of Assessment): Required for commercial cargo and certain vehicle categories. It confirms that the goods have been assessed for quality and compliance before export from Canada.\n- Bill of Lading (BoL): The official marine cargo receipt issued by the shipping line. It is a legally binding document of ownership for your vehicle during ocean transit.',
+
+      'LeeAutoX prepares and coordinates all four documents as part of our end-to-end import pipeline, ensuring your cargo is port-ready before it leaves Canadian waters.',
+
+      '### Phase 4: Nigeria Port Customs Clearance and Valuation',
+
+      'Upon container discharge at Lagos PTML, Tin Can, or Apapa ports, our customs clearing specialists submit the vehicle chassis VIN for official valuation. Estimating your total custom clearing and duty landing fees is simplified using our interactive [Nigeria Custom Car Import Duty Calculator](/nigeria/import-duty-calculator/), which calculates exact tariff duties in Naira based on NCS valuation guidelines. We settle all customs obligations legally and issue an official Single Goods Declaration (SGD) form and bank e-receipts, safeguarding your car from FOU highway checkpoints.',
+
+      '### Phase 5: Lagos Arrival & Specialized Prep Service',
+
+      'After clearing, vehicles are transferred out of the chaotic port environment. For professional car dealers, fleet operators, and buyers demanding perfect turnkey condition on showroom arrival, we coordinate with our dealer-facing vehicle servicing and prep partner, [Lee Auto Lagos](/lee-auto/). While LeeAutoX handles the complex sourcing, containerization, and marine shipping logistics, the Lee Auto Lagos team executes detailed 150-point diagnostic scans, fluid services, cosmetic paint correction, marine grime wash, and custom NCS clearance verifications.',
+
+      '### Items Not Allowed: Prohibited Cargo from Canada to Nigeria',
+
+      'Not all cargo can legally be shipped from Canada to Nigeria. The following categories are prohibited or heavily restricted under Nigerian Customs regulations and Canadian export law:',
+
+      '- Vehicles with Certificate of Destruction (COD) titles — these cannot be legally registered or exported\n- Live or dead animals of any species\n- Firearms, ammunition, rifle scopes, and related weapons and accessories\n- Counterfeit goods of any description\n- Used mattresses, used tyres, and used clothing (classified as restricted imports under Nigerian policy)\n- Hazardous materials and dangerous goods, which require special declarations and are subject to carrier approval',
+
+      'For a comprehensive and current list of restricted items, consult the Nigeria Customs Service website and the Canada Border Services Agency (CBSA) export controls list. LeeAutoX strictly complies with all Nigerian and Canadian import-export regulations. We perform documentation compliance checks on every shipment before loading.',
+
+      '## Cargo Shipping to Nigeria from Canada: Rates, Timing, and Pricing',
+
+      'Our general cargo and vehicle shipping service from Canada to Nigeria is fully structured around volume, weight, container type, and destination city. Whether you are shipping personal luggage, household goods, automotive spare parts, or a fleet of commercial trucks, our logistics desk coordinates volume carrier discounts and multi-unit container consolidation. We offer comprehensive delivery coverage across all major Nigerian cities: Lagos (Apapa and Tin Can Island ports), Abuja (FCT), Port Harcourt (Rivers State), Enugu, Ibadan (Oyo State), and Owerri (Imo State).\n\nTo provide absolute security for your capital during the 3 to 6 week ocean transit window, we offer a unique 50-25-25 Naira installment payment plan for qualified vehicle pre-orders. Pay 50% at auction win to secure your vehicle, 25% at container loading in Scarborough, and the final 25% upon vessel arrival in Lagos — protecting your liquid cash flow across the full import timeline. We offer a highly reliable alternative to standard cargo agents, backed by a fully registered Canadian corporation (No: 1761065-3) and dedicated Lagos clearing hubs. Contact our logistics team via WhatsApp today to request current container shipping quotes, open a Form M consultation, or book air cargo space from Toronto, Montreal, or Vancouver to Lagos, Abuja, or Port Harcourt.',
+
+      '## Frequently Asked Questions: Shipping from Canada to Nigeria',
+
+      '- **How long does shipping take from Canada to Nigeria by sea?** Ocean container transit from Toronto or Montreal to Lagos Apapa port takes approximately 3 to 6 weeks (21 to 42 days) depending on the shipping line and departure port routing.',
+      '- **How long does air freight take from Canada to Nigeria?** Air cargo from Toronto or Montreal to Lagos (Murtala Muhammed Airport) typically arrives in 3 to 5 business days. Deliveries to Abuja, Port Harcourt, and other Nigerian states take approximately 7 working days total.',
+      '- **What is the cost of a 40ft container from Canada to Nigeria?** A 40ft Full Container Load (FCL) from Canada to Lagos ranges from $5,300 to $5,500 CAD in 2026, excluding Nigerian customs clearance fees. A 20ft container ranges from $2,700 to $2,900 CAD.',
+      '- **What documents do I need to import a car from Canada to Nigeria?** You need a Form M (opened at a Nigerian bank before vessel departure), a PAAR (Pre-Arrival Assessment Report from Nigeria Customs), a Bill of Lading from the shipping line, and the vehicle\'s original title document. LeeAutoX handles all documentation coordination as part of our full-service import pipeline.',
+      '- **Can I ship a single car from Canada to Nigeria without a full container?** Yes. LeeAutoX offers LCL (Less than Container Load) shared container options, where your single vehicle is consolidated inside a sealed container with other cargo bound for Nigeria. LCL rates run approximately $80 to $150 CAD per cubic metre and add 1 to 2 weeks to transit time compared to a dedicated container.',
+      '- **Which Canadian ports does LeeAutoX ship from?** We operate primarily out of Toronto (via Montreal) and Halifax on the East Coast. West Coast shipments depart from Vancouver. Our Scarborough, Ontario depot serves as the vehicle consolidation hub before port transfer.',
+      '- **Does LeeAutoX deliver to cities outside Lagos?** Yes. We coordinate inland delivery to Abuja, Port Harcourt, Enugu, Ibadan, and Owerri after port clearance at Lagos PTML, Tin Can Island, or Apapa.'
+    ]
+  },
+  '/guides/tokunbo-buyers-guide/': {
+    title: 'Tokunbo Cars Complete Buyers Guide 2026',
+    author: 'Chief Auto Procurement & Inspection Officer',
+    readTime: '15 min read',
+    date: 'June 24, 2026',
+    category: 'Inspection & Buying',
+    summary: 'The ultimate tokunbo buyers guide for 2026. Avoid costly scams, verify actual mileage, detect hidden flood damage, check auction history, and learn how to source direct from North America.',
+    paragraphs: [
+      'Buying a foreign-used vehicle, popularly known as a "Tokunbo" car in Nigeria, represents a major financial milestone for individuals, families, and businesses alike. Navigating the vibrant but highly unregulated local dealership lots, such as Berger in Lagos, requires deep market wisdom and technical vigilance. Without a structured protocol, buyers face the risk of purchasing cars with rolled-back odometers, hidden frame collision repairs, or severe corrosion. This complete, publish-ready 2026 Tokunbo Buyers Guide equips you with the exact strategies and step-by-step inspection checklists to secure a premium vehicle without overpaying or getting scammed.',
+
+      '## Demystifying the Tokunbo Phenomenon: What It Means and Why It Rules',
+
+      'The word "Tokunbo" is derived from the Yoruba language, literally translating to "born across the sea" or "imported from overseas." In the Nigerian automotive context, it represents high-quality foreign-used vehicles imported from wealthy Western nations—principally Canada and the United States—which have never been registered, driven, or worn down on Nigerian roads. This distinguishes them from "locally used" cars, which have navigated demanding local terrains, inconsistent fuel qualities, and substandard mechanics.',
+
+      'Nigerians overwhelmingly prefer tokunbo cars over local alternatives or brand-new options for several key reasons. Brand-new vehicles (zero mileage) are prohibitively expensive for the middle class due to high excise taxes and severe Naira-to-Dollar exchange rate variations. Conversely, locally-used cars often carry a burden of deferred maintenance and wear-and-tear that degrades their lifespan. A Tokunbo car provides the ideal sweet spot: it represents a vehicle driven on well-maintained foreign highways, maintained with high-grade synthetic lubricants, and subject to strict annual emission and safety standards. When you buy a tokunbo car, you are buying a vehicle with a high percentage of its factory lifecycle intact, ready to serve you reliably for many years.',
+
+      '## Comprehensive Tokunbo Car Inspection Checklist: Step-by-Step Security',
+
+      'Buying a tokunbo vehicle in Nigeria shouldn\'t be a game of chance. By executing a meticulous physical inspection, you can protect your capital. When you are on the ground inspecting a vehicle, adhere strictly to these four core inspectable areas:',
+
+      '### 1. Spotting Odometer Fraud and Verifying True Mileage',
+
+      'Tampering with the odometer (mileage rollback) is one of the most common frauds encountered on Nigerian car lots. Unscrupulous dealers routinely utilize digital diagnostic tools to reprogram instrument clusters, artificially turning a heavily driven 180,000-mile highway workhorse into a highly attractive, premium 72,000-mile vehicle. To uncover odometer fraud, you must look for physical wear indicators that do not match the low mileage on the dashboard:',
+
+      '- Check the rubber brake pedal pad and the accelerator pedal. If they are worn down to the bare metal, the vehicle has likely covered far more than 100,000 miles, regardless of what the odometer reads.\n- Inspect the leather wrapper on the steering wheel, the gear shift lever, and the outer bolsters of the driver\'s seat. High-friction areas show physical cracking, peeling, and discoloration under heavy usage.\n- Cross-examine the physical wear on the door panel armrests and power window buttons. If they are loose or heavily scratched, it is a clear sign of high duty cycles.\n- Always request a Carfax history report or use the vehicle\'s 17-digit VIN to search the original auction history records. Compare the mileage registered at the time of the North American auction sale with the current dashboard reading. Any discrepancy is an immediate red flag.',
+
+      '### 2. Detecting Hidden Flood Damage and Marine Salvage',
+
+      'Many salvage vehicles that have been submerged in severe North American hurricanes or localized flash floods are cosmetically detailed, dried out, and exported to West Africa as "clean title" tokunbo cars. Flood-damaged vehicles carry highly unstable electronic control units (ECUs), corroded wiring harnesses, and mold colonies hidden deep within the ventilation systems. To detect water damage, use your senses:',
+
+      '- Sniff the interior thoroughly. Enter the vehicle, close all doors and windows, and wait for a few minutes. A persistent, musty, damp, or mildew-like smell is a strong indicator of prior water intrusion. Be highly suspicious if the dealer has sprayed heavy artificial deodorizer to mask interior smells.\n- Pull back the flexible rubber seals along the door jams, trunk lid, and firewall. Check for pockets of fine silt, dried mud, or tiny river sand deposits. These are impossible to clean fully during cosmetic detailing.\n- Peer under the dashboard and check the metal bracket screws holding the ECU, steering column, or pedals. If they show premature, flaky orange rust, the interior has been submerged.\n- Inspect the electrical wiring connectors under the front passenger seats. Look for a fine green powdery corrosion on the copper pins, which causes intermittent airbag and ABS warning lights.',
+
+      '### 3. Spotting Snow Belt Corrosion (Salt Damage)',
+
+      'Vehicles sourced out of snowy Canadian provinces (like Ontario or Quebec) or the northern US states navigate road surfaces treated with corrosive salt and calcium chloride during the winter. While modern vehicles feature zinc-coated steel, prolonged salt exposure leads to severe rust damage on structural elements. When conducting a tokunbo car inspection, crawl underneath to verify:',
+
+      '- Inspect the structural subframe rails and engine cradle. Surface rust is normal, but deep, flaky rust that bubbles or causes the metal to disintegrate under thumb pressure compromises structural integrity.\n- Check the exhaust system pipes, mufflers, and catalytic converter welds. Corroded exhausts leak toxic fumes and are expensive to replace in Nigeria.\n- Look at the suspension coil springs, control arms, and brake calipers. If they are heavily encrusted in rust, the suspension will ride stiffly, and bolts may seize during future maintenance.',
+
+      '### 4. Reading Frame and Structure Welds (Accident History)',
+
+      'Many tokunbo cars have prior front-end or rear-end collision histories that were poorly repaired in local workshops prior to export or upon arrival. To verify structural integrity:',
+
+      '- Open the engine hood and inspect the inner fender aprons and radiator core support. Look for irregular welding seams, ripples in the sheet metal, or non-factory paint finishes that suggest a structural replacement.\n- Check the alignment of all exterior body panel gaps (hood-to-fender, doors-to-pillar, trunk-to-quarter panel). Standard factory gaps are perfectly uniform. Uneven gaps suggest prior panel pulling and frame misalignment.\n- Run your fingers along the factory spot welds inside the door jams and around the engine bay. They should be perfectly round, uniform, and smooth. Rough, hand-cranked welds indicate major structural repairs.',
+
+      '## Best Tokunbo Car Brands & Models in Nigeria for 2026',
+
+      'When planning to buy tokunbo car Nigeria, choosing a vehicle with readily available spare parts, local mechanic familiarity, and excellent resale value is essential. Based on rigorous long-term performance data in Nigerian conditions, these three brands stand out:',
+
+      '### 1. Toyota (The Uncontested King of Resale Value)',
+
+      'Toyota remains the ultimate brand choice for Nigerian drivers. Their engines are highly tolerant of varying local fuel octane ratings, and their mechanical simplicity makes them easy for any local mechanic to service.',
+
+      '- Toyota Corolla (2010 - 2020): Renowned for its fuel economy, robust suspension, and indestructible engine. A perfect choice for daily commuting, fleet services, and ride-hailing platforms.\n- Toyota Camry (2012 - 2018): Known locally as "Muscle" or "Spider," it provides a spacious, highly comfortable cabin, strong air conditioning, and a premium look.\n- Toyota RAV4 and Highlander (2010 - 2018): Perfect crossover SUVs designed to handle flooded streets and rugged Nigerian potholes with high ground clearance.',
+
+      '### 2. Lexus (Affordable Luxury and Prestige)',
+
+      'Lexus combines the unmatched mechanical reliability of Toyota with premium luxury features, making it the most desired upscale car brand in Nigeria.',
+
+      '- Lexus RX350 (2010 - 2018): The ultimate luxury SUV in Nigeria. Its robust V6 engine, smooth ride quality, and luxurious interior layout make it a status symbol that is exceptionally reliable.\n- Lexus ES350 (2010 - 2017): A highly comfortable premium sedan sharing major drivetrain components with the Toyota Camry, ensuring cheap and easy maintenance.',
+
+      '### 3. Honda (The Performance & Styling Alternative)',
+
+      'Honda appeals to drivers seeking responsive handling, modern technology, and sleek, aggressive styling lines.',
+
+      '- Honda Accord (2013 - 2018): Known for its sporty driving dynamics, spacious cabin, and excellent fuel efficiency. It is important to stick to recommended transmission fluids to ensure longevity.\n- Honda CR-V (2012 - 2016): A practical, reliable compact SUV offering superb cabin utility, high safety ratings, and standard luxury amenities.',
+
+      '## Tokunbo Prices in Nigeria: Realistic Budgeting for 2026',
+
+      'Automotive prices in Nigeria fluctuate based on foreign exchange rates, clearing customs duty assessments, and shipping line charges. To assist your planning, here are realistic price ranges for clean, foreign-used Tokunbo vehicles in the Nigerian market for 2026:',
+
+      '- Toyota Corolla (2014 - 2017): ₦12,000,000 to ₦16,000,000\n- Toyota Camry (2012 - 2015): ₦11,000,000 to ₦15,000,000\n- Lexus RX350 (2010 - 2013): ₦15,000,000 to ₦19,000,000\n- Lexus ES350 (2013 - 2015): ₦14,000,000 to ₦18,000,000\n- Honda Accord (2013 - 2015): ₦10,000,000 to ₦13,500,000',
+
+      '## Customs and Import Duty Considerations',
+
+      'Understanding the import duty structure is a critical aspect of your tokunbo cars budget. The Nigeria Customs Service (NCS) utilizes the Common External Tariff (CET) and standard VIN valuations to calculate duty levies. Importing a car without proper clearing documentation exposes you to the risk of vehicle seizure at customs checkpoints.',
+
+      'The custom valuation is based on the vehicle\'s Year, Make, Model, and engine size. Passenger vehicles are subject to a 20% import duty rate, plus additional surcharges. Navigating this complex process independently is highly risky, which is why working with a verified logistics partner like LeeAutoX is essential to ensure legitimate clearing and the issuance of a genuine Customs Single Goods Declaration (SGD) form.',
+
+      '## Sourcing Direct: How LeeAutoX Sourcing Outranks Thin Market Alternatives',
+
+      'Why settle for pre-selected, overpriced, or potentially tampered vehicles on local lots when you can source a custom vehicle directly from North American wholesale auto auctions? Sourcing through LeeAutoX gives you full control over the procurement pipeline:',
+
+      '- Direct Auction Access: We give you direct, wholesale broker access to premier North American auto auctions, including Copart Cookstown, Impact Auto Auctions, and ADESA Toronto. You can bid on clean title, salvage, or lease vehicles in real-time.\n- On-Site Scarborough Consolidation: Once won, your vehicle is hauled to our Scarborough, Ontario depot. Here, our professional riggers strap, block, and load the vehicles inside secure 40ft high-cube sea containers, maximizing safety and minimizing shipping costs per vehicle.\n- Lagos Port Clearing: We handle the entire marine shipping pipeline from Canadian terminals to Lagos PTML or Tin Can Island ports. Our local logistics specialists execute the customs declarations, VIN valuations, and secure your gate pass seamlessly.\n- Naira Payment Options: We offer a unique 50-25-25 Naira installment structure, allowing you to pay your commitment deposit in Naira, lock down your auction win, and spread logistics payments over ocean transit periods.',
+
+      '## Frequently Asked Questions (FAQ)',
+
+      '- **1. What does the term "Tokunbo" actually mean?**\n"Tokunbo" is a Yoruba word meaning "born across the sea" or "imported from overseas." In the Nigerian car market, it refers specifically to foreign-used vehicles imported directly from Europe, Canada, or the USA that have never been registered, driven, or worn down locally in Nigeria.',
+      '- **2. Why should I buy a Tokunbo car instead of a locally-used car?**\nTokunbo vehicles are sourced from developed nations with strict vehicle inspection regimes, high fuel qualities, and superior road networks. Locally-used cars in Nigeria are often driven on rugged terrains and maintained with generic oils, resulting in hidden mechanical fatigue.',
+      '- **3. How can I verify that a Tokunbo car has a clean title and genuine mileage?**\nAlways request the 17-character VIN (Vehicle Identification Number) from the dealer. Run this VIN through a reputable vehicle history portal like Carfax to view detailed historical damage records, odometer readings at past inspections, and original auction photos.',
+      '- **4. Does LeeAutoX help me buy cars directly from Copart Canada?**\nYes! LeeAutoX provides direct broker access to licensed dealer-only auctions in Ontario and North America. We handle the physical inspects, local transport, Scarborough containerization, Atlantic shipping, and complete Lagos clearing. Contact our team via WhatsApp to start your custom import journey!'
+    ]
+  },
+  '/guides/vehicle-clearing-process-nigeria/': {
+    title: 'Vehicle Port Clearance Guide at Lagos Apapa Ports',
+    author: 'Apapa Operations Manager',
+    readTime: '10 min read',
+    date: 'May 12, 2026',
+    category: 'Port Operations',
+    summary: 'An step-by-step walk-through of the 11 customs and terminal checkpoints, from shipping line releases to terminal gate passes.',
+    paragraphs: [
+      'Clearing a car at Lagos ports requires executing a multi-agency sequence. Here is the exact checkpoint flow from container landing to exit gate.',
+      'Checkpoint 1: Bill of Lading & Delivery Order. We exchange the original marine cargo documents with the shipping line to secure the Delivery Order (DO). Checkpoint 2: VIN Assessment. We upload the vehicle chassis VIN to the Nigeria Single Window Trade Portal for valuation.',
+      'Checkpoint 3: Customs Duty Payment. The system generates an assessment voucher. We execute the duty payment at a designated custom commercial bank, issuing an official e-receipt. Checkpoint 4: Terminal Examination. Custom officers physically open the container to inspect chassis marks, verifying it matches the documentation.',
+      'Checkpoint 5: Release and Gate Pass. Once custom inspectors approve, the cargo is released. We settle shipping line storage rent, terminal demurrage fees, and secure the Gate Pass for container departure.'
+    ]
+  },
+  '/guides/car-auction-guide-usa-canada/': {
+    title: 'Bidding on Copart & IAAI from Africa',
+    author: 'Licensed Broker Team',
+    readTime: '11 min read',
+    date: 'April 30, 2026',
+    category: 'Auction Guide',
+    summary: 'Master biding on dealer-only salvage portals without paying astronomical local broker commissions. Bidding limits and title brands explained.',
+    paragraphs: [
+      'North American auto auctions like Copart and IAAI host over 300,000 salvage and clean title vehicles weekly. However, accessing dealer-only auctions normally requires a registered commercial auto brokerage license. LeeAutoX operates as your licensed proxy.',
+      'Understanding Title Brands: Before bidding, understand the difference between Clean, Salvage, and Certificate of Destruction titles. Clean titles require minimal repairs and can be cleared for export easily. Salvage titles require certified reconstruction, while Certificate of Destruction titles CANNOT be registered or exported.',
+      'Auction Fee Structures: The bid amount is NOT the final price. Copart applies Buyer Fees, Gate Fees, and Internet Bidding Fees which can add up to 15% on top of the hammer price. Our system calculates these fees prior to bidding to prevent budgetary surprises.'
+    ]
+  },
+  '/guides/financing-naira/': {
+    title: 'Car Import Installment Financing in Naira',
+    author: 'Advisory Panel',
+    readTime: '7 min read',
+    date: 'June 02, 2026',
+    category: 'Finance',
+    summary: 'A detailed manual on how to lock your auction win with a minimal deposit, and spread shipping and duty clearing payments over 45 days.',
+    paragraphs: [
+      'Traditional auto loans in Nigeria carry high double-digit interest rates. LeeAutoX offers a flexible Naira installment structure to assist importers.',
+      'How the Installment Framework Works: 1. You put down a 50% commitment downpayment in Naira. This funds the vehicle\'s direct auction purchase and secures it at the GTA yard. 2. 25% is paid upon container loading in Scarborough. 3. The remaining 25% balance is settled when the vessel berths in Lagos, prior to port customs release.',
+      'Benefits: 0% interest and structured payments protect your cash flow, allowing you to manage liquid capital effectively during the shipping period.'
+    ]
+  },
+  '/guides/financing-cedis/': {
+    title: 'Pre-Order Car Financing in Ghanaian Cedis',
+    author: 'Ghana Finance Hub',
+    readTime: '7 min read',
+    date: 'June 01, 2026',
+    category: 'Finance',
+    summary: 'Learn about our Ghana milestone installment plans. Pay in Cedis through local banking channels with 0% interest rate.',
+    paragraphs: [
+      'Importing to Ghana is now simplified with our localized Cedi payment pipeline. Avoid high US Dollar conversion rates by settling installments directly in GHS through our accredited Ghanaian accounts.',
+      'We match your payments to specific container logistics milestones: Sourcing, loading, Tema port arrival, and clearing. This ensures that every Cedi you spend is mapped directly to visible, verifiable physical actions.'
+    ]
+  },
+  '/guides/vehicle-inspection-checklist/': {
+    title: 'Copart Pre-Purchase 150-Point Inspection Checklist',
+    author: 'On-site Inspector',
+    readTime: '10 min read',
+    date: 'March 15, 2026',
+    category: 'Inspection',
+    summary: 'Our technical blueprint. Print or use this lot diagnostics guide covering frame checks, fluid diagnostics, and engine computer codes.',
+    paragraphs: [
+      'Buying a vehicle from an online image can lead to massive repair bills. Here is our physical 150-point inspection check-list used at every Ontario auction yard.',
+      'Mechanical Audits: Pull the engine dipstick and check for milky froth (indicates a blown head gasket). Open the radiator cap to verify coolant is free of oil. Electrical Checks: Plug an OBD2 diagnostic scanner into the port. Scan for pending fault codes (ABS, SRS, Transmission) that might have been cleared temporarily. Frame Inspection: Check the inner fender welds and core supports for hammer marks or non-factory welds.'
+    ]
+  },
+  '/guides/vehicle-verification-nigeria/': {
+    title: 'Chassis VIN and Custom Verification Guide Nigeria',
+    author: 'Compliance Desk',
+    readTime: '8 min read',
+    date: 'February 22, 2026',
+    category: 'Compliance',
+    summary: 'How to verify if your customs duty papers are genuine. Keep yourself safe from highway police impounds and customs seizures.',
+    paragraphs: [
+      'In Nigeria, driving a vehicle with falsified customs clearing papers is a criminal offense that can result in immediate impoundment by the Customs Federal Operations Unit (FOU).',
+      'How to Verify: Take your Single Goods Declaration (SGD) customs paper and locate the C-Number. Visit any Customs office or use their public trade portal. Enter the C-Number and Chassis VIN to verify if the assessment was executed, paid, and released at the port. LeeAutoX provides certified custom e-receipts for every single car we clear.'
+    ]
+  }
+};
+
+export default function GuidesPage() {
   const { theme } = useTheme();
-  const [activeSlide, setActiveSlide] = useState(0);
-  const [isIntersecting, setIsIntersecting] = useState(false);
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const { pathname } = useLocation();
 
-
-  // Define the 5 cars as ordered, displaying 2 and commenting out/disabling the other 3.
-  const VEHICLES_DATA: VehicleTimeline[] = [
-    {
-      id: 1,
-      name: '2021 HYUNDAI SONATA',
-      price: '₦22,000,000 Total Landing Cost',
-      stages: [
-        {
-          stage: 'STAGE 1',
-          title: 'Auction Purchase',
-          description: 'A custom enquiry was processed for a clean "Run and Drive" 2021 Sonata. Our procurement specialists researched vehicle histories, reviewed bid files, and successfully won the car at a competitive dealer-only auction.',
-          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260521-WA0007.jpg'
-        },
-        {
-          stage: 'STAGE 2',
-          title: 'Pickup from Copart Yard',
-          description: 'The Sonata was transferred to the Copart auction lot, where on-site technicians verified vehicle details, structural integrity, 4 CYL engine performance, and the guaranteed 85,000 mileage prior to transport clearance.',
-          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260515-WA0001.jpg'
-        },
-        {
-          stage: 'STAGE 3',
-          title: 'Secure Shipping',
-          description: 'Loaded securely into a steel export container, bound for West Africa. Full documentation, custom seals, and maritime tracking keys were issued to keep both our team and the customer fully informed.',
-          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/XRecorder_23052026_124117-scaled.jpg'
-        },
-        {
-          stage: 'STAGE 4',
-          title: 'Port Clearance in Nigeria',
-          description: 'Arrived at the Lagos port (Apapa/Tin Can). Our clearing agency managed customs papers, port levies, and secure local transport. The car is now delivered safely to our lot, fully cleared and pristine.',
-          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260515-WA0000.jpg'
-        }
-      ]
-    },
-    {
-      id: 2,
-      name: '2021 HYUNDAI SONATA ULTIMATE',
-      price: '₦23,000,000 Total Landing Cost',
-      stages: [
-        {
-          stage: 'STAGE 1',
-          title: 'Auction Purchase',
-          description: 'Matching a highly specific client search for the elite "Ultimate" trim. Secured directly from a top-tier Canadian dealer auction featuring premium tech upgrades.',
-          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260521-WA0007.jpg'
-        },
-        {
-          stage: 'STAGE 2',
-          title: 'Pickup from Copart Yard',
-          description: 'On-site lot confirmation of the Sonata Ultimate\'s premium accessories: panoramic sunroof, 360 camera lines, head-up display (HUD), ambient lighting grids, and self-parking feature checks.',
-          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260512-WA0021-scaled.jpg'
-        },
-        {
-          stage: 'STAGE 3',
-          title: 'Shipping & Trucking',
-          description: 'Protected within a heavy duty cargo container, transit begins across global seas. Rigorous logistics checklists prevent any movement or environmental wear during deep sea transit.',
-          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260522-WA0019-scaled.jpg'
-        },
-        {
-          stage: 'STAGE 4',
-          title: 'Port Clearance in Nigeria',
-          description: 'Customs cleared directly from Lagos port, detailed to a mirror showroom finish, and delivered straight to the happy client\'s hands. An uncompromised milestone of professional service.',
-          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260512-WA0014-scaled.jpg'
-        }
-      ]
+  // Render text containing markdown links [text](url)
+  const renderParagraphText = (text: string) => {
+    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+    while ((match = linkRegex.exec(text)) !== null) {
+      const matchIndex = match.index;
+      if (matchIndex > lastIndex) {
+        parts.push(text.substring(lastIndex, matchIndex));
+      }
+      const linkText = match[1];
+      const linkUrl = match[2];
+      
+      if (linkUrl.startsWith('/') && !linkUrl.startsWith('//')) {
+        parts.push(
+          <Link key={matchIndex} to={linkUrl} className="text-[#2B59FF] font-semibold underline hover:text-[#1a41cc] transition-colors">
+            {linkText}
+          </Link>
+        );
+      } else {
+        parts.push(
+          <a key={matchIndex} href={linkUrl} target="_blank" rel="noopener noreferrer" className="text-[#2B59FF] font-semibold underline hover:text-[#1a41cc] transition-colors">
+            {linkText}
+          </a>
+        );
+      }
+      lastIndex = linkRegex.lastIndex;
     }
-    /*
-    // CAR 3: 2017 HYUNDAI SONATA (Created and commented out as requested)
-    ,
-    {
-      id: 3,
-      name: '2017 HYUNDAI SONATA',
-      price: '₦13,000,000',
-      stages: [
-        {
-          stage: 'STAGE 1',
-          title: 'Client Procurement Enquiry',
-          description: 'Securing an affordable yet highly requested 2017 family sedan with distinct luxury elements like keyless entry and rear AC vents.',
-          image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=800'
-        },
-        {
-          stage: 'STAGE 2',
-          title: 'Auction Lot Verification',
-          description: 'Lot check for panoramic sunroof function, active parking sensors, smart key fob, and engine compression stats.',
-          image: 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/IMG-20260512-WA0002.jpg'
-        },
-        {
-          stage: 'STAGE 3',
-          title: 'Containerization & Oceanic Cargo',
-          description: 'Secured inside a global logistics vessel for safe shipping from North America directly to Africa.',
-          image: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&q=80&w=800'
-        },
-        {
-          stage: 'STAGE 4',
-          title: 'Handover & Local Lot Storage',
-          description: 'Completed port clearance and positioned at our Lagos lot for standard customer collection.',
-          image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=800'
-        }
-      ]
+    if (lastIndex < text.length) {
+      parts.push(text.substring(lastIndex));
     }
-    */
-    /*
-    // CAR 4: 2011 TOYOTA VENZA (Created and commented out as requested)
-    ,
-    {
-      id: 4,
-      name: '2011 TOYOTA VENZA',
-      price: '₦13,000,000',
-      stages: [
-        {
-          stage: 'STAGE 1',
-          title: 'Clean Title Pre-Order Win',
-          description: 'Locating a clean, accident-free classic crossover requested for its durability and supreme comfort features.',
-          image: 'https://images.unsplash.com/photo-1424847651672-bf2c9e858b18?auto=format&fit=crop&q=80&w=800'
-        },
-        {
-          stage: 'STAGE 2',
-          title: 'Copart Lot Visual Validation',
-          description: 'Verification of the premium leather interior, AWD running systems, clean state inspection, and reliable V6 metrics.',
-          image: 'https://cs.copart.com/v1/AUTH_svc.pdoc00001/ids-c-prod-lpp/0326/7732bd8557c14091bc21f8b05b92c42d_ful.jpg'
-        },
-        {
-          stage: 'STAGE 3',
-          title: 'Shipping Port Transfer',
-          description: 'Safely strapped and dispatched from the export terminal, setting out across international ocean lanes.',
-          image: 'https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?auto=format&fit=crop&q=80&w=800'
-        },
-        {
-          stage: 'STAGE 4',
-          title: 'Nigeria Port Discharge',
-          description: 'Fully cleared at Lagos customs and driven safely to either our lot or directly to the buyer\'s home.',
-          image: 'https://images.unsplash.com/photo-1617469767053-d3b508a0d84d?auto=format&fit=crop&q=80&w=800'
-        }
-      ]
-    }
-    */
-    /*
-    // CAR 5: 2024 LEXUS RX 350H (Created and commented out as requested)
-    ,
-    {
-      id: 5,
-      name: '2024 LEXUS RX 350H',
-      price: 'Contact for Pricing',
-      stages: [
-        {
-          stage: 'STAGE 1',
-          title: 'High-Level Procurement Order',
-          description: 'Handling an elite order for latest-gen Lexus hybrid luxury tracking high-tier luxury trims globally.',
-          image: 'https://images.unsplash.com/photo-1560769629-975ec94e6a86?auto=format&fit=crop&q=80&w=800'
-        },
-        {
-          stage: 'STAGE 2',
-          title: 'Lot Specification Check',
-          description: 'Sourcing validation of Ultrasonic Blue exterior, luxury hybrid drive unit, clean title, and safety suites.',
-          image: 'https://leeplugshub.com/wp-content/uploads/2026/05/Luxury.jpg'
-        },
-        {
-          stage: 'STAGE 3',
-          title: 'Encased Container Logistics',
-          description: 'Custom container placement designed for maximum finish preservation during high seas crossing.',
-          image: 'https://images.unsplash.com/photo-1494412519320-aa613dfb7738?auto=format&fit=crop&q=80&w=800'
-        },
-        {
-          stage: 'STAGE 4',
-          title: 'Premium Handover & Showcase',
-          description: 'Cleared through Apapa customs and handoff completed directly to the executive purchaser in Lagos.',
-          image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=800'
-        }
-      ]
-    }
-    */
-  ];
+    return parts.length > 0 ? parts : text;
+  };
 
+  // Standardize trailing slash
+  let cleanPath = pathname;
+  if (!cleanPath.endsWith('/')) {
+    cleanPath += '/';
+  }
 
-  const totalSlides = VEHICLES_DATA.length;
+  const isMainHub = cleanPath === '/guides/';
+  const guideData = GUIDES_CONTENT[cleanPath];
 
+  // WhatsApp custom coordination link
+  const whatsappMsg = encodeURIComponent(
+    `Hello LeeAutoX! I am reviewing your technical guide on "${guideData?.title || 'Vehicle Importing'}" and would like to ask some questions.`
+  );
+  const whatsappUrl = `https://wa.me/${CONTACT_INFO.whatsappRaw}?text=${whatsappMsg}`;
 
-  const next = () => setActiveSlide((prev) => (prev + 1) % totalSlides);
-  const prev = () => setActiveSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+  // If viewing the main Hub list
+  if (isMainHub) {
+    const mainData = SEO_DATA['/guides/'];
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <PageHeader 
+          title={mainData.heading} 
+          subtitle={mainData.description} 
+          breadcrumbs={mainData.breadcrumbs} 
+        />
 
+        {/* Guides List Grid */}
+        <section className={`py-16 px-6 md:px-12 ${
+          theme === 'dark' ? 'bg-zinc-950' : 'bg-white'
+        }`}>
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {Object.entries(GUIDES_CONTENT).map(([route, content]) => (
+                <div 
+                  key={route}
+                  className={`p-6 border flex flex-col justify-between transition-all duration-300 hover:border-[#2B59FF]/50 hover:shadow-2xl ${
+                    theme === 'dark' ? 'bg-zinc-900 border-zinc-800' : 'bg-slate-50 border-slate-200'
+                  }`}
+                >
+                  <div>
+                    <span className="text-[10px] font-bold tracking-widest text-[#2B59FF] uppercase font-mono block mb-3">
+                      {content.category}
+                    </span>
+                    <h3 className="font-extrabold text-lg uppercase tracking-tight mb-3 line-clamp-2">
+                      {content.title}
+                    </h3>
+                    <p className={`text-xs mb-6 line-clamp-3 leading-relaxed ${
+                      theme === 'dark' ? 'text-zinc-400' : 'text-slate-600'
+                    }`}>
+                      {content.summary}
+                    </p>
+                  </div>
 
-  // Setup observer for scrolling focus / viewport tracking for auto sliding
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsIntersecting(entry.isIntersecting);
-      },
-      { threshold: 0.1 }
+                  <div className="flex items-center justify-between border-t border-zinc-800/10 pt-4">
+                    <span className="text-[10px] font-mono text-zinc-500">
+                      {content.readTime}
+                    </span>
+                    <Link 
+                      to={route}
+                      className="text-xs font-extrabold text-[#2B59FF] uppercase tracking-wider flex items-center gap-1 hover:underline"
+                    >
+                      Read Guide
+                      <ChevronRight size={14} />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
     );
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
+  }
 
+  // If viewing a specific Guide details
+  if (!guideData) {
+    // 404 guide fallback
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center bg-background">
+        <h2 className="text-3xl font-black uppercase mb-4">Guide Not Found</h2>
+        <Link to="/guides/" className="px-6 py-3 bg-[#2B59FF] text-white font-bold uppercase text-xs tracking-wider">
+          Return to Guides Hub
+        </Link>
+      </div>
+    );
+  }
 
-  // Safe auto sliding when section is focused (in view)
-  useEffect(() => {
-    if (!isIntersecting) return;
-    const interval = setInterval(() => {
-      next();
-    }, 10000); // changes slides every 10 seconds
-    return () => clearInterval(interval);
-  }, [isIntersecting]);
-
-
-  const activeVehicle = VEHICLES_DATA[activeSlide];
-
+  const seoData = SEO_DATA[cleanPath] || SEO_DATA['/guides/'];
 
   return (
-    <section 
-      id="deliveries" 
-      ref={sectionRef} 
-      className={`relative px-6 md:px-12 py-24 overflow-hidden transition-colors duration-500 border-t border-b ${
-        theme === 'dark' 
-          ? 'bg-black text-white border-zinc-900' 
-          : 'bg-[#FAFBFD] text-slate-950 border-slate-200'
-      }`}
-    >
-      {/* Background Graffiti - Large logistics layout elements representing coordinates and transparency */}
-      <div className={`absolute inset-0 z-0 pointer-events-none select-none overflow-hidden transition-colors duration-500 ${
-        theme === 'dark' ? 'text-white opacity-[0.015]' : 'text-slate-900 opacity-[0.018]'
+    <div className="min-h-screen bg-background">
+      <PageHeader 
+        title={guideData.title} 
+        subtitle={`Written by ${guideData.author} | ${guideData.date}`} 
+        breadcrumbs={seoData.breadcrumbs} 
+      />
+
+      <section className={`py-16 px-6 md:px-12 ${
+        theme === 'dark' ? 'bg-zinc-950 text-white' : 'bg-white text-slate-900'
       }`}>
-        <div className="absolute top-10 -left-10 text-[15vw] font-black leading-none tracking-tighter rotate-[-10deg] whitespace-nowrap">
-          AUCTION LOGISTICS
-        </div>
-        <div className="absolute top-1/3 -right-20 text-[18vw] font-serif font-bold leading-none rotate-[8deg] whitespace-nowrap">
-          PORT TO PORT
-        </div>
-        <div className="absolute -bottom-10 -left-5 text-[22vw] font-black leading-none tracking-tighter rotate-[-3deg] whitespace-nowrap">
-          VERIFIED WINS
-        </div>
-        
-        {/* Abstract design elements matching testimonials style map tracks */}
-        <div className="absolute top-[20%] left-[25%] rotate-[30deg] flex gap-3">
-          {[...Array(6)].map((_, i) => (
-            <div 
-              key={i} 
-              className={`w-[1px] h-36 transition-colors duration-500 ${
-                theme === 'dark' ? 'bg-white/20' : 'bg-slate-900'
-              }`} 
-            />
-          ))}
-        </div>
-        <div className="absolute bottom-[30%] right-[15%] grid grid-cols-5 gap-3">
-          {[...Array(20)].map((_, i) => (
-            <div 
-              key={i} 
-              className={`w-1.5 h-1.5 rounded-full transition-colors duration-500 ${
-                theme === 'dark' ? 'bg-white/20' : 'bg-slate-900'
-              }`} 
-            />
-          ))}
-        </div>
-        <div className="absolute top-[50%] left-[6%] text-[8vw] font-light tracking-widest rotate-[15deg]">
-          ++++ LOGISTICS ++++
-        </div>
-        <div className={`absolute top-[70%] right-[5%] text-[7vw] font-light leading-none rotate-[-12deg] border-t pt-3 transition-colors duration-500 ${
-          theme === 'dark' ? 'border-white/10' : 'border-slate-900/30'
-        }`}>
-          SECURE//W1
-        </div>
-        <div className={`absolute bottom-[5%] left-[40%] w-48 h-48 border rounded-full rotate-[15deg] transition-colors duration-500 ${
-          theme === 'dark' ? 'border-white/10' : 'border-slate-900/40'
-        }`} />
-      </div>
-
-
-      <div className="relative z-10 max-w-6xl mx-auto">
-        {/* Header section with SEO optimized Title & Subtitle */}
-        <div className="text-center mb-16">
-          <span className="text-xs font-bold tracking-widest text-[#2B59FF] uppercase bg-[#2B59FF]/10 px-3 py-1.5 inline-block mb-3">
-            LEGITIMACY IN ACTION
-          </span>
-          <h2 className={`text-3xl md:text-5xl font-extrabold tracking-tight font-sans max-w-3xl mx-auto mb-4 uppercase transition-colors duration-500 ${
-            theme === 'dark' ? 'text-white' : 'text-slate-950'
-          }`}>
-            Verified Deliveries: From Global Auctions to Nigerian Roads
-          </h2>
-          <p className={`text-sm md:text-base max-w-2xl mx-auto tracking-wide font-sans transition-colors duration-500 ${
-            theme === 'dark' ? 'text-zinc-400' : 'text-slate-600'
-          }`}>
-            Follow the transparent lifecycle journey of our premium vehicles as they move seamlessly from auction yards to port clearance and client handovers in Lagos.
-          </p>
-        </div>
-
-
-        {/* Outer slider box */}
-        <div className="relative min-h-[500px] mb-12">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeSlide}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.5 }}
-              className="w-full"
-            >
-              {/* Active Slide Details Header */}
-              <div className="text-center mb-10 max-w-lg mx-auto">
-                <h3 className={`text-lg md:text-2xl font-black tracking-wider font-sans border-b-2 pb-2 inline-block transition-colors duration-500 ${
-                  theme === 'dark' ? 'text-white border-white/20' : 'text-slate-950 border-[#2B59FF]/20'
-                }`}>
-                  {activeVehicle.name}
-                </h3>
-                <p className={`text-xs md:text-sm font-mono mt-2 font-semibold transition-colors duration-500 ${
-                  theme === 'dark' ? 'text-zinc-400' : 'text-slate-500'
-                }`}>
-                  {activeVehicle.price}
-                </p>
-              </div>
-
-
-              {/* TIMELINE TIMELINE WRAPPER (Adapting the journey structure to React) */}
-              <div className="relative max-w-4xl mx-auto">
-                {/* Horizontal / Vertical Timeline Center Line */}
-                <div className={`absolute left-[20px] md:left-1/2 top-0 bottom-0 w-0.5 transform md:-translate-x-1/2 transition-colors duration-500 ${
-                  theme === 'dark' ? 'bg-zinc-800' : 'bg-slate-200'
-                }`} />
-
-
-                <div className="space-y-12 relative">
-                  {activeVehicle.stages.map((item, idx) => {
-                    const isEven = idx % 2 === 1;
-                    
-                    return (
-                      <div 
-                        key={idx} 
-                        className={`flex flex-col md:flex-row items-stretch justify-between w-full relative pl-[50px] md:pl-0 ${
-                          isEven ? 'md:flex-row-reverse' : ''
-                        }`}
-                      >
-                        {/* Content Card (Left or Right side on Desktop, always Right after bullet on Mobile) */}
-                        <div className="w-full md:w-[45%] text-left">
-                          <div className={`p-5 border transition-all duration-300 relative ${
-                            theme === 'dark' 
-                              ? 'bg-zinc-900 border-zinc-800 shadow-[0_4px_20px_rgba(0,0,0,0.5)]' 
-                              : 'bg-white border-slate-200/80 shadow-md hover:shadow-xl'
-                          }`}>
-                            {/* Accent flag */}
-                            <span className="text-[10px] font-bold tracking-widest text-[#2B59FF] uppercase bg-[#2B59FF]/10 px-2 py-1 inline-block mb-2">
-                              {item.stage}
-                            </span>
-                            
-                            <h4 className={`text-sm md:text-base font-bold mb-2 leading-tight uppercase tracking-tight transition-colors duration-500 ${
-                              theme === 'dark' ? 'text-white' : 'text-slate-950'
-                            }`}>
-                              {item.title}
-                            </h4>
-
-
-                            {/* EVIDENCE IMAGE underneath the text for proof */}
-                            <div className={`mt-4 border overflow-hidden select-none transition-colors duration-500 ${
-                              theme === 'dark' ? 'border-zinc-800 bg-zinc-950' : 'border-slate-100 bg-slate-50'
-                            }`}>
-                              <img 
-                                src={item.image} 
-                                alt={`${activeVehicle.name} - ${item.stage}`}
-                                referrerPolicy="no-referrer"
-                                className="w-full h-44 object-cover object-center grayscale-[15%] hover:grayscale-0 transition-all duration-500 hover:scale-105"
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-
-                        {/* Dot representation in center line */}
-                        <div className="absolute left-[20px] md:left-1/2 w-4 h-4 bg-[#2B59FF] border-2 border-white rounded-full transform -translate-x-[9px] md:-translate-x-1/2 top-6 z-10 flex items-center justify-center shadow-lg shadow-[#2B59FF]/50 scale-125">
-                          <span className="w-1.5 h-1.5 bg-white rounded-full" />
-                        </div>
-
-
-                        {/* Empty spacing for desktop flex alignment */}
-                        <div className="hidden md:block w-[45%]" />
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-
-        {/* Slider Button Controls and Indicators */}
-        <div className="flex items-center justify-center gap-6 mt-12 relative z-10">
-          <button
-            onClick={prev}
-            className={`w-12 h-12 border transition-all cursor-pointer flex items-center justify-center ${
-              theme === 'dark'
-                ? 'border-zinc-700 text-white bg-zinc-900 hover:bg-white hover:text-black hover:border-white shadow-lg'
-                : 'border-slate-300 text-slate-900 bg-white hover:bg-slate-950 hover:text-white hover:border-slate-950 shadow-md hover:shadow-lg'
-            }`}
-            aria-label="Previous Slide"
+        <div className="max-w-4xl mx-auto">
+          {/* Back Button */}
+          <Link 
+            to="/guides/" 
+            className="inline-flex items-center gap-2 mb-8 text-xs font-bold uppercase tracking-wider text-[#2B59FF] hover:underline"
           >
-            <ChevronLeft size={20} />
-          </button>
+            <ArrowLeft size={14} />
+            Back to Guides Hub
+          </Link>
 
-
-          {/* Dots indicating slide progress */}
-          <div className="flex items-center gap-2.5">
-            {VEHICLES_DATA.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setActiveSlide(i)}
-                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                  activeSlide === i 
-                    ? 'bg-[#2B59FF] scale-135 shadow-sm' 
-                    : (theme === 'dark' ? 'bg-zinc-700 hover:bg-zinc-600' : 'bg-slate-300 hover:bg-slate-400')
-                }`}
-                aria-label={`Go to slide ${i+1}`}
-              />
-            ))}
+          {/* Guide Meta Details */}
+          <div className="flex flex-wrap items-center gap-6 mb-10 text-xs font-mono text-zinc-500 border-b pb-6 border-zinc-800/10">
+            <div className="flex items-center gap-1.5">
+              <User size={14} className="text-[#2B59FF]" />
+              <span>{guideData.author}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Calendar size={14} className="text-[#2B59FF]" />
+              <span>{guideData.date}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Clock size={14} className="text-[#2B59FF]" />
+              <span>{guideData.readTime}</span>
+            </div>
+            <span className="bg-[#2B59FF]/10 text-[#2B59FF] px-2 py-1 uppercase text-[9px] font-bold font-mono">
+              {guideData.category}
+            </span>
           </div>
 
+          {/* Guide Article Body */}
+          <div className="prose prose-invert max-w-none space-y-6 text-sm md:text-base leading-relaxed font-sans">
+            {guideData.paragraphs.map((p, index) => {
+              if (p.startsWith('## ')) {
+                return (
+                  <h2 key={index} className={`text-2xl font-extrabold uppercase mt-12 mb-4 tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                    {p.replace('## ', '')}
+                  </h2>
+                );
+              }
+              if (p.startsWith('### ')) {
+                return (
+                  <h3 key={index} className={`text-xl font-bold uppercase mt-8 mb-3 tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                    {p.replace('### ', '')}
+                  </h3>
+                );
+              }
+              if (p.startsWith('- ')) {
+                return (
+                  <ul key={index} className={`list-disc list-inside pl-4 space-y-2 my-4 ${theme === 'dark' ? 'text-zinc-300' : 'text-slate-800'}`}>
+                    {p.split('\n').map((li, i) => (
+                      <li key={i} className="leading-relaxed">{renderParagraphText(li.replace(/^- /, ''))}</li>
+                    ))}
+                  </ul>
+                );
+              }
+              return (
+                <p key={index} className={theme === 'dark' ? 'text-zinc-300' : 'text-slate-800'}>
+                  {renderParagraphText(p)}
+                </p>
+              );
+            })}
+          </div>
 
-          <button
-            onClick={next}
-            className={`w-12 h-12 border transition-all cursor-pointer flex items-center justify-center ${
-              theme === 'dark'
-                ? 'border-zinc-700 text-white bg-zinc-900 hover:bg-white hover:text-black hover:border-white shadow-lg'
-                : 'border-slate-300 text-slate-900 bg-white hover:bg-slate-950 hover:text-white hover:border-slate-950 shadow-md hover:shadow-lg'
-            }`}
-            aria-label="Next Slide"
-          >
-            <ChevronRight size={20} />
-          </button>
+          {/* Dynamic Duty Calculator Mount */}
+          {cleanPath.includes('duty-calculator') && (
+            <div className="mt-12 border-t pt-12">
+              <span className="text-xs font-bold tracking-widest text-[#2B59FF] uppercase bg-[#2B59FF]/10 px-3 py-1.5 inline-block mb-6 font-mono">
+                INTERACTIVE WIDGET
+              </span>
+              <ImportDutyCalculator />
+            </div>
+          )}
+
+          {/* Related Actions */}
+          <div className="mt-16 border-t pt-10 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div>
+              <h4 className="font-bold text-lg uppercase mb-1">Have questions about this guide?</h4>
+              <p className="text-xs text-zinc-500">Connect directly with our logistics authors for a live consultation.</p>
+            </div>
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3 bg-[#2B59FF] hover:bg-[#1a41cc] text-white font-bold uppercase text-xs tracking-wider flex items-center gap-2"
+            >
+              <MessageSquare size={14} />
+              Inquire via WhatsApp
+            </a>
+          </div>
+
         </div>
-
-
-        {/* Verified Quote Badge */}
-        <div className={`text-center italic font-serif text-sm mt-16 pt-8 border-t max-w-md mx-auto transition-colors duration-500 ${
-          theme === 'dark' ? 'text-zinc-500 border-zinc-850' : 'text-slate-500 border-slate-200'
-        }`}>
-          "Still delivering verified, clean, and top-tier vehicles securely to our client's doorstep."
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }
