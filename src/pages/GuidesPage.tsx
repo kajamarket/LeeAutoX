@@ -382,7 +382,7 @@ export default function GuidesPage() {
                 return (
                   <h3 key={index} className={`text-xl font-bold uppercase mt-8 mb-3 tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
                     {p.replace('### ', '')}
-                  </h2>
+                  </h3>
                 );
               }
               if (p.startsWith('- ')) {
