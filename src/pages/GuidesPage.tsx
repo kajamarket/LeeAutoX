@@ -19,16 +19,33 @@ const GUIDES_CONTENT: Record<string, {
   '/guides/import-car-canada-to-nigeria/': {
     title: 'Ultimate Guide to Importing Cars from Canada to Nigeria',
     author: 'LeeAutoX Logistics Desk',
-    readTime: '12 min read',
+    readTime: '15 min read',
     date: 'June 18, 2026',
     category: 'Logistics',
-    summary: 'The ultimate roadmap explaining shipping line selections, ocean transit schedules, Scarborough container loading, and clearing customs at Apapa port.',
+    summary: 'The comprehensive blueprint detailing Air Freight and Ocean shipping to Nigeria from Canada (CN), including car imports, customs clearance, and container shipping rates.',
     paragraphs: [
-      'Importing a car from Canada to Nigeria requires navigating a multi-stage logistics pipeline. In this comprehensive manual, we cover everything you need to know to ensure a risk-free, affordable delivery from Toronto directly to your Lagos residence.',
-      'Phase 1: Procurement and Pre-purchase Verification. Sourcing a car starts with licensed wholesale broker access to dealer-only portals like Copart Canada and Impact Auto Auctions. Prior to placing any bids, it is imperative to obtain a complete historical audit (via Carfax) to check for major collision frames, salvage history, and odometer rollback frauds.',
-      'Phase 2: Inland Transport and Scarborough Depot Strapping. Once won, the vehicle is hauled via flatbed carrier to our Scarborough consolidation lot. Here, we optimize sea transport by containerizing the vehicles. Splicing cars inside a 40ft high-cube steel container requires experienced riggers utilizing heavy-duty nylon straps, ensuring wheels are braced so no movement occurs on heavy Atlantic waves.',
-      'Phase 3: Atlantic Marine Transit. Ocean freight liners typically depart out of Montreal or Halifax terminals. Sea transit across the Atlantic to West Africa ranges between 28 to 42 days. You are issued an 11-digit ocean container bill of lading tracker to trace the cargo vessel position in real-time.',
-      'Phase 4: Lagos Customs Clearance. When the vessel discharges at Apapa, PTML, or Tin Can ports, we handle the customs declarations. The clearing agent submits the chassis VIN for Valuation. Once customs issues the assessment, duty fees are paid directly to designated commercial banks. Our clearing lot handles the secure exit handover.'
+      'Importing a car, personal effects, or commercial cargo from Canada to Nigeria requires navigating a highly complex international logistics pipeline. To ensure a professional masterclass that outperforms standard, opaque cargo services, we have put together this industry-leading guide covering air cargo deliveries, marine containerization, customs clearing protocols, and local pre-sale preparation.',
+      '## Air Freight vs. Ocean Shipping to Nigeria from Canada',
+      'When planning how to export to Nigeria from Canada, you must choose between two main logistics pipelines depending on your shipment weight, budget, and urgency:',
+      '### 1. Air Freight from Canada to Nigeria (CN)',
+      'For high-value items, critical automotive spare parts, documentation, or express electronics, our Air Freight from Canada to Nigeria (CN) represents the ultimate premium option. Standard transit times for air cargo shipments typically range between 7 to 10 working days to land at Murtala Muhammed International Airport (LOS) in Lagos. This fast cargo service to Nigeria from Canada guarantees absolute cargo security, automated flight tracking, and full customs handling with door-to-door delivery options.',
+      '### 2. Ocean Shipping from Canada to Nigeria',
+      'For cars, heavy machinery, SUVs, and high-volume commercial inventories, Ocean shipping From Canada to Nigeria is the most practical and cost-effective channel. Standard ocean transit from Canadian ports (typically Montreal, Halifax, or Vancouver) to Lagos ports (PTML, Tin Can Island, or Apapa) takes between 28 to 42 days. Importers benefit from secure containerization, protecting vehicles and heavy freight from corrosive marine salt spray and transit scratches.',
+      '## How to Import Cars from Canada to Nigeria: Step-by-Step Masterclass',
+      'If you are looking at shipping cars to Nigeria from Canada, navigating the procurement and delivery pipeline successfully requires following a highly structured five-phase protocol:',
+      '### Phase 1: Direct Auction Sourcing and VIN History Audits',
+      'The import process starts with licensed broker access to premier dealer-only Canadian auto auctions, including Copart Cookstown, Impact Auto Auctions, and ADESA Toronto. Prior to placing any bids, it is imperative to run a meticulous historical audit via Carfax to verify the vehicle’s chassis VIN, protecting you from collision-damaged salvage, frame fatigue, and odometer rollback scams.',
+      '### Phase 2: Local Flatbed Hauling and Scarborough Consolidation',
+      'Once a vehicle is won, our local inland flatbed carrier transports the unit directly to our secure consolidation lot in Scarborough, Ontario. To optimize your container shipping rates, we specialize in high-cube container splicing, safely packing and strapping up to four vehicles inside a single 40ft steel cargo container using heavy-duty industrial nylon straps and bracing blocks.',
+      '### Phase 3: Ocean Marine Freight Transit & Tracking',
+      'The loaded container is transferred to the terminal in Montreal or Halifax, where it is loaded onto an ocean liner. Importers are issued an official 11-digit ocean container Bill of Lading (BoL) to trace the marine vessel position in real-time as it crosses the Atlantic Ocean toward West Africa.',
+      '### Phase 4: Nigeria Port Customs Clearance and Valuation',
+      'Upon container discharge at Lagos PTML, Tin Can, or Apapa ports, our customs clearing specialists submit the vehicle chassis VIN for official valuation. Estimating your total custom clearing and duty landing fees is simplified using our interactive [Nigeria Custom Car Import Duty Calculator](/nigeria/import-duty-calculator/), which calculates exact tariff duties in Naira based on NCS valuation guidelines. We settle all customs obligations legally and issue an official Single Goods Declaration (SGD) form and bank e-receipts, safeguarding your car from FOU highway checkpoints.',
+      '### Phase 5: Lagos Arrival & Specialized Prep Service',
+      'After clearing, vehicles are transferred out of the chaotic port environment. For professional car dealers, fleet operators, and buyers demanding perfect turnkey condition on showroom arrival, we coordinate with our dealer-facing vehicle servicing and prep partner, [Lee Auto Lagos](/lee-auto/). While LeeAutoX handles the complex sourcing, containerization, and marine shipping logistics, the Lee Auto Lagos team executes detailed 150-point diagnostic scans, fluid services, cosmetic paint correction, marine grime wash, and custom NCS clearance verifications.',
+      '## Cargo Shipping to Nigeria from Canada: Rates, Timing, and Pricing',
+      'Our general cargo service to Nigeria from Canada is fully structured around volume, weight, and item type. Whether you are shipping personal luggage, household machinery, or a fleet of commercial trucks, our logistics desk coordinates volume carrier discounts. We offer a highly reliable alternative to standard cargo agents, backed by a fully registered Canadian corporation (No: 1761065-3) and dedicated Lagos clearing hubs.',
+      'To provide absolute security for your capital, we also offer a unique 50-25-25 Naira installment payment plan for qualified vehicle pre-orders, protecting your liquid cash flow. Contact our support team via WhatsApp today to request current container shipping quotes or book air cargo space!'
     ]
   },
   '/guides/tokunbo-buyers-guide/': {
@@ -187,6 +204,41 @@ export default function GuidesPage() {
   const { theme } = useTheme();
   const { pathname } = useLocation();
 
+  // Render text containing markdown links [text](url)
+  const renderParagraphText = (text: string) => {
+    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+    while ((match = linkRegex.exec(text)) !== null) {
+      const matchIndex = match.index;
+      if (matchIndex > lastIndex) {
+        parts.push(text.substring(lastIndex, matchIndex));
+      }
+      const linkText = match[1];
+      const linkUrl = match[2];
+      
+      if (linkUrl.startsWith('/') && !linkUrl.startsWith('//')) {
+        parts.push(
+          <Link key={matchIndex} to={linkUrl} className="text-[#2B59FF] font-semibold underline hover:text-[#1a41cc] transition-colors">
+            {linkText}
+          </Link>
+        );
+      } else {
+        parts.push(
+          <a key={matchIndex} href={linkUrl} target="_blank" rel="noopener noreferrer" className="text-[#2B59FF] font-semibold underline hover:text-[#1a41cc] transition-colors">
+            {linkText}
+          </a>
+        );
+      }
+      lastIndex = linkRegex.lastIndex;
+    }
+    if (lastIndex < text.length) {
+      parts.push(text.substring(lastIndex));
+    }
+    return parts.length > 0 ? parts : text;
+  };
+
   // Standardize trailing slash
   let cleanPath = pathname;
   if (!cleanPath.endsWith('/')) {
@@ -330,21 +382,21 @@ export default function GuidesPage() {
                 return (
                   <h3 key={index} className={`text-xl font-bold uppercase mt-8 mb-3 tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
                     {p.replace('### ', '')}
-                  </h3>
+                  </h2>
                 );
               }
               if (p.startsWith('- ')) {
                 return (
                   <ul key={index} className={`list-disc list-inside pl-4 space-y-2 my-4 ${theme === 'dark' ? 'text-zinc-300' : 'text-slate-800'}`}>
                     {p.split('\n').map((li, i) => (
-                      <li key={i} className="leading-relaxed">{li.replace('- ', '')}</li>
+                      <li key={i} className="leading-relaxed">{renderParagraphText(li.replace('- ', ''))}</li>
                     ))}
                   </ul>
                 );
               }
               return (
                 <p key={index} className={theme === 'dark' ? 'text-zinc-300' : 'text-slate-800'}>
-                  {p}
+                  {renderParagraphText(p)}
                 </p>
               );
             })}
