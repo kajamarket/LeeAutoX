@@ -2,9 +2,11 @@ import { useLocation } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
 import { SEO_DATA } from '../seoData';
 import { useTheme } from '../context/ThemeContext';
-import { MapPin, Phone, MessageSquare, Shield, Check } from 'lucide-react';
+import { MapPin, Phone, MessageSquare, Shield, Check, MessageCircle } from 'lucide-react';
 import { CONTACT_INFO } from '../constants';
 import ImportDutyCalculator from '../components/ImportDutyCalculator';
+import WhatsAppCTA from '../components/WhatsAppCTA';
+import Contact from '../components/Contact';
 import { cleanPathname } from '../utils/path';
 
 export default function GeoPage() {
@@ -221,22 +223,12 @@ export default function GeoPage() {
         </section>
 
         {/* Action / WhatsApp section */}
-        <section className={`py-16 px-6 md:px-12 border-t text-center ${theme === 'dark' ? 'bg-zinc-900 border-zinc-800' : 'bg-slate-100 border-slate-200'}`}>
-          <div className="max-w-2xl mx-auto">
-            <h3 className="text-2xl font-black uppercase mb-4 text-foreground">Start Sourcing from Canadian Auctions Today</h3>
-            <p className="text-xs text-zinc-500 mb-8 leading-relaxed">
-              Why pay exorbitant local markups when you can secure a custom, verified car direct from Canada? Tap below to connect with our active Scarborough logistics representative.
-            </p>
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-[#2B59FF] text-white hover:bg-[#1a41cc] transition-all font-bold tracking-wider uppercase text-sm shadow-[0_0_20px_rgba(43,89,255,0.3)]"
-            >
-              <MessageSquare size={18} />
-              Inquire via WhatsApp (Scarborough Desk)
-            </a>
-          </div>
+        <section className="py-16 px-6 md:px-12 max-w-7xl mx-auto">
+          <WhatsAppCTA 
+            message={`Hello LeeAutoX, I would like to inquire about car sourcing and clearance options for ${data.heading} (Reference: ${cleanPath}).`}
+            title="Start Sourcing from Canadian Auctions Today"
+            subtitle="Why pay exorbitant local markups when you can secure a custom, verified car direct from Canada? Connect with our active Scarborough logistics representative."
+          />
         </section>
       </div>
     );
@@ -429,10 +421,10 @@ export default function GeoPage() {
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-3 p-5 bg-[#2B59FF] text-white hover:bg-[#1a41cc] transition-all font-bold tracking-wider uppercase text-sm shadow-[0_0_20px_rgba(43,89,255,0.3)] text-center"
+              className="flex items-center justify-center gap-2 bg-[#25D366] text-black font-bold p-5 hover:brightness-110 transition-all cursor-pointer text-center text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(37,211,102,0.2)]"
             >
-              <MessageSquare size={18} />
-              Connect with {isCanada ? 'Toronto' : isGhana ? 'Accra' : 'Lagos'} Representative
+              <MessageCircle size={18} />
+              <span>Connect with {isCanada ? 'Toronto' : isGhana ? 'Accra' : 'Lagos'} Representative</span>
             </a>
 
           </div>
@@ -461,6 +453,8 @@ export default function GeoPage() {
           </div>
         </section>
       )}
+
+      <Contact />
     </div>
   );
 }

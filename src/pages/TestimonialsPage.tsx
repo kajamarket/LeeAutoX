@@ -1,6 +1,7 @@
 import PageHeader from '../components/PageHeader';
 import Testimonials from '../components/Testimonials';
 import DeliveriesTimeline from '../components/DeliveriesTimeline';
+import Contact from '../components/Contact';
 import { SEO_DATA } from '../seoData';
 
 export default function TestimonialsPage() {
@@ -16,6 +17,7 @@ export default function TestimonialsPage() {
 
       <Testimonials />
       <DeliveriesTimeline />
+      <Contact />
     </div>
   );
 }

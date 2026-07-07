@@ -1,5 +1,6 @@
 import PageHeader from '../components/PageHeader';
 import WhyChooseUs from '../components/WhyChooseUs';
+import Contact from '../components/Contact';
 import { SEO_DATA } from '../seoData';
 import { useTheme } from '../context/ThemeContext';
 import { Shield, Award, Users, Globe } from 'lucide-react';
@@ -90,6 +91,8 @@ export default function AboutPage() {
 
       {/* Reuse the WhyChooseUs Section */}
       <WhyChooseUs />
+      
+      <Contact />
     </div>
   );
 }

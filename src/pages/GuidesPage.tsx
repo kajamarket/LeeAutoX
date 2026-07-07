@@ -6,6 +6,8 @@ import { SEO_DATA } from '../seoData';
 import { useTheme } from '../context/ThemeContext';
 import { BookOpen, Calendar, User, Clock, ArrowLeft, MessageSquare, ChevronRight } from 'lucide-react';
 import { CONTACT_INFO } from '../constants';
+import WhatsAppCTA from '../components/WhatsAppCTA';
+import Contact from '../components/Contact';
 import { cleanPathname } from '../utils/path';
 
 // Detailed Guide Content Map to serve real content
@@ -313,7 +315,9 @@ export default function GuidesPage() {
                     <span className="text-[10px] font-bold tracking-widest text-[#2B59FF] uppercase font-mono block mb-3">
                       {content.category}
                     </span>
-                    <h3 className="font-extrabold text-lg uppercase tracking-tight mb-3 line-clamp-2">
+                    <h3 className={`font-extrabold text-lg uppercase tracking-tight mb-3 line-clamp-2 ${
+                      theme === 'dark' ? 'text-white' : 'text-slate-950'
+                    }`}>
                       {content.title}
                     </h3>
                     <p className={`text-xs mb-6 line-clamp-3 leading-relaxed ${
@@ -444,24 +448,18 @@ export default function GuidesPage() {
           )}
 
           {/* Related Actions */}
-          <div className="mt-16 border-t pt-10 flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div>
-              <h4 className="font-bold text-lg uppercase mb-1">Have questions about this guide?</h4>
-              <p className="text-xs text-zinc-500">Connect directly with our logistics authors for a live consultation.</p>
-            </div>
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3 bg-[#2B59FF] hover:bg-[#1a41cc] text-white font-bold uppercase text-xs tracking-wider flex items-center gap-2"
-            >
-              <MessageSquare size={14} />
-              Inquire via WhatsApp
-            </a>
+          <div className="mt-16 border-t pt-10">
+            <WhatsAppCTA 
+              message={`Hello LeeAutoX! I am reviewing your technical guide on "${guideData?.title || 'Vehicle Importing'}" and would like to ask some questions.`}
+              title="Have questions about this guide?"
+              subtitle="Connect directly with our logistics authors for a live consultation."
+            />
           </div>
 
         </div>
       </section>
+
+      <Contact />
     </div>
   );
 }

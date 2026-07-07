@@ -1,6 +1,8 @@
 import { motion } from 'motion/react';
 import { Wrench, Shield, CheckCircle, ClipboardCheck, MessageSquare, Sparkles, AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import WhatsAppCTA from '../components/WhatsAppCTA';
+import Contact from '../components/Contact';
 
 export default function LeeAutoPage() {
   return (
@@ -137,16 +139,12 @@ export default function LeeAutoPage() {
           </section>
 
           {/* CTA Action */}
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6">
-            <a
-              href="https://wa.me/2349133886162?text=Hello%20Lee%20Auto%20Nigeria,%20I%20would%20like%20to%20enquire%20about%20vehicle%20servicing%20and%20inspection%20services%20for%20dealers%20in%20Lagos."
-              target="_blank"
-              rel="noreferrer"
-              className="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition-colors text-center"
-            >
-              <MessageSquare className="w-5 h-5" />
-              Chat on WhatsApp
-            </a>
+          <div className="pt-6">
+            <WhatsAppCTA 
+              message="Hello LeeAutoX Nigeria, I would like to enquire about vehicle servicing and inspection services for dealers in Lagos."
+              title="Chat with our Lagos Operations Coordinator"
+              subtitle="Discuss servicing requirements, container unloading slots, and custom dealer fleet inspections."
+            />
           </div>
 
         </div>
@@ -183,6 +181,8 @@ export default function LeeAutoPage() {
         </div>
 
       </div>
+
+      <Contact />
     </motion.div>
   );
 }

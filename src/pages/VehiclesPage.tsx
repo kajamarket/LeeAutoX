@@ -2,6 +2,7 @@ import { useLocation } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
 import VehicleCatalogue from '../components/VehicleCatalogue';
 import AutoStore from '../components/AutoStore';
+import Contact from '../components/Contact';
 import { SEO_DATA } from '../seoData';
 import { useTheme } from '../context/ThemeContext';
 import { Car, Shield, Compass, Truck } from 'lucide-react';
@@ -71,6 +72,8 @@ export default function VehiclesPage() {
 
       {/* Auto Store Component (Parts and Accessories) */}
       <AutoStore />
+
+      <Contact />
     </div>
   );
 }

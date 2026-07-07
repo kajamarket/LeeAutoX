@@ -1,5 +1,6 @@
 import PageHeader from '../components/PageHeader';
 import Process from '../components/Process';
+import Contact from '../components/Contact';
 import { SEO_DATA } from '../seoData';
 import { useTheme } from '../context/ThemeContext';
 import { Compass, Ship, FileText, CheckCircle } from 'lucide-react';
@@ -85,6 +86,8 @@ export default function HowItWorksPage() {
 
       {/* Reuse the interactive Process flow */}
       <Process />
+
+      <Contact />
     </div>
   );
 }

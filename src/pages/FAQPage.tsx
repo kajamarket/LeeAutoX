@@ -1,5 +1,6 @@
 import PageHeader from '../components/PageHeader';
 import FAQ from '../components/FAQ';
+import Contact from '../components/Contact';
 import { SEO_DATA } from '../seoData';
 import { useTheme } from '../context/ThemeContext';
 import { HelpCircle, ChevronDown } from 'lucide-react';
@@ -88,6 +89,8 @@ export default function FAQPage() {
 
       {/* Reuse core interactive FAQ */}
       <FAQ />
+
+      <Contact />
     </div>
   );
 }

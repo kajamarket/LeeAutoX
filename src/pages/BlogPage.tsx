@@ -4,6 +4,8 @@ import { SEO_DATA } from '../seoData';
 import { useTheme } from '../context/ThemeContext';
 import { BookOpen, Calendar, User, Clock, ArrowLeft, MessageSquare, ChevronRight } from 'lucide-react';
 import { CONTACT_INFO } from '../constants';
+import WhatsAppCTA from '../components/WhatsAppCTA';
+import Contact from '../components/Contact';
 import { cleanPathname } from '../utils/path';
 
 const BLOG_CONTENT: Record<string, {
@@ -243,24 +245,18 @@ export default function BlogPage() {
           </div>
 
           {/* Call to Action */}
-          <div className="mt-16 border-t pt-10 flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div>
-              <h4 className="font-bold text-lg uppercase mb-1">Interested in these Sourcing Surcharges?</h4>
-              <p className="text-xs text-zinc-500 font-sans">Connect directly with our logistics authors via WhatsApp for an immediate quotation.</p>
-            </div>
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3 bg-[#2B59FF] hover:bg-[#1a41cc] text-[#FAFBFD] font-bold uppercase text-xs tracking-wider flex items-center gap-2 shadow-[0_0_20px_rgba(43,89,255,0.3)]"
-            >
-              <MessageSquare size={14} />
-              Inquire via WhatsApp
-            </a>
+          <div className="mt-16 border-t pt-10">
+            <WhatsAppCTA 
+              message={`Hello LeeAutoX! I am reading your article "${postData?.title || 'Sourcing Surcharges'}" and would like to ask some questions.`}
+              title="Interested in these Sourcing Surcharges?"
+              subtitle="Connect directly with our logistics authors via WhatsApp for an immediate quotation."
+            />
           </div>
 
         </div>
       </section>
+
+      <Contact />
     </div>
   );
 }

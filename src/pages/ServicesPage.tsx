@@ -2,6 +2,7 @@ import { useLocation } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
 import Services from '../components/Services';
 import Fleet from '../components/Fleet';
+import Contact from '../components/Contact';
 import { SEO_DATA } from '../seoData';
 import { useTheme } from '../context/ThemeContext';
 import { Briefcase, Settings, Landmark, ShieldAlert } from 'lucide-react';
@@ -85,6 +86,8 @@ export default function ServicesPage() {
 
       {/* Fleet Component */}
       <Fleet />
+
+      <Contact />
     </div>
   );
 }
