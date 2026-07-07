@@ -5,13 +5,14 @@ import AutoStore from '../components/AutoStore';
 import { SEO_DATA } from '../seoData';
 import { useTheme } from '../context/ThemeContext';
 import { Car, Shield, Compass, Truck } from 'lucide-react';
+import { cleanPathname } from '../utils/path';
 
 export default function VehiclesPage() {
   const { theme } = useTheme();
   const { pathname } = useLocation();
 
   // Standardize trailing slash
-  let cleanPath = pathname;
+  let cleanPath = cleanPathname(pathname);
   if (!cleanPath.endsWith('/')) {
     cleanPath += '/';
   }

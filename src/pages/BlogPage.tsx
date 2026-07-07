@@ -4,6 +4,7 @@ import { SEO_DATA } from '../seoData';
 import { useTheme } from '../context/ThemeContext';
 import { BookOpen, Calendar, User, Clock, ArrowLeft, MessageSquare, ChevronRight } from 'lucide-react';
 import { CONTACT_INFO } from '../constants';
+import { cleanPathname } from '../utils/path';
 
 const BLOG_CONTENT: Record<string, {
   title: string;
@@ -105,7 +106,7 @@ export default function BlogPage() {
   const { pathname } = useLocation();
 
   // Standardize trailing slash
-  let cleanPath = pathname;
+  let cleanPath = cleanPathname(pathname);
   if (!cleanPath.endsWith('/')) {
     cleanPath += '/';
   }

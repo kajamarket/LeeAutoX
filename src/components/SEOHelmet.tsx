@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { SEO_DATA } from '../seoData';
+import { cleanPathname } from '../utils/path';
 
 export default function SEOHelmet() {
   const { pathname } = useLocation();
 
   useEffect(() => {
     // Standardize pathname with trailing slashes if not home
-    let cleanPath = pathname;
+    let cleanPath = cleanPathname(pathname);
     if (cleanPath !== '/' && !cleanPath.endsWith('/')) {
       cleanPath += '/';
     }

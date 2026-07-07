@@ -5,13 +5,14 @@ import { useTheme } from '../context/ThemeContext';
 import { MapPin, Phone, MessageSquare, Shield, Check } from 'lucide-react';
 import { CONTACT_INFO } from '../constants';
 import ImportDutyCalculator from '../components/ImportDutyCalculator';
+import { cleanPathname } from '../utils/path';
 
 export default function GeoPage() {
   const { theme } = useTheme();
   const { pathname } = useLocation();
 
   // Standardize trailing slash
-  let cleanPath = pathname;
+  let cleanPath = cleanPathname(pathname);
   if (!cleanPath.endsWith('/')) {
     cleanPath += '/';
   }

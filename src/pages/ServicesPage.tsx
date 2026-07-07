@@ -5,13 +5,14 @@ import Fleet from '../components/Fleet';
 import { SEO_DATA } from '../seoData';
 import { useTheme } from '../context/ThemeContext';
 import { Briefcase, Settings, Landmark, ShieldAlert } from 'lucide-react';
+import { cleanPathname } from '../utils/path';
 
 export default function ServicesPage() {
   const { theme } = useTheme();
   const { pathname } = useLocation();
 
   // Standardize trailing slash
-  let cleanPath = pathname;
+  let cleanPath = cleanPathname(pathname);
   if (!cleanPath.endsWith('/')) {
     cleanPath += '/';
   }

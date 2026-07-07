@@ -6,6 +6,7 @@ import { SEO_DATA } from '../seoData';
 import { useTheme } from '../context/ThemeContext';
 import { BookOpen, Calendar, User, Clock, ArrowLeft, MessageSquare, ChevronRight } from 'lucide-react';
 import { CONTACT_INFO } from '../constants';
+import { cleanPathname } from '../utils/path';
 
 // Detailed Guide Content Map to serve real content
 const GUIDES_CONTENT: Record<string, {
@@ -48,7 +49,7 @@ const GUIDES_CONTENT: Record<string, {
       'After clearing, vehicles are transferred out of the chaotic port environment. For professional car dealers, fleet operators, and buyers demanding perfect turnkey condition on showroom arrival, we coordinate with our dealer-facing vehicle servicing and prep partner, [Lee Auto Lagos](/lee-auto/). While LeeAutoX handles the complex sourcing, containerization, and marine shipping logistics, the Lee Auto Lagos team executes detailed 150-point diagnostic scans, fluid services, cosmetic paint correction, marine grime wash, and custom NCS clearance verifications.',
       '## Cargo Shipping to Nigeria from Canada: Rates, Timing, and Pricing',
       'Our general cargo service to Nigeria from Canada is fully structured around volume, weight, and item type. Whether you are shipping personal luggage, household machinery, or a fleet of commercial trucks, our logistics desk coordinates volume carrier discounts. We offer a highly reliable alternative to standard cargo agents, backed by a fully registered Canadian corporation (No: 1761065-3) and dedicated Lagos clearing hubs.',
-      'To provide absolute security for your capital, we also offer a unique 50-25-25 percentages installment payment plan for qualified vehicle pre-orders, protecting your liquid cash flow. Contact our support team via WhatsApp today to request current container shipping quotes or book air cargo space!'
+      'To provide absolute security for your capital, we also offer a unique 50-25-25 Percentages installment payment plan for qualified vehicle pre-orders, protecting your liquid cash flow. Contact our support team via WhatsApp today to request current container shipping quotes or book air cargo space!'
     ]
   },
   '/guides/tokunbo-buyers-guide/': {
@@ -270,7 +271,7 @@ export default function GuidesPage() {
   };
 
   // Standardize trailing slash
-  let cleanPath = pathname;
+  let cleanPath = cleanPathname(pathname);
   if (!cleanPath.endsWith('/')) {
     cleanPath += '/';
   }
