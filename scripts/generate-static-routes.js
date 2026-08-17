@@ -15,6 +15,16 @@ const ROUTES_SEO = {
       'logo': 'https://leeplugshub.com/wp-content/uploads/2026/05/LeeAutoX-lcon-1-scaled.png'
     }
   },
+  '/review/': {
+    title: 'Leave a Verified Customer Review | LeeAutoX',
+    desc: 'Share your feedback, vehicle importation experience, star rating, and delivery photos with the LeeAutoX team.',
+    keywords: 'leave review leeautox, submit car rating, client feedback, rate vehicle importer'
+  },
+  '/admin/reviews/': {
+    title: 'Admin Reviews Console | LeeAutoX',
+    desc: 'Administrator dashboard for managing client reviews and Google Business Profile exports.',
+    keywords: 'admin reviews, leeautox admin'
+  },
   '/about/': {
     title: 'Vehicle Exporters in Lagos Nigeria & Ontario Canada | About LeeAutoX',
     desc: 'LeeAutoX is a registered Canadian corporation (No: 1761065-3) with operations in Lagos, Nigeria. Specialising in vehicle sourcing, containerisation, and customs clearance for West African buyers.',
