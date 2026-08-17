@@ -1,8 +1,11 @@
 import { motion } from 'motion/react';
-import { ArrowDownRight } from 'lucide-react';
+import { ArrowDownRight, Star } from 'lucide-react';
 import { HERO_STATS } from '../constants';
+import { useReviews } from '../context/ReviewsContext';
 
 export default function Hero() {
+  const { averageRating, totalCount } = useReviews();
+
   return (
     <section className="relative min-h-screen flex flex-col justify-center px-6 md:px-12 pb-20 pt-3 md:pt-32 overflow-hidden bg-black">
       {/* Background Image */}
@@ -47,7 +50,7 @@ export default function Hero() {
                 <linearGradient id="line-grad" x1="0%" y1="0%" x2="100%" y2="0%">
                   <stop offset="0%" stopColor="white" stopOpacity="0" />
                   <stop offset="50%" stopColor="white" stopOpacity="0.5" />
-                  <stop offset="100%" stopColor="white" stopOpacity="0" />
+                  <stop offset="100%" stopColor="white" stopOpacity="0.5" />
                 </linearGradient>
               </defs>
             </svg>
@@ -128,15 +131,35 @@ export default function Hero() {
       </div>
 
       <div className="max-w-7xl mx-auto w-full relative z-10">
-        {/* Eyebrow */}
-        <motion.p
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.1, duration: 0.6 }}
-          className="text-xs font-mono tracking-[0.3em] text-[#2B59FF] uppercase mb-6"
-        >
-          BUY — BID — EXPORT
-        </motion.p>
+        {/* Eyebrow & Dynamic Rating Badge */}
+        <div className="flex flex-wrap items-center gap-4 mb-6">
+          <motion.p
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.1, duration: 0.6 }}
+            className="text-xs font-mono tracking-[0.3em] text-[#2B59FF] uppercase"
+          >
+            BUY — BID — EXPORT
+          </motion.p>
+
+          <motion.a
+            href="#testimonials"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/15 rounded-full text-white text-xs font-medium cursor-pointer transition-all"
+          >
+            <div className="flex items-center text-amber-400">
+              <Star size={13} className="fill-amber-400 text-amber-400" />
+            </div>
+            <span className="font-bold text-white">{averageRating}</span>
+            <span className="text-white/60">/ 5.0</span>
+            <span className="text-white/40 text-[10px] hidden sm:inline">·</span>
+            <span className="text-white/70 text-[11px] underline underline-offset-2">
+              {totalCount} Verified Reviews
+            </span>
+          </motion.a>
+        </div>
 
         {/* Headline */}
         <motion.h1
