@@ -89,6 +89,39 @@ export const RAW_SEO_DATA: Record<string, any> = {
       }
     }
   },
+  '/review/': {
+    title: 'Leave a Verified Customer Review | LeeAutoX',
+    description: 'Share your feedback, car importation experience, star rating, and delivery photos with the LeeAutoX team.',
+    keywords: 'leave review leeautox, submit car rating, client feedback, rate vehicle importer',
+    canonical: 'https://leeautox.com/review/',
+    breadcrumbs: [
+      { name: 'Home', item: 'https://leeautox.com/' },
+      { name: 'Testimonials', item: 'https://leeautox.com/testimonials/' },
+      { name: 'Leave Review', item: 'https://leeautox.com/review/' }
+    ],
+    heading: 'Share Your Experience with LeeAutoX',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': 'Leave a Review - LeeAutoX'
+    }
+  },
+  '/admin/reviews/': {
+    title: 'Admin Reviews Console | LeeAutoX',
+    description: 'Administrator dashboard for managing client reviews and Google Business Profile exports.',
+    keywords: 'admin reviews, leeautox admin',
+    canonical: 'https://leeautox.com/admin/reviews/',
+    breadcrumbs: [
+      { name: 'Home', item: 'https://leeautox.com/' },
+      { name: 'Admin', item: 'https://leeautox.com/admin/reviews/' }
+    ],
+    heading: 'Admin Reviews & Google Business Console',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': 'Admin Reviews Portal'
+    }
+  },
   '/how-it-works/': {
     title: 'How to Import Cars from Canada to Nigeria | LeeAutoX',
     description: 'Step-by-step guide to importing a car from Canada or USA to Nigeria. From auction bidding and VIN inspection to container shipping and Lagos port clearance.',
