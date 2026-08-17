@@ -2,9 +2,11 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { SEO_DATA } from '../seoData';
 import { cleanPathname } from '../utils/path';
+import { useReviews } from '../context/ReviewsContext';
 
 export default function SEOHelmet() {
   const { pathname } = useLocation();
+  const { averageRating, totalCount, reviews } = useReviews();
 
   useEffect(() => {
     // Standardize pathname with trailing slashes if not home
@@ -45,7 +47,7 @@ export default function SEOHelmet() {
     }
     linkCanonical.setAttribute('href', data.canonical);
 
-    // 5. Inject Schema.org JSON-LD
+    // 5. Inject Schema.org JSON-LD with dynamic reviews and aggregateRating
     let schemaScript = document.getElementById('seo-schema-jsonld') as HTMLScriptElement;
     if (!schemaScript) {
       schemaScript = document.createElement('script');
@@ -53,7 +55,35 @@ export default function SEOHelmet() {
       schemaScript.type = 'application/ld+json';
       document.head.appendChild(schemaScript);
     }
-    schemaScript.textContent = JSON.stringify(data.schema);
+    
+    // Inject dynamic aggregateRating into schema
+    const enrichedSchema = {
+      ...data.schema,
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: averageRating.toString(),
+        bestRating: '5',
+        worstRating: '1',
+        ratingCount: totalCount.toString(),
+        reviewCount: totalCount.toString(),
+      },
+      review: reviews.slice(0, 5).map(r => ({
+        '@type': 'Review',
+        author: {
+          '@type': 'Person',
+          name: r.author,
+        },
+        reviewRating: {
+          '@type': 'Rating',
+          ratingValue: r.rating.toString(),
+          bestRating: '5',
+          worstRating: '1',
+        },
+        reviewBody: r.quote,
+        datePublished: r.date,
+      }))
+    };
+    schemaScript.textContent = JSON.stringify(enrichedSchema);
 
     // 6. Update Open Graph (OG) tags dynamically
     let metaOgImage = document.querySelector('meta[property="og:image"]');
@@ -136,8 +166,6 @@ export default function SEOHelmet() {
       document.head.appendChild(metaTwitterSite);
     }
     metaTwitterSite.setAttribute('content', '@leeautox');
-
-    // Cleanup logic (optional, keep schema on unmount or let next route overwrite)
   }, [pathname]);
 
   return null;
