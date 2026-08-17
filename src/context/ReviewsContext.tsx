@@ -14,7 +14,6 @@ export interface ReviewItem {
   verified: boolean;
 }
 
-// Convert original base testimonials into verified 5-star review items
 export const INITIAL_REVIEWS: ReviewItem[] = [
   {
     id: 'base-1',
@@ -65,7 +64,6 @@ interface ReviewsContextType {
 
 const ReviewsContext = createContext<ReviewsContextType | undefined>(undefined);
 
-// Google Apps Script Webhook URL for LeeAutoX Verified Reviews Google Sheet
 const GOOGLE_SCRIPT_WEBHOOK = ((import.meta as any).env?.VITE_GOOGLE_SHEETS_SCRIPT_URL as string) || 
   'https://script.google.com/macros/s/AKfycbxbeEOBjabzihD7O0E5HgMAqYCcCFQofwov6bimocrCIfpuBYNFjGhujQna0Y4IZY6bDQ/exec';
 
@@ -76,7 +74,6 @@ export const ReviewsProvider: React.FC<{ children: React.ReactNode }> = ({ child
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // Merge initial baseline with user saved reviews ensuring unique IDs
           const baseIds = new Set(INITIAL_REVIEWS.map(r => r.id));
           const filteredUserReviews = parsed.filter((r: ReviewItem) => !baseIds.has(r.id));
           return [...INITIAL_REVIEWS, ...filteredUserReviews];
@@ -90,6 +87,65 @@ export const ReviewsProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const [isLoading, setIsLoading] = useState(false);
 
+  // Initial load: Fetch live reviews from Google Sheet in background for all devices
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchGoogleSheetReviews() {
+      if (!GOOGLE_SCRIPT_WEBHOOK) return;
+      try {
+        const response = await fetch(GOOGLE_SCRIPT_WEBHOOK, { method: 'GET' });
+        if (!response.ok) return;
+        const result = await response.json();
+
+        if (result && result.status === 'success' && Array.isArray(result.reviews) && isMounted) {
+          setReviews(prev => {
+            const existingKeys = new Set(
+              prev.map(r => `${r.author.toLowerCase().trim()}_${r.quote.toLowerCase().trim()}`)
+            );
+            
+            const newGSheetReviews: ReviewItem[] = [];
+            for (const gReview of result.reviews) {
+              const key = `${(gReview.author || '').toLowerCase().trim()}_${(gReview.quote || '').toLowerCase().trim()}`;
+              if (!existingKeys.has(key)) {
+                existingKeys.add(key);
+                newGSheetReviews.push({
+                  id: gReview.id || `gsheet-${Date.now()}-${Math.random().toString(36).substring(2, 5)}`,
+                  author: gReview.author,
+                  role: gReview.role || 'Verified Client',
+                  quote: gReview.quote,
+                  rating: Number(gReview.rating) || 5,
+                  date: gReview.date || new Date().toISOString().split('T')[0],
+                  service: gReview.service || 'Vehicle Procurement & Logistics',
+                  mediaType: gReview.mediaType || 'none',
+                  mediaUrl: gReview.mediaUrl || undefined,
+                  verified: true,
+                });
+              }
+            }
+
+            if (newGSheetReviews.length > 0) {
+              const merged = [...prev, ...newGSheetReviews];
+              try {
+                localStorage.setItem('leeautox_user_reviews', JSON.stringify(merged));
+              } catch (e) {}
+              return merged;
+            }
+            return prev;
+          });
+        }
+      } catch (err) {
+        console.warn('Google Sheet live reviews fetch notice:', err);
+      }
+    }
+
+    fetchGoogleSheetReviews();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Sync to local storage whenever user reviews change
   useEffect(() => {
     try {
@@ -99,7 +155,6 @@ export const ReviewsProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, [reviews]);
 
-  // Calculate dynamic average star rating
   const totalCount = reviews.length;
   const averageRating = totalCount > 0
     ? Number((reviews.reduce((acc, r) => acc + (r.rating || 5), 0) / totalCount).toFixed(1))
@@ -114,10 +169,8 @@ export const ReviewsProvider: React.FC<{ children: React.ReactNode }> = ({ child
       verified: true,
     };
 
-    // Append into state immediately (creates a new slide in the carousel)
     setReviews(prev => [...prev, newReview]);
 
-    // If Google Sheet Webhook is configured, post in background
     if (GOOGLE_SCRIPT_WEBHOOK) {
       try {
         await fetch(GOOGLE_SCRIPT_WEBHOOK, {
@@ -135,7 +188,6 @@ export const ReviewsProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return true;
   };
 
-  // Export Reviews as CSV (Ready for Google Business Profile verification & CRM upload)
   const exportToCSV = () => {
     const headers = ['ID', 'Author', 'Role/Location', 'Star Rating', 'Review Text', 'Service / Vehicle', 'Media Type', 'Media URL', 'Date', 'Verified'];
     const rows = reviews.map(r => [
@@ -161,7 +213,6 @@ export const ReviewsProvider: React.FC<{ children: React.ReactNode }> = ({ child
     document.body.removeChild(link);
   };
 
-  // Export Reviews as structured JSON
   const exportToJSON = () => {
     const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(reviews, null, 2));
     const downloadAnchor = document.createElement('a');
