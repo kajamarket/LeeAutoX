@@ -305,6 +305,55 @@ async function main() {
 
   const baseHtmlContent = fs.readFileSync(baseHtmlPath, 'utf8');
 
+  // Standard initial reviews for static schema rendering
+  const STATIC_ORGANIZATION_SCHEMA = {
+    '@type': 'AutoDealer',
+    '@id': 'https://leeautox.com/#organization',
+    'name': 'LeeAutoX',
+    'url': 'https://leeautox.com/',
+    'logo': 'https://leeplugshub.com/wp-content/uploads/2026/05/LeeAutoX-lcon-1-scaled.png',
+    'image': 'https://leeplugshub.com/wp-content/uploads/2026/05/leeautoxhero.png',
+    'telephone': '+1-647-389-6162',
+    'email': 'info@leeautox.com',
+    'priceRange': '$$$$',
+    'address': {
+      '@type': 'PostalAddress',
+      'addressLocality': 'Lagos',
+      'addressCountry': 'NG'
+    },
+    'contactPoint': {
+      '@type': 'ContactPoint',
+      'telephone': '+1-647-389-6162',
+      'contactType': 'customer service',
+      'areaServed': ['NG', 'GH', 'CA'],
+      'availableLanguage': ['en']
+    },
+    'aggregateRating': {
+      '@type': 'AggregateRating',
+      'ratingValue': '5.0',
+      'bestRating': '5',
+      'worstRating': '1',
+      'ratingCount': '3',
+      'reviewCount': '3'
+    },
+    'review': [
+      {
+        '@type': 'Review',
+        'author': { '@type': 'Person', 'name': 'Chief Adebayo K.' },
+        'reviewRating': { '@type': 'Rating', 'ratingValue': '5', 'bestRating': '5', 'worstRating': '1' },
+        'reviewBody': 'Sourced my 2022 Toyota Land Cruiser from Toronto auctions. Clearing at Apapa port was completely seamless and transparent.',
+        'datePublished': '2026-06-15'
+      },
+      {
+        '@type': 'Review',
+        'author': { '@type': 'Person', 'name': 'Dr. Emeka O.' },
+        'reviewRating': { '@type': 'Rating', 'ratingValue': '5', 'bestRating': '5', 'worstRating': '1' },
+        'reviewBody': 'Bidding updates were communicated daily on WhatsApp. Vehicle arrived in Lagos in pristine auction condition.',
+        'datePublished': '2026-07-02'
+      }
+    ]
+  };
+
   // Helper to pre-render headers inside HTML
   function injectMeta(html, route, data) {
     let modified = html;
@@ -325,13 +374,41 @@ async function main() {
   <link rel="canonical" href="https://leeautox.com${route}" />
 `;
 
-    if (data.schema) {
-      injections += `  <script id="seo-schema-jsonld" type="application/ld+json">${JSON.stringify(data.schema)}</script>\n`;
+    // Construct valid Google Schema @graph
+    let graphItems = [];
+    if (data.schema && Array.isArray(data.schema['@graph'])) {
+      const filtered = data.schema['@graph'].filter(
+        (item) => item['@type'] !== 'Organization' && item['@type'] !== 'AutoDealer' && item['@type'] !== 'AutomotiveBusiness'
+      );
+      graphItems = [STATIC_ORGANIZATION_SCHEMA, ...filtered];
+    } else if (data.schema) {
+      const { aggregateRating, review, ...cleanSchema } = data.schema;
+      if (cleanSchema['@type'] === 'Organization' || cleanSchema['@type'] === 'AutoDealer' || cleanSchema['@type'] === 'AutomotiveBusiness') {
+        const { '@type': _origType, ...restProps } = cleanSchema;
+        graphItems = [{ ...STATIC_ORGANIZATION_SCHEMA, ...restProps, '@type': 'AutoDealer' }];
+      } else {
+        const pageNode = {
+          ...cleanSchema,
+          '@id': `https://leeautox.com${route}#webpage`,
+          'isPartOf': { '@id': 'https://leeautox.com/#organization' }
+        };
+        graphItems = [STATIC_ORGANIZATION_SCHEMA, pageNode];
+      }
+    } else {
+      graphItems = [STATIC_ORGANIZATION_SCHEMA];
     }
+
+    const fullSchema = {
+      '@context': 'https://schema.org',
+      '@graph': graphItems
+    };
+
+    injections += `  <script id="seo-schema-jsonld" type="application/ld+json">${JSON.stringify(fullSchema)}</script>\n`;
 
     modified = modified.replace('</head>', `${injections}\n</head>`);
     return modified;
   }
+
 
   // 2. Duplicate static files for all routes
   for (const [route, data] of Object.entries(ROUTES_SEO)) {
