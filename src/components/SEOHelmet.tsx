@@ -47,7 +47,7 @@ export default function SEOHelmet() {
     }
     linkCanonical.setAttribute('href', data.canonical);
 
-    // 5. Inject Schema.org JSON-LD with dynamic reviews and aggregateRating
+    // 5. Inject Schema.org JSON-LD with valid AutoDealer review snippet schema
     let schemaScript = document.getElementById('seo-schema-jsonld') as HTMLScriptElement;
     if (!schemaScript) {
       schemaScript = document.createElement('script');
@@ -56,33 +56,82 @@ export default function SEOHelmet() {
       document.head.appendChild(schemaScript);
     }
     
-    // Inject dynamic aggregateRating into schema
-    const enrichedSchema = {
-      ...data.schema,
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: averageRating.toString(),
-        bestRating: '5',
-        worstRating: '1',
-        ratingCount: totalCount.toString(),
-        reviewCount: totalCount.toString(),
+    // Create valid Google Review Snippet entity (AutoDealer)
+    const organizationEntity = {
+      '@type': 'AutoDealer',
+      '@id': 'https://leeautox.com/#organization',
+      'name': 'LeeAutoX',
+      'url': 'https://leeautox.com/',
+      'logo': 'https://leeplugshub.com/wp-content/uploads/2026/05/LeeAutoX-lcon-1-scaled.png',
+      'image': 'https://leeplugshub.com/wp-content/uploads/2026/05/leeautoxhero.png',
+      'telephone': '+1-647-389-6162',
+      'email': 'info@leeautox.com',
+      'priceRange': '$$$$',
+      'address': {
+        '@type': 'PostalAddress',
+        'addressLocality': 'Lagos',
+        'addressCountry': 'NG'
       },
-      review: reviews.slice(0, 5).map(r => ({
+      'contactPoint': {
+        '@type': 'ContactPoint',
+        'telephone': '+1-647-389-6162',
+        'contactType': 'customer service',
+        'areaServed': ['NG', 'GH', 'CA'],
+        'availableLanguage': ['en']
+      },
+      'aggregateRating': {
+        '@type': 'AggregateRating',
+        'ratingValue': averageRating.toString(),
+        'bestRating': '5',
+        'worstRating': '1',
+        'ratingCount': totalCount.toString(),
+        'reviewCount': totalCount.toString()
+      },
+      'review': reviews.slice(0, 5).map(r => ({
         '@type': 'Review',
-        author: {
+        'author': {
           '@type': 'Person',
-          name: r.author,
+          'name': r.author
         },
-        reviewRating: {
+        'reviewRating': {
           '@type': 'Rating',
-          ratingValue: r.rating.toString(),
-          bestRating: '5',
-          worstRating: '1',
+          'ratingValue': r.rating.toString(),
+          'bestRating': '5',
+          'worstRating': '1'
         },
-        reviewBody: r.quote,
-        datePublished: r.date,
+        'reviewBody': r.quote,
+        'datePublished': r.date
       }))
     };
+
+    let graphItems: any[] = [];
+    if (data.schema && Array.isArray(data.schema['@graph'])) {
+      const filtered = data.schema['@graph'].filter(
+        (item: any) => item['@type'] !== 'Organization' && item['@type'] !== 'AutoDealer' && item['@type'] !== 'AutomotiveBusiness'
+      );
+      graphItems = [organizationEntity, ...filtered];
+    } else if (data.schema) {
+      const { aggregateRating: _ar, review: _rev, ...cleanPageSchema } = data.schema;
+      if (cleanPageSchema['@type'] === 'Organization' || cleanPageSchema['@type'] === 'AutoDealer' || cleanPageSchema['@type'] === 'AutomotiveBusiness') {
+        const { '@type': _origType, ...restProps } = cleanPageSchema;
+        graphItems = [{ ...organizationEntity, ...restProps, '@type': 'AutoDealer', aggregateRating: organizationEntity.aggregateRating, review: organizationEntity.review }];
+      } else {
+        const pageNode = {
+          ...cleanPageSchema,
+          '@id': `https://leeautox.com${cleanPath}#webpage`,
+          'isPartOf': { '@id': 'https://leeautox.com/#organization' }
+        };
+        graphItems = [organizationEntity, pageNode];
+      }
+    } else {
+      graphItems = [organizationEntity];
+    }
+
+    const enrichedSchema = {
+      '@context': 'https://schema.org',
+      '@graph': graphItems
+    };
+
     schemaScript.textContent = JSON.stringify(enrichedSchema);
 
     // 6. Update Open Graph (OG) tags dynamically
