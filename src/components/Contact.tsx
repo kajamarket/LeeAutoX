@@ -54,8 +54,8 @@ export default function Contact() {
                 <span className="text-muted-foreground/30">|</span>
                 <a href={`mailto:${CONTACT_INFO.email2}`} className="text-muted-foreground hover:text-foreground">{CONTACT_INFO.email2}</a>
               </div>
-           
-              <div>
+            </div>
+            <div>
               <span className="font-medium text-foreground">WhatsApp / Call: </span>
               <div className="inline-flex flex-wrap items-center gap-x-2">
                 <a href={`https://wa.me/${CONTACT_INFO.whatsappRaw}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">{CONTACT_INFO.whatsapp}</a>
@@ -74,6 +74,7 @@ export default function Contact() {
                 <div><span className="font-medium text-foreground">Nigeria:</span> {CONTACT_INFO.addressNG}</div>
               </div>
             </div>
+          </div>
 
           <div className="mt-12">
             <p className="text-xs text-muted-foreground leading-relaxed">
