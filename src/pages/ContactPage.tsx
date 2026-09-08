@@ -25,6 +25,7 @@ export default function ContactPage() {
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
           
           {/* Toronto Office */}
+          {/* Toronto Office */}
           <div className={`p-8 border ${
             theme === 'dark' ? 'bg-zinc-900 border-zinc-800' : 'bg-slate-50 border-slate-200'
           }`}>
@@ -37,7 +38,7 @@ export default function ContactPage() {
               <div className="flex gap-3 items-start">
                 <MapPin size={18} className="text-[#2B59FF] shrink-0" />
                 <span className={theme === 'dark' ? 'text-zinc-400' : 'text-slate-600'}>
-                  Greater Toronto Area, Ontario, Canada (Corp: 1761065-3)
+                  {CONTACT_INFO.addressCA} (Corp: {CONTACT_INFO.corpNumber})
                 </span>
               </div>
               <div className="flex gap-3 items-center">
@@ -68,13 +69,13 @@ export default function ContactPage() {
               <div className="flex gap-3 items-start">
                 <MapPin size={18} className="text-[#2B59FF] shrink-0" />
                 <span className={theme === 'dark' ? 'text-zinc-400' : 'text-slate-600'}>
-                  Apapa Port Clearance Lot, Lagos State, Nigeria
+                  {CONTACT_INFO.addressNG}
                 </span>
               </div>
               <div className="flex gap-3 items-center">
                 <Phone size={18} className="text-[#2B59FF]" />
                 <span className={theme === 'dark' ? 'text-zinc-400' : 'text-slate-600'}>
-                  {CONTACT_INFO.phone}
+                  {CONTACT_INFO.phoneNG}
                 </span>
               </div>
               <div className="flex gap-3 items-center">
