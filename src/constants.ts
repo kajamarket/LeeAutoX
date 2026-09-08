@@ -24,12 +24,15 @@ export const HERO_STATS: Stat[] = [
 
 export const CONTACT_INFO = {
   phone: '+1 (647) 389-6162',
+  phoneNG: '+234 809 918 6162',
   whatsapp: '+1 (647) 389-6162',
   whatsappRaw: '16473896162',
   email1: 'info@leeautox.com',
   email2: 'leeautox@gmail.com',
   instagram: 'leeautox',
-  base: 'Lagos, Nigeria | Ontario, Canada',
+  locations: '109 Slan Ave, Scarborough, ON M1G 3B7, Canada | 5 Pepple Street, Ikeja, Lagos, Nigeria',
+  addressCA: '109 Slan Ave, Scarborough, ON M1G 3B7, Canada',
+  addressNG: '5 Pepple Street, Ikeja, Lagos, Nigeria',
   corpNumber: '1761065-3',
 };
 
