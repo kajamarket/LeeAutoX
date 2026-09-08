@@ -54,10 +54,14 @@ export default function Contact() {
                 <span className="text-muted-foreground/30">|</span>
                 <a href={`mailto:${CONTACT_INFO.email2}`} className="text-muted-foreground hover:text-foreground">{CONTACT_INFO.email2}</a>
               </div>
-            </div>
-            <div>
+           
+              <div>
               <span className="font-medium text-foreground">WhatsApp / Call: </span>
-              <a href={`https://wa.me/${CONTACT_INFO.whatsappRaw}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">{CONTACT_INFO.whatsapp}</a>
+              <div className="inline-flex flex-wrap items-center gap-x-2">
+                <a href={`https://wa.me/${CONTACT_INFO.whatsappRaw}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">{CONTACT_INFO.whatsapp}</a>
+                <span className="text-muted-foreground/30">|</span>
+                <span className="text-muted-foreground">{CONTACT_INFO.phoneNG}</span>
+              </div>
             </div>
             <div>
               <span className="font-medium text-foreground">Instagram: </span>
@@ -65,9 +69,11 @@ export default function Contact() {
             </div>
             <div>
               <span className="font-medium text-foreground">Base: </span>
-              <span className="text-muted-foreground">{CONTACT_INFO.base}</span>
+              <div className="mt-1 space-y-1 text-muted-foreground">
+                <div><span className="font-medium text-foreground">Canada:</span> {CONTACT_INFO.addressCA}</div>
+                <div><span className="font-medium text-foreground">Nigeria:</span> {CONTACT_INFO.addressNG}</div>
+              </div>
             </div>
-          </div>
 
           <div className="mt-12">
             <p className="text-xs text-muted-foreground leading-relaxed">
