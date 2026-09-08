@@ -25,7 +25,6 @@ export default function ContactPage() {
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
           
           {/* Toronto Office */}
-          {/* Toronto Office */}
           <div className={`p-8 border ${
             theme === 'dark' ? 'bg-zinc-900 border-zinc-800' : 'bg-slate-50 border-slate-200'
           }`}>
