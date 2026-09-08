@@ -30,7 +30,7 @@ export const CONTACT_INFO = {
   email1: 'info@leeautox.com',
   email2: 'leeautox@gmail.com',
   instagram: 'leeautox',
-  locations: '109 Slan Ave, Scarborough, ON M1G 3B7, Canada | 5 Pepple Street, Ikeja, Lagos, Nigeria',
+  base: '109 Slan Ave, Scarborough, ON M1G 3B7, Canada | 5 Pepple Street, Ikeja, Lagos, Nigeria',
   addressCA: '109 Slan Ave, Scarborough, ON M1G 3B7, Canada',
   addressNG: '5 Pepple Street, Ikeja, Lagos, Nigeria',
   corpNumber: '1761065-3',
