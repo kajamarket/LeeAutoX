@@ -1,3 +1,4 @@
+import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
 import { SEO_DATA } from '../seoData';
@@ -23,82 +24,53 @@ const BLOG_CONTENT: Record<string, {
     readTime: '10 min read',
     date: 'June 22, 2026',
     category: 'Auctions',
-    summary: 'A step-by-step masterclass on how to bid, win, and secure clean-title or salvage rebuilds from Copart without broker overheads.',
+    summary: 'Master the technicalities of Copart Canada: understanding run-and-drive verification, calculating repair margins, and avoiding uninspected auction pitfalls.',
     paragraphs: [
-      'Bidding on global auto auctions can feel overwhelming, but with the right guidelines, you can buy high-quality cars at wholesale pricing. This technical post covers the complete checklist for winning clean-title and salvage rebuilds from Copart.',
-      'Understanding Copart Inventory. Copart registers vehicles under different title brands: Clean Title, Salvage Rebuild, and Parts Only. Clean titles are ready for direct registration. Salvage rebuilds have had minor or major cosmetic damage, meaning they must undergo certified reconstruction inspections before being certified for public roads.',
-      'Executing Pre-Bid Audits. Never bid on visual parameters alone. Obtain a complete historical verification via Carfax or Autocheck. Verify the chassis frame status, actual odometer records, airbag deployments, and current title brand histories. This eliminates severe hidden frame cracks and transmission failure risks.',
-      'Bidding and Hammer Price Math. Set a strict bidding ceiling. Remember that online bidding comes with Copart Buyer Fees, loading terminal fees, and gate clearance tariffs. These surcharges can add 10% to 15% on top of your bid hammer price, which should be budgeted in advance.'
-    ]
-  },
-  '/blog/understanding-shipping-costs-canada-to-lagos/': {
-    title: 'Understanding Ocean Container Freight Costs from Toronto to Lagos',
-    author: 'LeeAutoX Logistics Desk',
-    readTime: '8 min read',
-    date: 'June 15, 2026',
-    category: 'Shipping',
-    summary: 'An honest, transparent look at ocean container shipping rates, terminal port charges, and custom duty fees to prevent hidden fee shock.',
-    paragraphs: [
-      'The biggest stress of vehicle importing is opaque transit costs. We believe in 100% transparency. This post demystifies ocean container cargo costs from Toronto directly to Lagos ports.',
-      'The Components of Marine Freight. Freight is not a single flat line. It is divided into: 1. Inland Towing (hauling the vehicle from the Copart yard to our Scarborough loading lot). 2. Containerization (securing the cars using heavy straps inside steel cargo units). 3. Shipping Ocean Line Cargo fees (ocean freight tariff across the Atlantic).',
-      'Port Handlings and Clearing. Upon docking in Lagos, Apapa, or Tin Can port, shipping line agents charge Terminal Handling Fees, customs inspection releases, and port terminal rents. These are standard and must be compiled into your total landing cost estimates.'
-    ]
-  },
-  '/blog/toyota-vs-hyundai-durability-nigerian-roads/': {
-    title: 'Toyota vs. Hyundai: Battle of Durability on Nigerian Roads',
-    author: 'LeeAutoX Technical Review Desk',
-    readTime: '9 min read',
-    date: 'May 10, 2026',
-    category: 'Reviews',
-    summary: 'Which brand reigns supreme on Nigerian highways? An objective look at suspension resilience, fuel efficiency, spare part availability, and resale value.',
-    paragraphs: [
-      'Selecting the right car model is crucial for Nigerian road durability. In this review, we compare the two giants of Nigerian passenger traffic: Toyota and Hyundai.',
-      'Suspension and Ground Clearance: Toyota models (like Corolla, Camry, and Prado) feature robust suspension architectures engineered to absorb rugged off-road impacts. Hyundai (like Sonata and Elantra) offers advanced cabin technology and sportier handling but has a slightly lower clearance height, requiring cautious navigation over large Nigerian speedbumps.',
-      'Maintenance and Spare Part Availability: Both brands are highly supported in West Africa. Toyota spare parts are universal, sold in every major market across Lagos (from Ladipo to Berger). Hyundai parts are equally accessible and often represent more affordable purchase pricing, giving Hyundai excellent secondary cost-to-benefit ratios.',
-      'Resale Value: Toyota holds its value tenaciously in the local used car market. However, Hyundai Sonatas (specifically 2011 to 2021) are closing the gap, offering high-spec cabins (panoramic sunroofs, 360-degree cameras) at millions of Naira less than corresponding Toyotas, representing excellent initial value for modern buyers.'
-    ]
-  },
-  '/blog/best-tokunbo-suvs-nigeria-2026/': {
-    title: 'Best Tokunbo SUVs to Buy in Nigeria 2026',
-    author: 'LeeAutoX Sourcing Desk',
-    readTime: '10 min read',
-    date: 'May 15, 2026',
-    category: 'Reviews',
-    summary: 'An expert, ranked guide to the top 7 foreign-used (Tokunbo) SUVs for Nigerian roads in 2026. Explore pricing in Naira, maintenance costs, and fuel efficiency comparisons.',
-    paragraphs: [
-      'When looking to buy used SUV lagos or elsewhere in Nigeria, choosing the right model requires balancing luxury, suspension durability, and parts availability. Based on actual shipping volumes and dealer sales data, we have compiled the definitive list of the best Tokunbo SUVs for 2026.',
-      '1. Toyota Prado (The King of Nigerian Terrains). Known for its bulletproof V6 engine and massive ground clearance, the tokunbo toyota prado price nigeria is a premium investment that holds its value tenaciously. It handles flooded streets and potholes with ease.',
-      '2. Lexus RX350 (Unmatched Luxury and Reliability). The RX350 remains the best tokunbo SUV nigeria 2026 for drivers who want premium executive comfort without high maintenance costs. It shares powertrain parts with Toyota, making servicing extremely cheap.',
-      '3. Toyota Highlander & RAV4. Excellent mid-sized options that offer high fuel efficiency and easy daily drivability. To see how these compare mechanically with other brands, check out our comprehensive Toyota vs. Hyundai comparison.',
-      'Before purchasing any vehicle, we highly recommend utilizing our physical diagnostic guidelines in the Copart Pre-Purchase 150-Point Inspection Checklist to ensure you do not buy a water-damaged or mileage-tampered unit.'
+      'Bidding on North American dealer car auctions like Copart Canada is one of the most effective ways for private buyers and commercial fleet managers to acquire quality automobiles at 25% to 40% below typical Nigerian or Ghanaian market retail values. However, purchasing without physical on-site verification introduces considerable financial risk.',
+      'Understanding Copart title classifications is the critical first step. Clean Title (or Ontario Non-Branded) indicates that the vehicle has never been reported as a total loss by an insurer. While these carry higher auction bid ceilings, they require minimal prep before export. Salvage Title vehicles, conversely, were settled by insurance underwriters following accidents, theft recovery, or minor hail. When selected intelligently, salvage vehicles offer unmatched profit margins.',
+      'Always inspect the secondary damage category. Often, auction listings describe primary damage as front-end while obscuring damaged undercarriage suspension parts or cracked steering racks. Our licensed team conducts physical on-site lot checks at Copart Cookstown and Bowmanville prior to placing bids, running live OBD2 diagnostic scans and frame alignment assessments.',
+      'When calculating your maximum bid ceiling, ensure you include auction buyer fees, domestic flatbed towing from the yard to our Scarborough loading depot, ocean freight, and destination port clearance duties. Never bid with your heart; establish a firm cost matrix and stick to it.'
     ]
   },
   '/blog/shipping-car-canada-nigeria-complete-guide-2026/': {
-    title: 'Shipping a Car from Canada to Nigeria in 2026 | Complete Guide',
+    title: 'Shipping a car from Canada to Nigeria: 2026 guide',
     author: 'LeeAutoX Logistics Desk',
-    readTime: '11 min read',
-    date: 'June 2, 2026',
-    category: 'Shipping',
-    summary: 'The definitive 2026 handbook for shipping cars from Canadian terminals to Lagos ports. Discover transit times, container consolidation secrets, and how to estimate total clearing fees.',
+    readTime: '12 min read',
+    date: 'July 14, 2026',
+    category: 'Logistics',
+    summary: 'A complete operational guide on RoRo versus container freight, port clearances at Apapa and Tin Can Island, current tariff bands, and expected transit schedules from Canadian ports.',
     paragraphs: [
-      'Are you planning on shipping car from canada to nigeria in 2026? Navigating the international marine freight pipeline requires understanding cost parameters, documentation, and customs valuation checks.',
-      'How long does it take to ship car to nigeria? Ocean transit from Montreal or Halifax terminals to Lagos PTML or Tin Can Island typically takes between 28 to 42 days, depending on sea weather and shipping line routing. Once the vessel docks, expect 5 to 7 days for physical port offloading and custom clearance.',
-      'Let\'s break down container shipping cost canada nigeria 2026. Splicing multiple vehicles inside a 40ft high-cube cargo container is the safest and most cost-effective method. It protects your premium cars from marine salt spray and transit scratches. To estimate your landing and port clearance duty fees, you can use our interactive Nigeria Custom Car Import Duty Calculator 2026.',
-      'To guarantee an absolute legally cleared vehicle, always verify your Customs Single Goods Declaration (SGD) papers. Our guide on Chassis VIN and Custom Verification Guide Nigeria provides step-by-step instructions on verifying customs records on the NCS portal.'
+      '### Quick answer box\nShipping a car from Canada to Nigeria costs between $1,850 and $4,200 depending on the vehicle size and chosen shipping method (RoRo vs. consolidated 40-foot container). Ocean transit from Montreal or Halifax ports to Lagos (Apapa or Tin Can Island) averages 25 to 35 days. Customs clearance requires standard import tariffs calculated via the Nigeria Customs VIN valuation system.',
+      '### Key takeaways\n- Container shipping offers superior cargo security and allows loading spare parts, while RoRo is the most economical single-vehicle option.\n- Ocean freight transit takes 25 to 35 days from Montreal or Halifax to Apapa or Tin Can Island.\n- Nigeria customs clearance utilizes the automated VIN valuation system under the Common External Tariff (CET).\n- Pre-arrival document preparation prevents terminal storage and shipping line demurrage fees.\n- LeeAutoX provides milestone-based financing and end-to-end logistics from Canadian auction lots to Lagos.',
+      'Importing a vehicle from Canada to Nigeria requires a clear understanding of international ocean freight logistics, Canadian export regulations, and Nigerian port clearance processes. Whether you are importing an SUV for personal use in Lagos or managing inventory for an auto dealership, choosing the right shipping method and preparing documentation in advance prevents costly delays and port demurrage.',
+      'Canadian vehicle exports depart primarily from the Port of Montreal in Quebec or the Port of Halifax in Nova Scotia. Vehicles sourced from Ontario auction lots in Toronto or Scarborough are moved via bonded auto-haulers to these coastal container terminals for ocean loading.',
+      '## RoRo vs. container shipping comparison\nTwo primary ocean freight methods are available for shipping motor vehicles from Canada to West African ports:',
+      '### Roll-on/roll-off (RoRo) shipping\nRoRo vessels operate like floating parking garages. Vehicles are driven directly onto specialized cargo decks and lashed down. RoRo is typically the most economical option for single, drivable vehicles with clean titles. However, loose personal effects or spare parts cannot be stored inside the vehicle during transit.',
+      '### Consolidated container shipping\nIn containerized shipping, vehicles are safely loaded and braced inside standard 20-foot or 40-foot ocean containers. A 40-foot high-cube container accommodates three to four sedans or compact SUVs using reinforced wooden ramps and industrial wheel straps. Container shipping provides protection from salt air, eliminates port pilferage risks, and allows spare parts or tires to accompany the shipment.',
+      '## Freight cost breakdown and transit times\nOcean freight rates vary based on fuel surcharges, vessel availability, and seasonal demand. Transit from Montreal or Halifax to Apapa Port or Tin Can Island typically takes between 25 and 35 days on the water.',
+      'Typical freight estimates (in USD):\n- Compact sedan (RoRo): $1,850 - $2,250\n- Mid-size SUV (RoRo): $2,100 - $2,600\n- Full-size SUV / Truck (RoRo): $2,400 - $2,950\n- Shared 40ft container spot (per vehicle): $2,200 - $2,800\n- Exclusive 20ft container (single vehicle): $3,400 - $4,200',
+      '## Nigeria customs clearance and port processes\nVehicles arriving at Apapa, Tin Can Island, or PTML terminals undergo mandatory customs valuation under the Nigeria Customs Service Common External Tariff (CET) schedule. Customs duty is calculated based on the Cost, Insurance, and Freight (CIF) value established through the national VIN valuation database.',
+      'Standard statutory charges include:\n- Import duty: 20% of CIF value (for passenger vehicles)\n- Port surcharge: 7% on the import duty amount\n- ECOWAS Trade Liberalization Scheme (ETLS): 0.5% on CIF value\n- Value Added Tax (VAT): 7.5% across cumulative CIF and duty charges',
+      'Additionally, terminal handling fees (Terminal Delivery Order) and shipping agency local handling charges must be cleared before the gate release is authorized. Working with our accredited clearing desk ensures your Single Goods Declaration (SGD) is lodged prior to vessel discharge to avoid terminal demurrage penalties.',
+      '## Required documentation for vehicle export\nTo maintain complete compliance across Canadian and Nigerian maritime authorities, the following documents are generated and transferred:\n- Original vehicle registration / provincial title slip (stamped for export)\n- Bill of Lading (Master B/L or House B/L)\n- Commercial invoice indicating purchase price and VIN\n- Canada Export Declaration (B13A / CERS electronic filing)\n- Packing list (for containerized cargo with spare parts)',
+      '## Frequently asked questions',
+      '### How long does it take for a car to arrive in Lagos from Canada?\nOcean transit from Montreal or Halifax to Lagos takes 25 to 35 days. Inland towing and container consolidation in Scarborough adds 5 to 7 days, while customs clearance at Apapa or Tin Can Island takes 5 to 8 business days once the vessel discharges.',
+      '### Can I pack goods or spare parts inside my car?\nPersonal goods and spare parts are strictly prohibited on RoRo vessels. If you wish to ship spare auto parts, tires, or personal cargo, you must choose consolidated or dedicated container shipping.',
+      '### How does LeeAutoX manage the shipping process?\nLeeAutoX manages the entire lifecycle: auction lot pickup in Canada, mechanical verification, container loading at our Scarborough depot, marine documentation, ocean freight, and customs clearance at Lagos ports.'
     ]
   },
   '/blog/how-to-import-car-for-dealers-nigeria/': {
     title: 'How Nigerian Car Dealers Can Import Vehicles from Canada',
-    author: 'LeeAutoX Dealer Services Division',
-    readTime: '12 min read',
-    date: 'June 10, 2026',
-    category: 'Dealer Operations',
-    summary: 'A high-volume wholesale procurement guide for Nigerian car dealers and fleet operators. Learn how to source vehicles from Canadian auctions, utilize Lee Auto Lagos for pre-sale prep, and access bulk shipping discounts.',
+    author: 'LeeAutoX Commercial Desk',
+    readTime: '11 min read',
+    date: 'August 03, 2026',
+    category: 'Commercial',
+    summary: 'A blueprint for Nigerian commercial car dealers and fleet operators looking to source multi-car inventory from Canadian dealer wholesale auctions.',
     paragraphs: [
-      'For professional car dealer import canada nigeria operations, maximizing showroom profit margins requires an efficient, wholesale sourcing and logistics pipeline. This guide outlines how volume dealers leverage Copart and IAAI auctions to source high-demand Tokunbo inventory.',
-      'Step 1: Direct Bidding on Canadian Dealer Auctions. Buying in bulk from Toronto or Scarborough auctions allows dealers to secure cars at true dealer cost. Working with a licensed exporter like LeeAutoX avoids steep retail markups.',
-      'Step 2: Lagos Servicing and Preparation. Upon container arrival in Lagos, vehicles undergo transit-grime detailing and mechanical diagnostics. This is where our dealer-facing Lagos subsidiary, Lee Auto Nigeria, provides critical pre-sale inspections, cosmetic polishing, and NCS VIN clearing verification.',
-      'Step 3: Flexible Fleet Sourcing & Splicing. Dealers can load up to four sedans inside a single 40ft high-cube container to minimize freight cost per unit. To discuss custom dealer service SLAs or volume transport pricing, get in touch with our team via our Contact Page.'
+      'The traditional Tokunbo car importation model in Nigeria, relying on middlemen or random brokers on the ground in the US and Europe, is fraught with financial leakage. For established auto dealers in Lagos, Abuja, and Port Harcourt, transitioning to a direct Canadian dealer auction sourcing pipeline unlocks significant commercial advantages.',
+      'First, the foreign exchange dynamic: vehicles sourced in Canadian Dollars (CAD) often present a 10% to 15% currency arbitrage advantage over US Dollar purchases, even after adjusting for ocean freight. Additionally, Canadian highway vehicles generally exhibit higher scheduled maintenance adherence due to strict provincial safety inspection laws.',
+      'Second, multi-car container loading dramatically reduces shipping overhead. By consolidating four sedans or compact crossovers into a single 40ft high-cube container at our Scarborough depot, dealers save up to $600 per unit compared to individual RORO bookings. Furthermore, containers can be packed with high-turnover fast-moving service parts (brake pads, oil filters, suspension arms) at zero additional freight charge.',
+      'LeeAutoX acts as your dedicated buying office in Ontario. We provide live auction access, physical lot walk-arounds with real-time video, and handle the entire logistics trail straight through customs release at Apapa or PTML ports.'
     ]
   }
 };
@@ -107,153 +79,239 @@ export default function BlogPage() {
   const { theme } = useTheme();
   const { pathname } = useLocation();
 
-  // Standardize trailing slash
   let cleanPath = cleanPathname(pathname);
   if (!cleanPath.endsWith('/')) {
     cleanPath += '/';
   }
 
-  const isMainHub = cleanPath === '/blog/';
-  const postData = BLOG_CONTENT[cleanPath];
+  const isArticle = cleanPath !== '/blog/';
+  const article = BLOG_CONTENT[cleanPath];
 
-  // WhatsApp custom coordination link
-  const whatsappMsg = encodeURIComponent(
-    `Hello LeeAutoX! I am reading your blog post on "${postData?.title || 'Auto Sourcing Insights'}" and would like to proceed with an inquiry.`
-  );
-  const whatsappUrl = `https://wa.me/${CONTACT_INFO.whatsappRaw}?text=${whatsappMsg}`;
-
-  // If viewing the main Blog listings
-  if (isMainHub) {
-    const mainData = SEO_DATA['/blog/'];
+  if (isArticle && !article) {
     return (
-      <div className="min-h-screen bg-background text-foreground">
-        <PageHeader 
-          title={mainData.heading} 
-          subtitle={mainData.description} 
-          breadcrumbs={mainData.breadcrumbs} 
-        />
-
-        {/* Blog Post Grid */}
-        <section className={`py-16 px-6 md:px-12 ${
-          theme === 'dark' ? 'bg-zinc-950' : 'bg-white'
-        }`}>
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {Object.entries(BLOG_CONTENT).map(([route, content]) => (
-                <div 
-                  key={route}
-                  className={`p-6 border flex flex-col justify-between transition-all duration-300 hover:border-[#2B59FF]/50 hover:shadow-2xl ${
-                    theme === 'dark' ? 'bg-zinc-900 border-zinc-800' : 'bg-slate-50 border-slate-200'
-                  }`}
-                >
-                  <div>
-                    <span className="text-[10px] font-bold tracking-widest text-[#2B59FF] uppercase font-mono block mb-3">
-                      {content.category}
-                    </span>
-                    <h3 className="font-extrabold text-lg uppercase tracking-tight mb-3 line-clamp-2">
-                      {content.title}
-                    </h3>
-                    <p className={`text-xs mb-6 line-clamp-3 leading-relaxed ${
-                      theme === 'dark' ? 'text-zinc-400' : 'text-slate-600'
-                    }`}>
-                      {content.summary}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center justify-between border-t border-zinc-800/10 pt-4">
-                    <span className="text-[10px] font-mono text-zinc-500">
-                      {content.readTime}
-                    </span>
-                    <Link 
-                      to={route}
-                      className="text-xs font-extrabold text-[#2B59FF] uppercase tracking-wider flex items-center gap-1 hover:underline"
-                    >
-                      Read Post
-                      <ChevronRight size={14} />
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      </div>
-    );
-  }
-
-  // If viewing a specific Blog post details
-  if (!postData) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center bg-background">
-        <h2 className="text-3xl font-black uppercase mb-4">Post Not Found</h2>
-        <Link to="/blog/" className="px-6 py-3 bg-[#2B59FF] text-white font-bold uppercase text-xs tracking-wider">
-          Return to Blog
-        </Link>
+      <div className="min-h-screen bg-background py-20 px-6">
+        <div className="max-w-3xl mx-auto text-center">
+          <h1 className="text-3xl font-black uppercase mb-4">Article Under Review</h1>
+          <p className="text-zinc-500 mb-8">
+            This briefing is currently undergoing final editorial verification by our logistics engineering team.
+          </p>
+          <Link
+            to="/blog/"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#2B59FF] text-white font-bold uppercase text-xs tracking-wider"
+          >
+            <ArrowLeft size={16} /> Return to Blog Archive
+          </Link>
+        </div>
       </div>
     );
   }
 
   const seoData = SEO_DATA[cleanPath] || SEO_DATA['/blog/'];
 
+  const renderParagraphText = (text: string) => {
+    const parseBold = (subStr: string, keyPrefix: string): React.ReactNode[] => {
+      const subParts: React.ReactNode[] = [];
+      let subLastIndex = 0;
+      let subMatch;
+      const subBoldRegex = /\*\*([^*]+)\*\*/g;
+      
+      while ((subMatch = subBoldRegex.exec(subStr)) !== null) {
+        const subMatchIndex = subMatch.index;
+        if (subMatchIndex > subLastIndex) {
+          subParts.push(subStr.substring(subLastIndex, subMatchIndex));
+        }
+        subParts.push(
+          <strong key={`${keyPrefix}-b-${subMatchIndex}`} className="font-bold text-foreground">
+            {subMatch[1]}
+          </strong>
+        );
+        subLastIndex = subBoldRegex.lastIndex;
+      }
+      if (subLastIndex < subStr.length) {
+        subParts.push(subStr.substring(subLastIndex));
+      }
+      return subParts;
+    };
+
+    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+    const elements: React.ReactNode[] = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = linkRegex.exec(text)) !== null) {
+      const matchIndex = match.index;
+      if (matchIndex > lastIndex) {
+        elements.push(...parseBold(text.substring(lastIndex, matchIndex), `txt-${lastIndex}`));
+      }
+      elements.push(
+        <Link 
+          key={`link-${matchIndex}`} 
+          to={match[2]} 
+          className="text-[#2B59FF] font-semibold underline hover:text-[#1a41cc] transition-colors"
+        >
+          {match[1]}
+        </Link>
+      );
+      lastIndex = linkRegex.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+      elements.push(...parseBold(text.substring(lastIndex), `txt-${lastIndex}`));
+    }
+
+    return elements;
+  };
+
   return (
     <div className="min-h-screen bg-background">
-      <PageHeader 
-        title={postData.title} 
-        subtitle={`Written by ${postData.author} | ${postData.date}`} 
-        breadcrumbs={seoData.breadcrumbs} 
+      <PageHeader
+        title={isArticle ? article.title : (seoData.heading || 'Auto Import & Logistics Blog')}
+        subtitle={isArticle ? article.summary : (seoData.description || 'Verified industry guides, import tutorials, and cost analyses.')}
+        breadcrumbs={seoData.breadcrumbs}
       />
 
-      <section className={`py-16 px-6 md:px-12 ${
-        theme === 'dark' ? 'bg-zinc-950 text-white' : 'bg-white text-slate-900'
-      }`}>
-        <div className="max-w-4xl mx-auto">
-          {/* Back Button */}
-          <Link 
-            to="/blog/" 
-            className="inline-flex items-center gap-2 mb-8 text-xs font-bold uppercase tracking-wider text-[#2B59FF] hover:underline"
-          >
-            <ArrowLeft size={14} />
-            Back to Blog
-          </Link>
-
-          {/* Post Meta Details */}
-          <div className="flex flex-wrap items-center gap-6 mb-10 text-xs font-mono text-zinc-500 border-b pb-6 border-zinc-800/10">
-            <div className="flex items-center gap-1.5">
+      {isArticle ? (
+        <article className="py-16 px-6 md:px-12 max-w-4xl mx-auto">
+          <div className="flex flex-wrap items-center gap-6 pb-8 border-b border-border text-xs text-zinc-500 font-mono mb-10">
+            <div className="flex items-center gap-2">
               <User size={14} className="text-[#2B59FF]" />
-              <span>{postData.author}</span>
+              <span className="text-foreground font-semibold">{article.author}</span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
               <Calendar size={14} className="text-[#2B59FF]" />
-              <span>{postData.date}</span>
+              <span>{article.date}</span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
               <Clock size={14} className="text-[#2B59FF]" />
-              <span>{postData.readTime}</span>
+              <span>{article.readTime}</span>
             </div>
-            <span className="bg-[#2B59FF]/10 text-[#2B59FF] px-2 py-1 uppercase text-[9px] font-bold font-mono">
-              {postData.category}
+            <span className="px-2.5 py-0.5 bg-[#2B59FF]/10 text-[#2B59FF] font-bold uppercase rounded text-[10px]">
+              {article.category}
             </span>
           </div>
 
-          {/* Post Body */}
           <div className="prose prose-invert max-w-none space-y-6 text-sm md:text-base leading-relaxed font-sans">
-            {postData.paragraphs.map((p, index) => (
-              <p key={index} className={theme === 'dark' ? 'text-zinc-300' : 'text-slate-800'}>
-                {p}
-              </p>
+            {article.paragraphs.map((p, idx) => {
+              if (p.startsWith('### Quick answer box')) {
+                const body = p.replace('### Quick answer box\n', '').trim();
+                return (
+                  <div key={idx} className={`p-6 border-l-4 border-[#2B59FF] my-6 rounded-r ${theme === 'dark' ? 'bg-zinc-900/90 text-zinc-200' : 'bg-blue-50/70 text-slate-800'}`}>
+                    <span className="text-[10px] font-mono uppercase font-bold tracking-widest text-[#2B59FF] block mb-2">QUICK ANSWER</span>
+                    <p className="text-sm md:text-base leading-relaxed">{renderParagraphText(body)}</p>
+                  </div>
+                );
+              }
+
+              if (p.startsWith('### Key takeaways')) {
+                const lines = p.replace('### Key takeaways\n', '').split('\n');
+                return (
+                  <aside key={idx} aria-label="summary" className={`p-6 border my-6 rounded ${theme === 'dark' ? 'bg-zinc-900 border-zinc-800 text-zinc-300' : 'bg-slate-50 border-slate-200 text-slate-800'}`}>
+                    <span className="text-[10px] font-mono uppercase font-bold tracking-widest text-[#2B59FF] block mb-3">KEY TAKEAWAYS</span>
+                    <ul className="space-y-2 text-xs md:text-sm">
+                      {lines.map((line, lIdx) => {
+                        const cleanLine = line.replace(/^[-\*\•]\s*/, '');
+                        return (
+                          <li key={lIdx} className="flex items-start gap-2">
+                            <span className="text-[#2B59FF] font-bold">•</span>
+                            <span>{renderParagraphText(cleanLine)}</span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </aside>
+                );
+              }
+
+              if (p.startsWith('## ')) {
+                return (
+                  <h2 key={idx} className={`text-2xl font-extrabold uppercase mt-12 mb-4 tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                    {p.replace('## ', '')}
+                  </h2>
+                );
+              }
+
+              if (p.startsWith('### ')) {
+                return (
+                  <h3 key={idx} className={`text-xl font-bold uppercase mt-8 mb-2 tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                    {p.replace('### ', '')}
+                  </h3>
+                );
+              }
+
+              if (p.includes('\n- ')) {
+                const parts = p.split('\n');
+                const intro = parts[0];
+                const listItems = parts.slice(1);
+                return (
+                  <div key={idx} className="my-4">
+                    {intro && <p className={theme === 'dark' ? 'text-zinc-300' : 'text-slate-800'}>{renderParagraphText(intro)}</p>}
+                    <ul className={`list-disc list-inside pl-4 space-y-2 my-2 ${theme === 'dark' ? 'text-zinc-300' : 'text-slate-800'}`}>
+                      {listItems.map((li, lIdx) => (
+                        <li key={lIdx} className="leading-relaxed">
+                          {renderParagraphText(li.replace(/^[-\*\•]\s*/, ''))}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              }
+
+              return (
+                <p key={idx} className={`text-base leading-relaxed ${theme === 'dark' ? 'text-zinc-300' : 'text-slate-800'}`}>
+                  {renderParagraphText(p)}
+                </p>
+              );
+            })}
+          </div>
+
+          <div className="mt-16 pt-8 border-t border-border flex justify-between items-center">
+            <Link
+              to="/blog/"
+              className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#2B59FF] hover:underline"
+            >
+              <ArrowLeft size={14} /> Back to All Articles
+            </Link>
+          </div>
+        </article>
+      ) : (
+        <section className="py-16 px-6 md:px-12 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {Object.entries(BLOG_CONTENT).map(([path, post]) => (
+              <Link
+                key={path}
+                to={path}
+                className={`group flex flex-col justify-between p-8 border transition-all duration-300 hover:border-[#2B59FF] ${
+                  theme === 'dark' ? 'bg-zinc-900/40 border-zinc-800' : 'bg-white border-slate-200'
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-4 mb-4 text-xs text-zinc-500 font-mono">
+                    <span className="text-[#2B59FF] font-bold uppercase">{post.category}</span>
+                    <span>{post.readTime}</span>
+                  </div>
+                  <h2 className="text-lg font-bold uppercase tracking-tight text-foreground group-hover:text-[#2B59FF] transition-colors mb-3 leading-snug">
+                    {post.title}
+                  </h2>
+                  <p className={`text-xs leading-relaxed line-clamp-3 mb-6 ${theme === 'dark' ? 'text-zinc-400' : 'text-slate-600'}`}>
+                    {post.summary}
+                  </p>
+                </div>
+                <div className="pt-4 border-t border-border/50 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-[#2B59FF]">
+                  <span>Read Briefing</span>
+                  <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                </div>
+              </Link>
             ))}
           </div>
+        </section>
+      )}
 
-          {/* Call to Action */}
-          <div className="mt-16 border-t pt-10">
-            <WhatsAppCTA 
-              message={`Hello LeeAutoX! I am reading your article "${postData?.title || 'Sourcing Surcharges'}" and would like to ask some questions.`}
-              title="Interested in these Sourcing Surcharges?"
-              subtitle="Connect directly with our logistics authors via WhatsApp for an immediate quotation."
-            />
-          </div>
-
-        </div>
+      <section className="py-16 px-6 md:px-12 max-w-7xl mx-auto">
+        <WhatsAppCTA 
+          message="Hello LeeAutoX, I just finished reading your auto import blog and would like to discuss logistics options for my vehicle."
+          title="Turn Industry Insights into a Verified Delivery"
+          subtitle="Do not navigate auction bids or cross-border maritime shipping blindly. Our verified teams in Canada and Nigeria handle every step."
+        />
       </section>
 
       <Contact />
