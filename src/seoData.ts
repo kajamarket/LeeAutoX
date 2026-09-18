@@ -227,7 +227,7 @@ export const SEO_DATA: Record<string, any> = {
       'name': 'LeeAutoX Lagos Clearing Office',
       'address': {
         '@type': 'PostalAddress',
-        'streetAddress': 'Apapa Port Area',
+        'streetAddress': '5 Pepple Street, Ikeja',
         'addressLocality': 'Lagos',
         'addressCountry': 'NG'
       }
