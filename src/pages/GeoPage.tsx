@@ -488,7 +488,7 @@ export default function GeoPage() {
                 </div>
               </div>
               <p className={`text-sm font-semibold ${theme === 'dark' ? 'text-zinc-300' : 'text-slate-800'}`}>
-                {isCanada ? 'Greater Toronto Area, Ontario, Canada' : isGhana ? 'Tema Port Hub & Accra Office, Ghana' : 'Apapa Port Clearance Lot, Lagos, Nigeria'}
+                {isCanada ? 'Greater Toronto Area, Ontario, Canada' : isGhana ? 'Tema Port Hub & Accra Office, Ghana' : CONTACT_INFO.addressNG}
               </p>
             </div>
 
