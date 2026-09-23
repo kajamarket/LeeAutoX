@@ -6,8 +6,8 @@ import { Calculator, AlertTriangle, ArrowRight, CheckCircle2, RefreshCw } from '
 export default function ImportDutyCalculator() {
   const { theme } = useTheme();
 
-  // Exchange rate constants (prevailing rates)
-  const NAIRA_PER_USD = 1520;
+  // Exchange rate constants (official customs valuation rate benchmark: ~₦1,400-₦1,450/USD)
+  const NAIRA_PER_USD = 1425;
 
   // State parameters
   const [vehicleType, setVehicleType] = useState<'sedan' | 'suv' | 'truck' | 'luxury'>('sedan');
