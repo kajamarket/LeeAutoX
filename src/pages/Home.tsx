@@ -1,6 +1,7 @@
 import Hero from '../components/Hero';
 import Marquee from '../components/Marquee';
 import WhyChooseUs from '../components/WhyChooseUs';
+import WhyCanada from '../components/WhyCanada';
 import Services from '../components/Services';
 import Fleet from '../components/Fleet';
 import VehicleCatalogue from '../components/VehicleCatalogue';
@@ -19,6 +20,10 @@ export default function Home() {
       <Hero />
       <Marquee />
       <WhyChooseUs />
+      {/* Accessible to Search Bots and Crawlers, Hidden Visually from Frontpage Visitors */}
+      <div className="sr-only" aria-hidden="false">
+        <WhyCanada />
+      </div>
       <Services />
       <Fleet />
       <VehicleCatalogue />

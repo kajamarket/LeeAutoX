@@ -1,5 +1,6 @@
 import PageHeader from '../components/PageHeader';
 import WhyChooseUs from '../components/WhyChooseUs';
+import WhyCanada from '../components/WhyCanada';
 import Contact from '../components/Contact';
 import { SEO_DATA } from '../seoData';
 import { useTheme } from '../context/ThemeContext';
@@ -88,6 +89,9 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* Why Canada Spotlight */}
+      <WhyCanada />
 
       {/* Reuse the WhyChooseUs Section */}
       <WhyChooseUs />
