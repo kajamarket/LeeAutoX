@@ -15,16 +15,6 @@ const ROUTES_SEO = {
       'logo': 'https://leeplugshub.com/wp-content/uploads/2026/05/LeeAutoX-lcon-1-scaled.png'
     }
   },
-  '/review/': {
-    title: 'Leave a Verified Customer Review | LeeAutoX',
-    desc: 'Share your feedback, vehicle importation experience, star rating, and delivery photos with the LeeAutoX team.',
-    keywords: 'leave review leeautox, submit car rating, client feedback, rate vehicle importer'
-  },
-  '/admin/reviews/': {
-    title: 'Admin Reviews Console | LeeAutoX',
-    desc: 'Administrator dashboard for managing client reviews and Google Business Profile exports.',
-    keywords: 'admin reviews, leeautox admin'
-  },
   '/about/': {
     title: 'Vehicle Exporters in Lagos Nigeria & Ontario Canada | About LeeAutoX',
     desc: 'LeeAutoX is a registered Canadian corporation (No: 1761065-3) with operations in Lagos, Nigeria. Specialising in vehicle sourcing, containerisation, and customs clearance for West African buyers.',
@@ -182,6 +172,11 @@ const ROUTES_SEO = {
     desc: 'We are licensed auction buyers. We scout, inspect, and purchase premium vehicles directly from Copart, IAAI, and Canada-wide dealer networks at dealer rates.',
     keywords: 'car bidding service, auction access canada, licensed auto broker toronto, find car copart'
   },
+  '/services/auction-bidding/': {
+    title: 'Copart & Impact Auto Proxy Bidding Service | LeeAutoX Canada',
+    desc: 'Licensed proxy bidding on Copart Canada, Impact Auto, and Manheim. Pre-bid run-and-drive inspections, lien verification, and rapid flatbed transport to port.',
+    keywords: 'copart canada bidding proxy, impact auto broker toronto, manheim auction bidding, copart inspection canada, buy salvage car canada nigeria'
+  },
   '/services/shipping-containerization/': {
     title: 'Secure Containerization & Marine Freight Shipping | LeeAutoX',
     desc: 'All vehicles are loaded into specialized steel cargo containers. We handle logistics, tracking, documentation, and port transfers to prevent transit scratches.',
@@ -204,9 +199,29 @@ const ROUTES_SEO = {
     keywords: 'import tutorials, copart bidding course, clearing vehicles handbook, tokunbo car import guides'
   },
   '/guides/import-car-canada-to-nigeria/': {
-    title: 'Guide to Shipping to Nigeria from Canada | Importing cars from canada to Nigeria | LeeAutoX',
-    desc: '2026 guide on Air Freight from Canada to Nigeria (CN |Ocean shipping From Canada to Nigeria |How to Import cars from CANADA to Nigeria| How to Export to Nigeria from CANADA | Shipping Cars to Nigeria from CANADA |Cargo Shipping to Nigeria from CANADA |Cargo Service to Nigeria from CANADA Shipping to Nigeria from CANADA | clear vehicles from Canada to Nigeria. Get container shipping rates, transit times, and use our custom duty calculator.',
-    keywords: 'how to import car from canada to nigeria, shipping cost toronto to lagos, vehicle clearing steps, air freight canada nigeria, cargo shipping to nigeria'
+    title: 'Importing Cars from Canada to Nigeria: Complete 2026 Guide | LeeAutoX',
+    desc: 'The definitive guide to importing cars from Canada to Nigeria in 2026. Ocean transit times (5-8 weeks), container freight rates, 43% CIF customs clearing, and Form M checklist.',
+    keywords: 'how to import car from canada to nigeria, shipping car canada to nigeria, clearing cost lagos port, form m vehicle import, container shipping montreal lagos, tokunbo import guide'
+  },
+  '/guides/shipping-cost-canada-to-nigeria/': {
+    title: 'Cost to Ship a Car from Canada to Nigeria (2026 Breakdown) | LeeAutoX',
+    desc: 'Detailed 2026 cost breakdown for shipping cars from Canada to Nigeria: C$2,500-C$3,500 container freight, 43% CIF customs clearing duty, exchange rates, and worked examples.',
+    keywords: 'cost to ship car from canada to nigeria, container shipping cost canada to lagos, car import duty nigeria 2026, 43 percent cif clearing, shipping price toronto to apapa'
+  },
+  '/guides/roro-vs-container-shipping-canada-to-nigeria/': {
+    title: 'RoRo vs Container Shipping from Canada to Nigeria: Complete Comparison | LeeAutoX',
+    desc: 'Compare RoRo vs container shipping for importing vehicles from Canada to Nigeria. Understand security, transit times, costs, and why container shipping is standard.',
+    keywords: 'roro vs container shipping nigeria, roll on roll off canada lagos, containerized car shipping to nigeria, vehicle shipping methods'
+  },
+  '/guides/why-import-cars-from-canada/': {
+    title: 'Why Import Vehicles From Canada? 2026 Advantages & Quality Guide | LeeAutoX',
+    desc: 'Learn why importing cars from Canada offers major advantages: strict Ontario MTO safety standards, modern rust-inhibited brines, Carfax Canada records, and CAD currency savings.',
+    keywords: 'why import cars from canada, canadian car import nigeria, mto safety standard certificate, carfax canada mileage verification, cad vs usd car auction'
+  },
+  '/guides/why-import-vehicles-from-canada/': {
+    title: 'Why Import Vehicles From Canada? 2026 Advantages & Quality Guide | LeeAutoX',
+    desc: 'Learn why importing cars from Canada offers major advantages: strict Ontario MTO safety standards, modern rust-inhibited brines, Carfax Canada records, and CAD currency savings.',
+    keywords: 'why import cars from canada, canadian car import nigeria, mto safety standard certificate, carfax canada mileage verification, cad vs usd car auction'
   },
   '/guides/tokunbo-buyers-guide/': {
     title: 'Tokunbo Buyers Guide 2026 in Nigeria | LeeAutoX',
@@ -283,6 +298,16 @@ const ROUTES_SEO = {
     title: 'Lee Auto Nigeria | Dealer Car Servicing & Inspection in Lagos | LeeAutoX',
     desc: 'Lee Auto is the dealer-facing vehicle servicing division of LeeAutoX in Lagos, Nigeria. Pre-sale inspections, light mechanical prep, cosmetic detailing, and VIN verification for imported vehicles.',
     keywords: 'lee auto nigeria, lee auto lagos, lee autos nigeria, car servicing for dealers lagos, vehicle inspection lagos, imported car servicing nigeria'
+  },
+  '/review/': {
+    title: 'Leave a Verified Customer Review | LeeAutoX',
+    desc: 'Share your feedback, vehicle importation experience, star rating, and delivery photos with the LeeAutoX team.',
+    keywords: 'leave review leeautox, submit car rating, client feedback, rate vehicle importer'
+  },
+  '/admin/reviews/': {
+    title: 'Admin Reviews Console | LeeAutoX',
+    desc: 'Administrator dashboard for managing client reviews and Google Business Profile exports.',
+    keywords: 'admin reviews, leeautox admin'
   }
 };
 
@@ -408,7 +433,6 @@ async function main() {
     modified = modified.replace('</head>', `${injections}\n</head>`);
     return modified;
   }
-
 
   // 2. Duplicate static files for all routes
   for (const [route, data] of Object.entries(ROUTES_SEO)) {
