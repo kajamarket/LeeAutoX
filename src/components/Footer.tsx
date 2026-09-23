@@ -80,9 +80,11 @@ export default function Footer() {
               </h4>
               <ul className="space-y-2">
                 <li><Link to="/about/" className="text-sm text-background/70 hover:text-background transition-colors">About Us</Link></li>
+                <li><Link to="/guides/why-import-cars-from-canada/" className="text-sm text-background/70 hover:text-white transition-colors">Why Canada?</Link></li>
+                <li><Link to="/guides/import-car-canada-to-nigeria/" className="text-sm text-background/70 hover:text-white transition-colors">Import Guide</Link></li>
+                <li><Link to="/guides/shipping-cost-canada-to-nigeria/" className="text-sm text-background/70 hover:text-white transition-colors">Shipping Costs</Link></li>
+                <li><Link to="/guides/roro-vs-container-shipping-canada-to-nigeria/" className="text-sm text-background/70 hover:text-white transition-colors">RoRo vs Container</Link></li>
                 <li><Link to="/faq/" className="text-sm text-background/70 hover:text-background transition-colors">FAQ Hub</Link></li>
-                <li><Link to="/guides/" className="text-sm text-background/70 hover:text-background transition-colors">Import Guides</Link></li>
-                <li><Link to="/blog/" className="text-sm text-background/70 hover:text-background transition-colors">Technical Blog</Link></li>
               </ul>
             </div>
 
@@ -100,10 +102,22 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Corporate Trust & Physical Presence Bar */}
+        <div className="border-t border-background/10 py-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-background/60">
+          <div>
+            <span className="font-bold text-background block mb-0.5">Canada Headquarters (Corporation No: 1761065-3):</span>
+            <span>109 Slan Ave, Scarborough, ON M1G 3B7, Canada</span>
+          </div>
+          <div>
+            <span className="font-bold text-background block mb-0.5">Nigeria Operations & Handover Office:</span>
+            <span>5 Pepple Street, Computer Village, Ikeja, Lagos, Nigeria</span>
+          </div>
+        </div>
+
         {/* Bottom Bar */}
-        <div className="border-t border-background/10 pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="border-t border-background/10 pt-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="text-xs text-background/40 font-mono">
-            © {currentYear} LeeAutoX. All rights reserved. | Corporation No: 1761065-3
+            © {currentYear} LeeAutoX. All rights reserved. | Licensed Canadian Dealer Wholesale Sourcing
           </div>
           <div className="text-xs text-background/40 font-mono">
             Trusted vehicle sourcing across Africa.
