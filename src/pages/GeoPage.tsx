@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
 import { SEO_DATA } from '../seoData';
 import { useTheme } from '../context/ThemeContext';
@@ -67,6 +67,7 @@ export default function GeoPage() {
   const whatsappUrl = `https://wa.me/${CONTACT_INFO.whatsappRaw}?text=${whatsappMsg}`;
 
   const isScarborough = cleanPath.includes('scarborough');
+  const isLagos = cleanPath.includes('lagos') || (isNigeria && !cleanPath.includes('calculator') && !cleanPath.includes('abuja') && !cleanPath.includes('port-harcourt'));
 
   if (isScarborough) {
     return (
@@ -295,7 +296,174 @@ export default function GeoPage() {
         {/* The Live Interactive Calculator */}
         <section className={`py-12 px-6 md:px-12 border-t border-b ${theme === 'dark' ? 'bg-zinc-900 border-zinc-800' : 'bg-slate-50 border-slate-200'}`}>
           <div className="max-w-4xl mx-auto">
+            {/* Context & Purpose Banner */}
+            <div className={`p-6 border-l-4 border-[#2B59FF] mb-10 rounded-r ${
+              theme === 'dark' ? 'bg-zinc-950/80 border-zinc-800' : 'bg-blue-50/80 border-blue-200'
+            }`}>
+              <span className="text-[10px] font-mono uppercase font-bold tracking-widest text-[#2B59FF] block mb-2">
+                CUSTOMS VALUATION OVERVIEW
+              </span>
+              <h3 className={`text-lg font-bold uppercase mb-2 ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                Calculate Your Total Cleared Landed Cost Before Bidding
+              </h3>
+              <p className={`text-xs md:text-sm leading-relaxed mb-3 ${theme === 'dark' ? 'text-zinc-300' : 'text-slate-700'}`}>
+                This interactive tool estimates your full landing cost when importing a car from Canada to Nigeria. In Nigeria, customs duties are calculated on the <strong>Cost, Insurance, and Freight (CIF)</strong> value of the vehicle using statutory CET rates averaging <strong>~43% of CIF</strong>. 
+              </p>
+              <p className={`text-xs leading-relaxed ${theme === 'dark' ? 'text-zinc-400' : 'text-slate-600'}`}>
+                <strong>Notice on Exchange Rates:</strong> Nigeria Customs Service computes duties using its own <strong>official customs valuation exchange rate (currently ~₦1,400–₦1,450/USD)</strong>, which is independent of commercial bank or parallel open-market rates. Customs exchange rates and fiscal tariffs fluctuate periodically per official circulars.
+              </p>
+              
+              {/* Pillar Cross-Links */}
+              <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-zinc-800/20 text-xs">
+                <Link to="/guides/import-car-canada-to-nigeria/" className="text-[#2B59FF] font-semibold hover:underline">
+                  ← Complete Canada to Nigeria Import Guide
+                </Link>
+                <span className="text-zinc-500">•</span>
+                <Link to="/guides/shipping-cost-canada-to-nigeria/" className="text-[#2B59FF] font-semibold hover:underline">
+                  Full Shipping Cost Breakdown
+                </Link>
+                <span className="text-zinc-500">•</span>
+                <Link to="/guides/roro-vs-container-shipping-canada-to-nigeria/" className="text-[#2B59FF] font-semibold hover:underline">
+                  RoRo vs Container Shipping
+                </Link>
+              </div>
+            </div>
+
             <ImportDutyCalculator />
+
+            {/* Worked Example Calculations Cards */}
+            <div className="mt-14">
+              <span className="text-[10px] font-mono uppercase font-bold tracking-widest text-[#2B59FF] block mb-2">
+                PRACTICAL BENCHMARKS
+              </span>
+              <h3 className={`text-xl font-extrabold uppercase tracking-tight mb-4 ${
+                theme === 'dark' ? 'text-white' : 'text-slate-900'
+              }`}>
+                Worked Clearing Examples (~43% CIF Benchmark)
+              </h3>
+              <p className={`text-xs md:text-sm mb-6 leading-relaxed ${
+                theme === 'dark' ? 'text-zinc-400' : 'text-slate-600'
+              }`}>
+                Based on the standard formula: <code className="bg-[#2B59FF]/10 text-[#2B59FF] px-1.5 py-0.5 rounded font-mono font-bold">Duty = CIF (USD) × Customs FX (~₦1,425/$) × 0.43</code>. Here is how representative vehicles calculate under current working parameters:
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                {/* Example 1 */}
+                <div className={`p-5 border rounded ${
+                  theme === 'dark' ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-slate-200'
+                }`}>
+                  <span className="text-[10px] font-bold uppercase text-[#2B59FF] font-mono block mb-1">
+                    Mid-Size Sedan
+                  </span>
+                  <h4 className="font-extrabold text-sm mb-2 text-foreground">
+                    2020 Toyota Camry
+                  </h4>
+                  <div className="space-y-1.5 text-xs text-zinc-400 font-mono">
+                    <div className="flex justify-between">
+                      <span>CIF Valuation:</span>
+                      <strong className="text-foreground">$5,000 USD</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>CIF in Naira (@ ₦1,425):</span>
+                      <strong className="text-foreground">₦7.13M</strong>
+                    </div>
+                    <div className="flex justify-between border-t pt-1.5 border-zinc-800">
+                      <span>Statutory Duty (@ 43%):</span>
+                      <strong className="text-[#2B59FF]">~₦3.06M</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Ocean Freight:</span>
+                      <strong className="text-foreground">C$2,800</strong>
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-zinc-500 mt-3 pt-2 border-t border-zinc-800/40">
+                    Est. total clearing & port handling: ~₦3.51M.
+                  </p>
+                </div>
+
+                {/* Example 2 */}
+                <div className={`p-5 border rounded ${
+                  theme === 'dark' ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-slate-200'
+                }`}>
+                  <span className="text-[10px] font-bold uppercase text-[#2B59FF] font-mono block mb-1">
+                    Mid-Size SUV / Crossover
+                  </span>
+                  <h4 className="font-extrabold text-sm mb-2 text-foreground">
+                    2021 Toyota RAV4 / Highlander
+                  </h4>
+                  <div className="space-y-1.5 text-xs text-zinc-400 font-mono">
+                    <div className="flex justify-between">
+                      <span>CIF Valuation:</span>
+                      <strong className="text-foreground">$9,500 USD</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>CIF in Naira (@ ₦1,425):</span>
+                      <strong className="text-foreground">₦13.54M</strong>
+                    </div>
+                    <div className="flex justify-between border-t pt-1.5 border-zinc-800">
+                      <span>Statutory Duty (@ 43%):</span>
+                      <strong className="text-[#2B59FF]">~₦5.82M</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Ocean Freight:</span>
+                      <strong className="text-foreground">C$3,100</strong>
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-zinc-500 mt-3 pt-2 border-t border-zinc-800/40">
+                    Est. total clearing & port handling: ~₦6.42M.
+                  </p>
+                </div>
+
+                {/* Example 3 */}
+                <div className={`p-5 border rounded ${
+                  theme === 'dark' ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-slate-200'
+                }`}>
+                  <span className="text-[10px] font-bold uppercase text-[#2B59FF] font-mono block mb-1">
+                    Luxury Executive SUV
+                  </span>
+                  <h4 className="font-extrabold text-sm mb-2 text-foreground">
+                    2021 Lexus RX350
+                  </h4>
+                  <div className="space-y-1.5 text-xs text-zinc-400 font-mono">
+                    <div className="flex justify-between">
+                      <span>CIF Valuation:</span>
+                      <strong className="text-foreground">$14,000 USD</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>CIF in Naira (@ ₦1,425):</span>
+                      <strong className="text-foreground">₦19.95M</strong>
+                    </div>
+                    <div className="flex justify-between border-t pt-1.5 border-zinc-800">
+                      <span>Statutory Duty (@ 43%):</span>
+                      <strong className="text-[#2B59FF]">~₦8.58M</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Ocean Freight:</span>
+                      <strong className="text-foreground">C$3,300</strong>
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-zinc-500 mt-3 pt-2 border-t border-zinc-800/40">
+                    Est. total clearing & port handling: ~₦9.23M.
+                  </p>
+                </div>
+              </div>
+
+              {/* Resource Links Banner */}
+              <div className={`mt-8 p-4 border rounded flex flex-col sm:flex-row justify-between items-center gap-4 ${
+                theme === 'dark' ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-slate-200'
+              }`}>
+                <div className="text-xs">
+                  <span className="font-bold text-foreground block">Looking for financing options?</span>
+                  <span className="text-zinc-500">Pay 50% down at auction and spread shipping and clearing over milestones.</span>
+                </div>
+                <Link 
+                  to="/services/installment-plans/"
+                  className="px-4 py-2 bg-[#2B59FF] text-white text-xs font-bold uppercase tracking-wider rounded hover:bg-[#1a41cc] transition-colors shrink-0"
+                >
+                  Explore Installment Plans
+                </Link>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -523,6 +691,195 @@ export default function GeoPage() {
 
         </div>
       </section>
+
+      {/* Dedicated Lagos Port Operations Deep-Dive */}
+      {isLagos && (
+        <section className={`py-16 px-6 md:px-12 border-t ${
+          theme === 'dark' ? 'bg-zinc-900/40 border-zinc-800' : 'bg-slate-50 border-slate-200'
+        }`}>
+          <div className="max-w-7xl mx-auto space-y-12">
+            <div className="max-w-3xl">
+              <span className="text-xs font-bold tracking-widest text-[#2B59FF] uppercase bg-[#2B59FF]/10 px-3 py-1.5 inline-block mb-3 font-mono">
+                LAGOS MARITIME GATEWAYS
+              </span>
+              <h2 className={`text-2xl md:text-3xl font-extrabold uppercase tracking-tight mb-4 ${
+                theme === 'dark' ? 'text-white' : 'text-slate-900'
+              }`}>
+                Direct Port Clearance at Apapa & Tin Can Island Terminals
+              </h2>
+              <p className={`text-sm md:text-base leading-relaxed ${
+                theme === 'dark' ? 'text-zinc-300' : 'text-slate-600'
+              }`}>
+                Lagos handles over 80% of Nigeria's vehicle imports across two primary maritime complexes: <strong>Apapa Port</strong> (principally <strong>APM Terminals</strong>) and <strong>Tin Can Island Port</strong> (including <strong>TICT</strong> and <strong>PTML Terminal</strong>). Our dedicated on-ground clearance agents manage the entire terminal interface from cargo discharge to final gate exit.
+              </p>
+            </div>
+
+            {/* Critical Form M Pre-Shipment Warning */}
+            <div className={`p-6 border-l-4 border-rose-500 rounded-r ${
+              theme === 'dark' ? 'bg-rose-950/20 border-zinc-800' : 'bg-rose-50 border-rose-200'
+            }`}>
+              <div className="space-y-2">
+                <span className="text-[10px] font-mono uppercase font-bold tracking-widest text-rose-500 block">
+                  MANDATORY PRE-SHIPMENT REQUIREMENT
+                </span>
+                <h4 className={`font-bold text-base uppercase tracking-tight ${theme === 'dark' ? 'text-rose-400' : 'text-rose-900'}`}>
+                  Form M Must Be Opened at a Nigerian Bank Before the Vehicle Ships
+                </h4>
+                <p className={`text-xs md:text-sm leading-relaxed ${theme === 'dark' ? 'text-zinc-300' : 'text-slate-700'}`}>
+                  Nigeria Customs Service regulations strictly mandate that <strong>Form M be registered through an authorized commercial bank in Nigeria before the shipping container departs Canadian waters (Montreal or Halifax)</strong>. Arriving at Lagos ports without a pre-validated Form M is the <strong>single most common cause of multi-week port delays, severe terminal demurrage (₦30,000–₦70,000/day), and punitive manual inspection penalties</strong>. LeeAutoX assists you in assembling your proforma invoices early so Form M is active before container loading.
+                </p>
+              </div>
+            </div>
+
+            {/* Operational Specs Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className={`p-6 border rounded ${theme === 'dark' ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-slate-200'}`}>
+                <span className="text-[10px] font-mono uppercase font-bold text-[#2B59FF] tracking-wider block mb-1">
+                  DISCHARGE TERMINALS
+                </span>
+                <h4 className="font-extrabold text-base mb-2 text-foreground">
+                  APM Terminals & Tin Can
+                </h4>
+                <p className={`text-xs leading-relaxed ${theme === 'dark' ? 'text-zinc-400' : 'text-slate-600'}`}>
+                  Direct cargo tracking at APM Terminals Apapa, Tin Can Island Container Terminal (TICT), and PTML. We process electronic delivery orders (EDO) directly with international shipping lines (Maersk, MSC, Hapag-Lloyd, Grimaldi).
+                </p>
+              </div>
+
+              <div className={`p-6 border rounded ${theme === 'dark' ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-slate-200'}`}>
+                <span className="text-[10px] font-mono uppercase font-bold text-[#2B59FF] tracking-wider block mb-1">
+                  CLEARING TIMELINE
+                </span>
+                <h4 className="font-extrabold text-base mb-2 text-foreground">
+                  2 to 4 Weeks from Discharge
+                </h4>
+                <p className={`text-xs leading-relaxed ${theme === 'dark' ? 'text-zinc-400' : 'text-slate-600'}`}>
+                  Standard customs clearing in Lagos typically requires <strong>2 to 4 weeks once the vessel arrives and discharges</strong> cargo. Timelines depend on terminal crane congestion, customs server uptime, and document readiness.
+                </p>
+              </div>
+
+              <div className={`p-6 border rounded ${theme === 'dark' ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-slate-200'}`}>
+                <span className="text-[10px] font-mono uppercase font-bold text-[#2B59FF] tracking-wider block mb-1">
+                  PHYSICAL INSPECTION
+                </span>
+                <h4 className="font-extrabold text-base mb-2 text-foreground">
+                  NCS Joint Terminal Exam
+                </h4>
+                <p className={`text-xs leading-relaxed ${theme === 'dark' ? 'text-zinc-400' : 'text-slate-600'}`}>
+                  Customs examination officers break the numbered container bolt seal during a joint physical exam. Inspectors verify chassis VIN stampings against the Single Goods Declaration (SGD), confirm engine integrity, and issue official gate passes.
+                </p>
+              </div>
+            </div>
+
+            {/* Essential Guides Cross-Links */}
+            <div className={`p-6 border rounded ${theme === 'dark' ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-slate-200'}`}>
+              <h4 className="text-xs font-bold uppercase tracking-widest text-[#2B59FF] mb-3">
+                RECOMMENDED IMPORT GUIDES & TOOLS
+              </h4>
+              <p className={`text-xs md:text-sm mb-4 leading-relaxed ${theme === 'dark' ? 'text-zinc-400' : 'text-slate-600'}`}>
+                Plan your vehicle import with full transparency using our dedicated guides and calculators:
+              </p>
+              <div className="flex flex-wrap gap-4 text-xs font-semibold">
+                <Link to="/guides/import-car-canada-to-nigeria/" className="text-[#2B59FF] hover:underline">
+                  Complete Canada to Nigeria Import Guide →
+                </Link>
+                <Link to="/guides/shipping-cost-canada-to-nigeria/" className="text-[#2B59FF] hover:underline">
+                  Full 2026 Shipping Cost Breakdown →
+                </Link>
+                <Link to="/nigeria/import-duty-calculator/" className="text-[#2B59FF] hover:underline">
+                  Nigeria Import Duty Calculator →
+                </Link>
+                <Link to="/services/installment-plans/" className="text-[#2B59FF] hover:underline">
+                  Naira Milestone Installment Plans →
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Dedicated Ghana Tema Port Hub Section */}
+      {isGhana && (
+        <section className={`py-16 px-6 md:px-12 border-t ${
+          theme === 'dark' ? 'bg-zinc-900/40 border-zinc-800' : 'bg-slate-50 border-slate-200'
+        }`}>
+          <div className="max-w-7xl mx-auto space-y-12">
+            <div className="max-w-3xl">
+              <span className="text-xs font-bold tracking-widest text-[#2B59FF] uppercase bg-[#2B59FF]/10 px-3 py-1.5 inline-block mb-3 font-mono">
+                GHANA LOGISTICS GATEWAY
+              </span>
+              <h2 className={`text-2xl md:text-3xl font-extrabold uppercase tracking-tight mb-4 ${
+                theme === 'dark' ? 'text-white' : 'text-slate-900'
+              }`}>
+                Tema Port Vehicle Sourcing & Customs Clearance
+              </h2>
+              <p className={`text-sm md:text-base leading-relaxed ${
+                theme === 'dark' ? 'text-zinc-300' : 'text-slate-600'
+              }`}>
+                The <strong>Port of Tema</strong> (including the Golden Jubilee Terminal and modern MPS Terminal 3) is the primary maritime hub for Ghanaian auto buyers importing vehicles from North America. LeeAutoX provides seamless door-to-port and cleared-at-doorstep services across Greater Accra, Kumasi, and Takoradi.
+              </p>
+            </div>
+
+            {/* Ghana Operational Pillars */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className={`p-6 border rounded ${theme === 'dark' ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-slate-200'}`}>
+                <span className="text-[10px] font-mono uppercase font-bold text-[#2B59FF] tracking-wider block mb-1">
+                  OCEAN TRANSIT
+                </span>
+                <h4 className="font-extrabold text-base mb-2 text-foreground">
+                  5 to 8 Weeks Port-to-Port
+                </h4>
+                <p className={`text-xs leading-relaxed ${theme === 'dark' ? 'text-zinc-400' : 'text-slate-600'}`}>
+                  Containerized vessels departing Canadian Atlantic ports (Halifax and Montreal) reach Tema port in 5 to 8 weeks. Steel containerization protects your vehicle against salt spray and eliminates pilferage during transit.
+                </p>
+              </div>
+
+              <div className={`p-6 border rounded ${theme === 'dark' ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-slate-200'}`}>
+                <span className="text-[10px] font-mono uppercase font-bold text-[#2B59FF] tracking-wider block mb-1">
+                  LOCAL CURRENCY
+                </span>
+                <h4 className="font-extrabold text-base mb-2 text-foreground">
+                  Milestone Payments in Cedis (GHS)
+                </h4>
+                <p className={`text-xs leading-relaxed ${theme === 'dark' ? 'text-zinc-400' : 'text-slate-600'}`}>
+                  Avoid FX exchange friction by funding your vehicle pre-order through structured milestone payments in Ghanaian Cedis (GHS) directly to our registered partner accounts, mapped to auction acquisition, container loading, and port arrival.
+                </p>
+              </div>
+
+              <div className={`p-6 border rounded ${theme === 'dark' ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-slate-200'}`}>
+                <span className="text-[10px] font-mono uppercase font-bold text-[#2B59FF] tracking-wider block mb-1">
+                  TEMA CLEARANCE
+                </span>
+                <h4 className="font-extrabold text-base mb-2 text-foreground">
+                  GRA Customs Processing
+                </h4>
+                <p className={`text-xs leading-relaxed ${theme === 'dark' ? 'text-zinc-400' : 'text-slate-600'}`}>
+                  Our accredited clearing partners interface with the Ghana Revenue Authority (GRA) Customs Division. Duty assessments are verified by engine displacement (cc) and age band before unstowing at Tema terminals.
+                </p>
+              </div>
+            </div>
+
+            {/* Ghana Contact & Inquiry Notice */}
+            <div className={`p-6 border rounded flex flex-col md:flex-row justify-between items-center gap-6 ${
+              theme === 'dark' ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-slate-200'
+            }`}>
+              <div className="space-y-1 text-xs">
+                <span className="font-bold text-foreground block text-sm">Need a Tema Port Landing Assessment?</span>
+                <span className="text-zinc-500">
+                  Ghana inquiries and vehicle pre-orders are managed directly through our central logistics WhatsApp desk (+1 647 389-6162) with on-ground clearing liaisons in Tema.
+                </span>
+              </div>
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 bg-[#25D366] text-black font-bold uppercase tracking-wider text-xs rounded hover:brightness-110 transition-all shrink-0"
+              >
+                Inquire on WhatsApp
+              </a>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Dynamic Sourcing Duty Calculator Link */}
       {isNigeria && !cleanPath.includes('calculator') && (
