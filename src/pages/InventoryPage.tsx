@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
 import { useInventory } from '../context/InventoryContext';
+import { getVehicleUrl } from '../data/inventory';
 import { useTheme } from '../context/ThemeContext';
 import { Search, SlidersHorizontal, ArrowRight, ShieldCheck, Car, CheckCircle2, MessageSquare, RotateCcw } from 'lucide-react';
 import { CONTACT_INFO } from '../constants';
@@ -69,7 +70,7 @@ export default function InventoryPage() {
     }`}>
       <PageHeader
         title="Verified Vehicle Catalogue"
-        subtitle="Browse our active stock of verified SUVs, sedans, and trucks physically on ground for immediate inspection at our Ikeja, Lagos lot, or pre-order custom units directly from North American auctions."
+        subtitle="Browse our active stock of verified SUVs, sedans, and trucks physically on ground for immediate inspection in Lagos, Nigeria, or pre-order custom units directly from North American auctions."
         breadcrumbs={[
           { name: 'Home', item: 'https://leeautox.com/' },
           { name: 'Catalogue', item: 'https://leeautox.com/inventory/' }
@@ -347,7 +348,7 @@ export default function InventoryPage() {
                   </div>
 
                   <Link
-                    to={`/vehicle/${vehicle.id}`}
+                    to={getVehicleUrl(vehicle)}
                     className="px-4 py-2.5 bg-[#2B59FF] hover:bg-blue-600 active:scale-[0.98] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all flex items-center gap-1.5 shadow-md"
                   >
                     View Vehicle <ArrowRight size={14} />

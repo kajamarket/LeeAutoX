@@ -194,6 +194,31 @@ async function main() {
     }
   }
 
+  // Register SEO optimized Vehicle Detail routes
+  const inventoryVehicles = [
+    { id: "1", name: "2021 Hyundai Sonata", make: "Hyundai", model: "Sonata", year: 2021 },
+    { id: "2", name: "2021 Hyundai Sonata Ultimate", make: "Hyundai", model: "Sonata Ultimate", year: 2021 },
+    { id: "3", name: "2017 Hyundai Sonata", make: "Hyundai", model: "Sonata", year: 2017 },
+    { id: "4", name: "2017 Toyota Corolla SE", make: "Toyota", model: "Corolla", year: 2017 },
+    { id: "5", name: "2020 Toyota RAV4 XLE AWD", make: "Toyota", model: "RAV4", year: 2020 },
+    { id: "6", name: "2022 Toyota Land Cruiser VXR", make: "Toyota", model: "Land Cruiser", year: 2022 },
+    { id: "7", name: "2020 Ford F-150 Lariat 4x4", make: "Ford", model: "F-150", year: 2020 },
+    { id: "8", name: "2021 Mercedes-Benz GLC 300 4MATIC", make: "Mercedes-Benz", model: "GLC 300", year: 2021 }
+  ];
+
+  for (const v of inventoryVehicles) {
+    const cleanMake = v.make.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const cleanModel = v.model.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const slug = `${v.id}_${v.year}${cleanMake}${cleanModel}`;
+    const routePath = `/vehicle/${slug}/`;
+    ROUTES_SEO[routePath] = {
+      title: `${v.year} ${v.make} ${v.model} For Sale | Lagos Nigeria Import | LeeAutoX`,
+      desc: `Buy verified ${v.year} ${v.make} ${v.model} on ground in Lagos, Nigeria. Fully customs cleared, 100% duty paid, available for physical inspection and test drive.`,
+      keywords: `${v.make} ${v.model}, ${v.year} ${v.make}, buy car lagos, import cars canada, verified cars nigeria`
+    };
+    console.log(`  ➕ Added SEO vehicle route: ${routePath}`);
+  }
+
   const STATIC_ORGANIZATION_SCHEMA = {
     '@type': 'AutoDealer',
     '@id': 'https://leeautox.com/#organization',

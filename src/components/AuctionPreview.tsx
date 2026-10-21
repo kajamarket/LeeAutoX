@@ -77,7 +77,7 @@ export default function AuctionPreview() {
   return (
     <section
       id="auction-listings"
-      className={`relative py-24 px-6 md:px-12 border-t transition-colors duration-500 overflow-hidden ${
+      className={`relative pt-10 pb-16 px-6 md:px-12 border-t transition-colors duration-500 overflow-hidden ${
         theme === 'dark' ? 'bg-[#0d0d0d] text-white border-white/10' : 'bg-[#F4F6F9] text-slate-900 border-slate-200'
       }`}
     >
@@ -85,57 +85,9 @@ export default function AuctionPreview() {
       <div className="absolute top-0 right-1/4 w-[40vw] h-[30vw] bg-[#2B59FF]/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Section Heading & Breadcrumb Tag */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#2B59FF]">
-                Live North American Auction Block
-              </span>
-            </div>
-            <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight">
-              Browse Auction Listings{' '}
-              <span className="text-lg sm:text-2xl font-mono font-normal opacity-60">
-                (Copart · IAA)
-              </span>
-            </h2>
-            <p className={`mt-3 text-sm sm:text-base max-w-xl font-light leading-relaxed ${
-              theme === 'dark' ? 'text-white/70' : 'text-slate-600'
-            }`}>
-              Monitor active salvage, clean title, and insurance lots across Ontario, Quebec, and US border auction yards. LeeAutoX handles inspection, bidding proxy, and overseas loading.
-            </p>
-          </div>
-
-          {/* Carousel Arrows (Desktop) */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={scrollLeft}
-              className={`p-3 rounded-xl border transition-all active:scale-[0.95] cursor-pointer ${
-                theme === 'dark'
-                  ? 'border-white/15 bg-white/5 hover:bg-white/10 text-white'
-                  : 'border-slate-300 bg-white hover:bg-slate-100 text-slate-800 shadow-xs'
-              }`}
-              aria-label="Scroll left"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              onClick={scrollRight}
-              className={`p-3 rounded-xl border transition-all active:scale-[0.95] cursor-pointer ${
-                theme === 'dark'
-                  ? 'border-white/15 bg-white/5 hover:bg-white/10 text-white'
-                  : 'border-slate-300 bg-white hover:bg-slate-100 text-slate-800 shadow-xs'
-              }`}
-              aria-label="Scroll right"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
-        </div>
-
-        {/* 4 Filter Tabs with Count Badges */}
-        <div className="flex items-center gap-3 overflow-x-auto pb-4 mb-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {/* Filter Tabs & Carousel Navigation Toolbar */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-8">
+          <div className="flex items-center gap-3 overflow-x-auto pb-2 sm:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <button
             type="button"
             onClick={() => setActiveTab('closing-soon')}
@@ -216,6 +168,33 @@ export default function AuctionPreview() {
             </span>
           </button>
         </div>
+
+        {/* Carousel Arrows (Desktop & Tablet) */}
+        <div className="hidden sm:flex items-center gap-2 shrink-0">
+          <button
+            onClick={scrollLeft}
+            className={`p-2.5 rounded-xl border transition-all active:scale-[0.95] cursor-pointer ${
+              theme === 'dark'
+                ? 'border-white/15 bg-white/5 hover:bg-white/10 text-white'
+                : 'border-slate-300 bg-white hover:bg-slate-100 text-slate-800 shadow-xs'
+            }`}
+            aria-label="Scroll left"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <button
+            onClick={scrollRight}
+            className={`p-2.5 rounded-xl border transition-all active:scale-[0.95] cursor-pointer ${
+              theme === 'dark'
+                ? 'border-white/15 bg-white/5 hover:bg-white/10 text-white'
+                : 'border-slate-300 bg-white hover:bg-slate-100 text-slate-800 shadow-xs'
+            }`}
+            aria-label="Scroll right"
+          >
+            <ChevronRight size={18} />
+          </button>
+        </div>
+      </div>
 
         {/* Horizontally Scrollable Cards Container */}
         {/* On desktop: 3 cards visible + peek; On mobile: 1.2 cards visible */}

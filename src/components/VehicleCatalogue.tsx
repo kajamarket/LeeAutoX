@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { ArrowRight, Search, SlidersHorizontal, ShieldCheck, MapPin, CheckCircle2, RotateCcw, MessageSquare, Car } from "lucide-react";
 import { useInventory } from "../context/InventoryContext";
+import { getVehicleUrl } from "../data/inventory";
 import { useTheme } from "../context/ThemeContext";
 import { CONTACT_INFO } from "../constants";
 
@@ -65,7 +66,7 @@ export default function VehicleCatalogue() {
         {/* Section Header with Lagos Inspection Copy */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-8 gap-6">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 font-bold text-xs rounded-full uppercase tracking-wider mb-4 font-mono shadow-sm">
+            <div className="hidden md:inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 font-bold text-xs rounded-full uppercase tracking-wider mb-4 font-mono shadow-sm">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>Available For Inspection Now in Lagos, Nigeria</span>
             </div>
@@ -75,13 +76,13 @@ export default function VehicleCatalogue() {
             </h1>
             
             <p className="text-sm sm:text-base text-white/75 font-light leading-relaxed max-w-2xl">
-              These vehicles are <strong>physically on ground in Lagos, Nigeria</strong> — fully customs-cleared with complete port documentation. You can walk into our Ikeja lot today for physical inspection, computer diagnostics, test-drive, and same-day payment.
+              These vehicles are <strong>physically on ground in Lagos, Nigeria</strong> — fully customs-cleared with complete port documentation. Reach out to us today for a physical inspection, and test-drive.
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
             <a
-              href="https://wa.me/16473896162?text=Hello%20LeeAutoX!%20I%20want%20to%20book%20a%20physical%20inspection%20for%20a%20vehicle%20at%20your%20Ikeja,%20Lagos%20lot."
+              href="https://wa.me/16473896162?text=Hello%20LeeAutoX!%20I%20want%20to%20book%20a%20physical%20inspection%20for%20a%20vehicle%20in%20Lagos."
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-5 py-3 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-md"
@@ -94,36 +95,6 @@ export default function VehicleCatalogue() {
             >
               Full Catalogue <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
             </Link>
-          </div>
-        </div>
-
-        {/* Lagos Physical Inspection Stats Bar */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 p-6 rounded-3xl border mb-10 bg-white/5 border-white/10 backdrop-blur-md">
-          <div>
-            <span className="text-[10px] font-mono tracking-widest uppercase text-white/50 block mb-1">On Ground In Lagos</span>
-            <span className="font-serif text-2xl sm:text-3xl font-bold text-emerald-400">
-              {inStockCount} Verified Units
-            </span>
-          </div>
-          <div>
-            <span className="text-[10px] font-mono tracking-widest uppercase text-white/50 block mb-1">Prices From</span>
-            <span className="font-serif text-2xl sm:text-3xl font-bold text-[#2B59FF]">
-              {minPriceFormatted}
-            </span>
-          </div>
-          <div>
-            <span className="text-[10px] font-mono tracking-widest uppercase text-white/50 block mb-1">Lagos Inspection Lot</span>
-            <span className="font-semibold text-xs sm:text-sm text-white/90 flex items-center gap-1.5 mt-1">
-              <MapPin size={14} className="text-emerald-400 shrink-0" />
-              <span>5 Pepple St, Ikeja, Lagos</span>
-            </span>
-          </div>
-          <div>
-            <span className="text-[10px] font-mono tracking-widest uppercase text-white/50 block mb-1">Clearance & Release</span>
-            <span className="font-semibold text-xs sm:text-sm text-white/90 flex items-center gap-1.5 mt-1">
-              <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
-              <span>100% Duty Paid • Same-Day</span>
-            </span>
           </div>
         </div>
 
@@ -237,7 +208,7 @@ export default function VehicleCatalogue() {
                     {/* Location & Status Badges */}
                     <div className="absolute top-3 left-3 flex flex-col gap-1 items-start">
                       <span className="bg-emerald-600 text-white text-[10px] font-mono px-2.5 py-1 uppercase tracking-wider font-bold rounded-md shadow-md flex items-center gap-1">
-                        <MapPin size={10} /> Lagos Lot
+                        <MapPin size={10} /> Lagos
                       </span>
                       <span className="bg-black/70 backdrop-blur-md text-white text-[9px] font-mono px-2 py-0.5 rounded uppercase tracking-wider">
                         {vehicle.condition}
@@ -251,10 +222,6 @@ export default function VehicleCatalogue() {
                         {vehicle.status}
                       </div>
                     )}
-
-                    <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2.5 text-[10px] font-mono text-white/80">
-                      📍 5 Pepple St, Ikeja, Lagos
-                    </div>
                   </div>
 
                   <div className="p-5">
@@ -283,7 +250,7 @@ export default function VehicleCatalogue() {
                   </div>
 
                   <Link
-                    to={`/vehicle/${vehicle.id}`}
+                    to={getVehicleUrl(vehicle)}
                     className="px-4 py-2 bg-[#2B59FF] hover:bg-blue-600 active:scale-[0.98] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all flex items-center gap-1.5 shadow-md"
                   >
                     View Vehicle <ArrowRight size={13} />
@@ -300,7 +267,7 @@ export default function VehicleCatalogue() {
             to="/inventory"
             className="inline-flex items-center gap-3 px-10 py-4 bg-[#2B59FF] hover:bg-blue-600 active:scale-[0.98] text-white text-sm font-bold uppercase tracking-widest rounded-xl transition-all shadow-[0_0_25px_rgba(43,89,255,0.4)]"
           >
-            Browse Full Lagos Catalogue <ArrowRight size={18} />
+            Browse all inventory <ArrowRight size={18} />
           </Link>
         </div>
       </div>

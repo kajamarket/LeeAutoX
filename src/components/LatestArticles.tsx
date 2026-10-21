@@ -3,11 +3,11 @@ import { BookOpen, Calendar, ChevronRight, ArrowRight } from 'lucide-react';
 import { getAllPosts } from '../data/posts';
 
 export default function LatestArticles() {
-  const posts = getAllPosts().slice(0, 4); // Get top 4 recent posts
-  if (posts.length === 0) return null;
+  const allPosts = getAllPosts();
+  if (allPosts.length === 0) return null;
 
-  const leadPost = posts[0];
-  const supportingPosts = posts.slice(1, 4);
+  const leadPost = allPosts[0];
+  const supportingPosts = allPosts.slice(1, 6); // 5 supporting posts for desktop & tablet
 
   return (
     // Explicitly light mode article section with black/dark text on white/light background
@@ -16,14 +16,11 @@ export default function LatestArticles() {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-100 text-[#2B59FF] font-bold text-xs rounded-full uppercase tracking-wider mb-3 font-mono">
-              <BookOpen size={14} /> Journal & Insights
+              <BookOpen size={14} /> Insights
             </div>
             <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-slate-950">
-              Latest Automotive & Shipping Guides
+              Automotive & Shipping Guides
             </h2>
-            <p className="text-slate-600 mt-3 max-w-2xl text-base font-light leading-relaxed">
-              Expert guides on Copart auction bidding, ocean freight containerization, customs tariff valuation, and vehicle import procedures from Canada to Nigeria and Ghana.
-            </p>
           </div>
           <Link
             to="/blog"
@@ -78,15 +75,17 @@ export default function LatestArticles() {
             </div>
           )}
 
-          {/* Supporting Articles Stack */}
-          <div className="lg:col-span-5 flex flex-col gap-6">
+          {/* Supporting Articles Stack (2 on mobile, 5 on desktop & tablet) */}
+          <div className="lg:col-span-5 flex flex-col justify-between gap-3 sm:gap-3.5">
             {supportingPosts.map((post, idx) => (
               <Link
                 key={idx}
                 to={`/blog/${post.slug}/`}
-                className="group rounded-2xl border border-slate-200 bg-white p-5 flex items-center gap-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+                className={`group rounded-2xl border border-slate-200 bg-white p-3 sm:p-3.5 items-center gap-3.5 sm:gap-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md ${
+                  idx >= 2 ? 'hidden md:flex' : 'flex'
+                }`}
               >
-                <div className="w-28 h-24 sm:w-32 sm:h-28 rounded-xl overflow-hidden shrink-0 bg-slate-100">
+                <div className="w-20 h-20 sm:w-24 sm:h-20 rounded-xl overflow-hidden shrink-0 bg-slate-100">
                   <img
                     src={post.featuredImage?.url || 'https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&q=80&w=1200'}
                     alt={post.featuredImage?.alt || post.title}
@@ -95,17 +94,17 @@ export default function LatestArticles() {
                 </div>
                 <div className="flex-1 min-w-0 flex flex-col justify-between">
                   <div>
-                    <span className="text-[11px] font-mono font-bold text-[#2B59FF] uppercase tracking-wider block mb-1">
+                    <span className="text-[10px] font-mono font-bold text-[#2B59FF] uppercase tracking-wider block mb-0.5">
                       {post.categories?.[0]?.name || 'Logistics'}
                     </span>
-                    <h4 className="font-bold text-base sm:text-lg text-slate-950 group-hover:text-[#2B59FF] transition-colors line-clamp-2 leading-snug">
+                    <h4 className="font-bold text-xs sm:text-sm text-slate-950 group-hover:text-[#2B59FF] transition-colors line-clamp-2 leading-snug">
                       {post.title}
                     </h4>
                   </div>
-                  <div className="flex items-center justify-between text-xs text-slate-500 mt-3 pt-2 border-t border-slate-100 font-mono">
+                  <div className="flex items-center justify-between text-[11px] text-slate-500 mt-2 pt-1.5 border-t border-slate-100 font-mono">
                     <span>{post.readingTime || '5 min read'}</span>
                     <span className="font-bold text-[#2B59FF] inline-flex items-center gap-0.5 group-hover:translate-x-1 transition-transform">
-                      Read <ChevronRight size={13} />
+                      Read <ChevronRight size={12} />
                     </span>
                   </div>
                 </div>

@@ -21,6 +21,16 @@ export interface VehicleItem {
   status: "Available" | "Reserved" | "Sold";
 }
 
+export function getVehicleSlug(vehicle: { id: string | number; year: number; make: string; model: string }): string {
+  const cleanMake = (vehicle.make || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const cleanModel = (vehicle.model || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  return `${vehicle.id}_${vehicle.year}${cleanMake}${cleanModel}`;
+}
+
+export function getVehicleUrl(vehicle: { id: string | number; year: number; make: string; model: string }): string {
+  return `/vehicle/${getVehicleSlug(vehicle)}`;
+}
+
 export const INITIAL_INVENTORY: VehicleItem[] = [
   {
     id: "1",
@@ -45,7 +55,7 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     condition: "On Ground in Lagos",
     vin: "5NPE24AF8MH891234",
     deposit: "₦4,400,000",
-    location: "5 Pepple Street, Ikeja, Lagos (Inspection Lot)",
+    location: "Lagos, Nigeria",
     status: "Available"
   },
   {
@@ -71,7 +81,7 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     condition: "On Ground in Lagos",
     vin: "KMHJ24JH8MU654321",
     deposit: "₦4,600,000",
-    location: "5 Pepple Street, Ikeja, Lagos (Inspection Lot)",
+    location: "Lagos, Nigeria",
     status: "Available"
   },
   {
@@ -96,7 +106,7 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     condition: "On Ground in Lagos",
     vin: "5NPE34AF8HH345678",
     deposit: "₦2,600,000",
-    location: "5 Pepple Street, Ikeja, Lagos (Inspection Lot)",
+    location: "Lagos, Nigeria",
     status: "Available"
   },
   {
@@ -121,7 +131,7 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     condition: "On Ground in Lagos",
     vin: "1NXBR32E8HZ987654",
     deposit: "₦3,000,000",
-    location: "5 Pepple Street, Ikeja, Lagos (Inspection Lot)",
+    location: "Lagos, Nigeria",
     status: "Available"
   },
   {
@@ -146,7 +156,7 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     condition: "On Ground in Lagos",
     vin: "2T3C1RFV8LC459201",
     deposit: "₦5,600,000",
-    location: "5 Pepple Street, Ikeja, Lagos (Inspection Lot)",
+    location: "Lagos, Nigeria",
     status: "Available"
   },
   {
@@ -171,7 +181,7 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     condition: "On Ground in Lagos",
     vin: "JTMCV83J5N4012345",
     deposit: "₦19,000,000",
-    location: "5 Pepple Street, Ikeja, Lagos (Inspection Lot)",
+    location: "Lagos, Nigeria",
     status: "Available"
   },
   {
@@ -196,7 +206,7 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     condition: "On Ground in Lagos",
     vin: "1FTFW1ED8LFA78901",
     deposit: "₦7,600,000",
-    location: "5 Pepple Street, Ikeja, Lagos (Inspection Lot)",
+    location: "Lagos, Nigeria",
     status: "Available"
   },
   {
@@ -221,7 +231,7 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     condition: "On Ground in Lagos",
     vin: "WDC0G4JB0KF456789",
     deposit: "₦7,200,000",
-    location: "5 Pepple Street, Ikeja, Lagos (Inspection Lot)",
+    location: "Lagos, Nigeria",
     status: "Available"
   }
 ];

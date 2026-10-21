@@ -15,6 +15,11 @@ export default function SEOHelmet() {
       cleanPath += '/';
     }
 
+    if (pathname.startsWith('/vehicle/') || pathname.startsWith('/car/')) {
+      // Handled dynamically inside VehicleDetailPage to guarantee specific vehicle year/make/model SEO
+      return;
+    }
+
     const data = SEO_DATA[cleanPath] || SEO_DATA['/'];
 
     // 1. Update title

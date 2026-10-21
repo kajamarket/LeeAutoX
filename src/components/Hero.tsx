@@ -27,7 +27,18 @@ export default function Hero() {
 
   return (
     <section className="relative py-20 md:py-24 px-6 md:px-12 bg-black text-white overflow-hidden">
-      {/* Background Graphic & Headlights */}
+      {/* Restored Hero Background Image - Visible across Mobile, Tablet, and Desktop */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        <img
+          src="https://leeplugshub.com/wp-content/uploads/2026/05/leeautoxhero.png"
+          alt="LeeAutoX North American Sourced Vehicle"
+          className="w-full h-full object-cover object-center opacity-50"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/60" />
+      </div>
+
+      {/* Ambient Lighting & Headlights */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-35">
         <div className="absolute top-[20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-gradient-to-br from-[#2B59FF]/20 to-transparent blur-[120px]" />
         <div className="absolute bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-gradient-to-tr from-cyan-500/10 to-transparent blur-[100px]" />

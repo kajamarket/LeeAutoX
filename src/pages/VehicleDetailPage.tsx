@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, Link, useNavigate, Navigate } from 'react-router-dom';
 import { useInventory } from '../context/InventoryContext';
+import { getVehicleSlug, getVehicleUrl } from '../data/inventory';
 import { useTheme } from '../context/ThemeContext';
 import { CONTACT_INFO } from '../constants';
 import { 
@@ -30,6 +31,36 @@ export default function VehicleDetailPage() {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [copied, setCopied] = useState(false);
   const [sourcingModalOpen, setSourcingModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (vehicle) {
+      const pageTitle = `${vehicle.year} ${vehicle.make} ${vehicle.model} For Sale | Lagos Nigeria Import | LeeAutoX`;
+      const metaDescription = `Buy verified ${vehicle.year} ${vehicle.make} ${vehicle.model} on ground in Lagos, Nigeria. Fully customs cleared, 100% duty paid, available for physical inspection and test drive.`;
+      const canonicalUrl = `https://leeautox.com${getVehicleUrl(vehicle)}`;
+
+      document.title = pageTitle;
+
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (!metaDesc) {
+        metaDesc = document.createElement('meta');
+        metaDesc.setAttribute('name', 'description');
+        document.head.appendChild(metaDesc);
+      }
+      metaDesc.setAttribute('content', metaDescription);
+
+      let canonical = document.querySelector('link[rel="canonical"]');
+      if (!canonical) {
+        canonical = document.createElement('link');
+        canonical.setAttribute('rel', 'canonical');
+        document.head.appendChild(canonical);
+      }
+      canonical.setAttribute('href', canonicalUrl);
+    }
+  }, [vehicle]);
+
+  if (vehicle && id && id.toLowerCase() !== getVehicleSlug(vehicle).toLowerCase()) {
+    return <Navigate to={getVehicleUrl(vehicle)} replace />;
+  }
 
   if (!vehicle) {
     return (
@@ -75,7 +106,7 @@ export default function VehicleDetailPage() {
   };
 
   const whatsappMessage = encodeURIComponent(
-    `Hello LeeAutoX! I am inquiring about the ${vehicle.name} (Year: ${vehicle.year}, VIN: ${vehicle.vin || 'N/A'}, Price: ${vehicle.price}) currently in Lagos. I would like to book a physical inspection and test drive at your Ikeja lot.`
+    `Hello LeeAutoX! I am inquiring about the ${vehicle.name} (Year: ${vehicle.year}, VIN: ${vehicle.vin || 'N/A'}, Price: ${vehicle.price}) currently in Lagos. I would like to book a physical inspection and test drive.`
   );
 
   return (
@@ -362,7 +393,7 @@ export default function VehicleDetailPage() {
                     <div className="pt-3 border-t border-slate-200/20 flex items-center justify-between">
                       <span className="text-[#2B59FF] font-bold text-base font-serif">{rel.price}</span>
                       <Link
-                        to={`/vehicle/${rel.id}`}
+                        to={getVehicleUrl(rel)}
                         className="px-3 py-1.5 bg-[#2B59FF] text-white text-xs font-bold rounded-lg uppercase tracking-wider"
                       >
                         View

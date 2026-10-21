@@ -81,6 +81,63 @@ const LOCAL_POSTS: PostItem[] = [
     tags: ['Dealers', 'Wholesale', 'Fleet', 'Imports'],
     readingTime: '8 min read',
     isLocal: true
+  },
+  {
+    slug: 'copart-bidding-guide',
+    title: 'Copart Canada Bidding Strategy & Gate Fee Breakdown',
+    excerpt: 'Detailed breakdown of Copart member tiers, preliminary bidding tactics, live auction execution, and avoiding auction yard gate fees.',
+    paragraphs: [
+      'Mastering Copart bidding requires understanding member fee matrices, virtual bidding countdowns, and reserve auction psychology. Sourcing through registered broker channels reduces buyer premiums.',
+      'Always calculate total landed cost prior to the auction starting horn. Unbudgeted late pickup fees, storage levies, and title transfer charges can quickly erode margins if logistics are not pre-staged.'
+    ],
+    date: '2026-05-18T11:00:00Z',
+    author: 'LeeAutoX Auction Specialists',
+    featuredImage: {
+      url: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=1200',
+      alt: 'Automotive bidding floor'
+    },
+    categories: [{ name: 'Auctions', slug: 'auctions' }],
+    tags: ['Copart', 'Bidding', 'Canada', 'Gate Fees'],
+    readingTime: '9 min read',
+    isLocal: true
+  },
+  {
+    slug: 'vehicle-inspection-checklist',
+    title: '150-Point Pre-Purchase Auction Inspection Checklist',
+    excerpt: 'The rigorous technical checklist our Canadian inspectors run before placing bids: OBD2 scanner protocols, salt corrosion checks, and title branding.',
+    paragraphs: [
+      'Physical pre-purchase inspection separates profitable imports from financial disasters. Digital auction photos routinely conceal bent control arms, oil pan leaks, and flood waterline stains.',
+      'Our Ontario technicians inspect structural frame rails, test transmission fluid smell and clarity, verify VIN match across all vehicle stampings, and perform active OBD2 computer diagnostic scans.'
+    ],
+    date: '2026-04-30T14:20:00Z',
+    author: 'LeeAutoX Technical Inspection Team',
+    featuredImage: {
+      url: 'https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&q=80&w=1200',
+      alt: 'Vehicle technical inspection'
+    },
+    categories: [{ name: 'Inspection', slug: 'inspection' }],
+    tags: ['Inspection', 'OBD2', 'Diagnostics', 'Checklist'],
+    readingTime: '11 min read',
+    isLocal: true
+  },
+  {
+    slug: 'tokunbo-buyers-guide',
+    title: "Tokunbo Buyer's Guide: Sourcing Directly from North America",
+    excerpt: 'Why direct procurement from Canada and the US beats local dealership markups in Nigeria, with verified mileage and clean accident histories.',
+    paragraphs: [
+      'Buying a Tokunbo vehicle directly through North American auctions guarantees transparent mileage verification and documented title history. In contrast, locally purchased inventory often carries rolled-back odometers.',
+      'Through containerized consolidated shipping, Nigerian buyers can import direct at wholesale auction rates while benefiting from secure milestone installment financing.'
+    ],
+    date: '2026-04-12T09:00:00Z',
+    author: 'LeeAutoX Procurement Desk',
+    featuredImage: {
+      url: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=1200',
+      alt: 'Highway vehicle transport'
+    },
+    categories: [{ name: 'Procurement', slug: 'procurement' }],
+    tags: ['Tokunbo', 'Direct Import', 'Lagos', 'Nigeria'],
+    readingTime: '7 min read',
+    isLocal: true
   }
 ];
 

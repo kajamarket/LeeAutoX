@@ -1,41 +1,70 @@
-import React from 'react';
-import { motion } from 'motion/react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { PROCESS_STEPS, PROCESS_STATS } from '../constants';
 import { ProcessStep } from '../types';
-import { Search, Globe, ArrowRight, ShieldCheck, FileText, CreditCard, FileSignature, Ship, Truck } from 'lucide-react';
+import { Search, Globe, ArrowRight, ShieldCheck, FileText, CreditCard, FileSignature, Ship, Truck, ChevronDown } from 'lucide-react';
 
 export default function Process() {
+  const [isSectionOpen, setIsSectionOpen] = useState(true);
+
   return (
     <section id="process" className="px-6 md:px-12 py-24 max-w-7xl mx-auto">
-      <motion.h2
-        initial={{ y: 20, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        viewport={{ once: true }}
-        className="font-serif text-5xl md:text-6xl font-bold leading-tight mb-16 text-[#2B59FF]"
-      >
-        How it works
-      </motion.h2>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0">
-        {PROCESS_STEPS.map((step, index) => (
-          <ProcessStepCard key={step.id} step={step} index={index} />
-        ))}
-      </div>
-
-      <div className="mt-24 border-t border-border pt-16 grid grid-cols-2 md:grid-cols-4 gap-10">
-        {PROCESS_STATS.map((stat, index) => (
-          <motion.div
-            key={stat.label}
-            initial={{ y: 20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.1 }}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-6">
+        <motion.h2
+          initial={{ y: 20, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          className="font-serif text-5xl md:text-6xl font-bold leading-tight text-[#2B59FF]"
+        >
+          How it works
+        </motion.h2>
+        <div className="shrink-0">
+          <button
+            onClick={() => setIsSectionOpen(!isSectionOpen)}
+            aria-expanded={isSectionOpen}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#2B59FF]/30 hover:border-[#2B59FF] bg-[#2B59FF]/10 hover:bg-[#2B59FF]/20 text-[#2B59FF] text-xs font-mono font-bold uppercase tracking-wider transition-all cursor-pointer shadow-sm active:scale-[0.98]"
           >
-            <div className="font-serif text-5xl font-bold text-[#2B59FF]">{stat.value}</div>
-            <div className="text-xs text-muted-foreground mt-2 tracking-wide">{stat.label}</div>
-          </motion.div>
-        ))}
+            <span>{isSectionOpen ? 'Collapse Section' : 'Expand Section'}</span>
+            <ChevronDown
+              size={16}
+              className={`transition-transform duration-300 ${isSectionOpen ? 'rotate-180' : ''}`}
+            />
+          </button>
+        </div>
       </div>
+
+      <AnimatePresence>
+        {isSectionOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.35, ease: 'easeInOut' }}
+            className="overflow-hidden pt-8"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0">
+              {PROCESS_STEPS.map((step, index) => (
+                <ProcessStepCard key={step.id} step={step} index={index} />
+              ))}
+            </div>
+
+            <div className="mt-24 border-t border-border pt-16 grid grid-cols-2 md:grid-cols-4 gap-10">
+              {PROCESS_STATS.map((stat, index) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ y: 20, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <div className="font-serif text-5xl font-bold text-[#2B59FF]">{stat.value}</div>
+                  <div className="text-xs text-muted-foreground mt-2 tracking-wide">{stat.label}</div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

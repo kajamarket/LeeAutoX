@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { VehicleItem, INITIAL_INVENTORY } from '../data/inventory';
+import { VehicleItem, INITIAL_INVENTORY, getVehicleSlug } from '../data/inventory';
 
 interface InventoryContextType {
   vehicles: VehicleItem[];
   getVehicleById: (id: string | number) => VehicleItem | undefined;
+  getVehicleBySlug: (slug: string) => VehicleItem | undefined;
   addVehicle: (vehicle: Omit<VehicleItem, 'id'>) => VehicleItem;
   updateVehicle: (id: string | number, updates: Partial<VehicleItem>) => void;
   deleteVehicle: (id: string | number) => void;
@@ -42,8 +43,29 @@ export function InventoryProvider({ children }: { children: React.ReactNode }) {
     }
   }, [vehicles]);
 
-  const getVehicleById = (id: string | number) => {
-    return vehicles.find(v => String(v.id) === String(id));
+  const getVehicleById = (idOrSlug: string | number): VehicleItem | undefined => {
+    const raw = String(idOrSlug).toLowerCase().trim();
+    // 1. Direct id match
+    let found = vehicles.find(v => String(v.id).toLowerCase() === raw);
+    if (found) return found;
+
+    // 2. Full slug match (e.g. 1_2021hyundaisonata)
+    found = vehicles.find(v => getVehicleSlug(v).toLowerCase() === raw);
+    if (found) return found;
+
+    // 3. Prefix id match before underscore
+    const underscoreIdx = raw.indexOf('_');
+    if (underscoreIdx !== -1) {
+      const prefix = raw.substring(0, underscoreIdx);
+      found = vehicles.find(v => String(v.id).toLowerCase() === prefix);
+      if (found) return found;
+    }
+
+    return undefined;
+  };
+
+  const getVehicleBySlug = (slug: string): VehicleItem | undefined => {
+    return getVehicleById(slug);
   };
 
   const addVehicle = (vehicleData: Omit<VehicleItem, 'id'>): VehicleItem => {

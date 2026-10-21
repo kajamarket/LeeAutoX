@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useInventory } from '../context/InventoryContext';
-import { VehicleItem } from '../data/inventory';
+import { VehicleItem, getVehicleUrl } from '../data/inventory';
 import { 
   Lock, 
   Unlock, 
@@ -266,7 +266,7 @@ export default function AdminBackend() {
 
           <div className="mt-6 pt-4 border-t border-zinc-800/80 text-center">
             <span className="text-[11px] text-zinc-500 font-mono">
-              Authorized Personnel Only • Standard Passcode: <code className="text-zinc-400">leeauto2026</code>
+              Authorized Personnel Only
             </span>
           </div>
         </div>
@@ -458,7 +458,7 @@ export default function AdminBackend() {
                       <td className="py-4 px-6 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <Link
-                            to={`/vehicle/${v.id}`}
+                            to={getVehicleUrl(v)}
                             target="_blank"
                             className="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition-colors"
                             title="View Public Page"
