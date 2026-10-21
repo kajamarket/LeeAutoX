@@ -1,136 +1,39 @@
-import { motion } from 'motion/react';
-import { ArrowDownRight, Star } from 'lucide-react';
-import { HERO_STATS } from '../constants';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Star, ArrowDownRight, Search, SlidersHorizontal, X, Globe, Shield, Car } from 'lucide-react';
 import { useReviews } from '../context/ReviewsContext';
 
 export default function Hero() {
   const { averageRating, totalCount } = useReviews();
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchSubmitted, setSearchSubmitted] = useState(false);
+  
+  // Auction search filters
+  const [keyword, setKeyword] = useState('');
+  const [make, setMake] = useState('All Makes');
+  const [model, setModel] = useState('');
+  const [yearFrom, setYearFrom] = useState('2015');
+  const [yearTo, setYearTo] = useState('2024');
+  const [bodyType, setBodyType] = useState('All');
+  const [condition, setCondition] = useState('All');
+  const [titleType, setTitleType] = useState('All');
+  const [auctionSource, setAuctionSource] = useState('Both');
+  const [locationState, setLocationState] = useState('All States');
+
+  const handleAuctionSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSearchSubmitted(true);
+  };
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-center px-6 md:px-12 pb-20 pt-3 md:pt-32 overflow-hidden bg-black">
-      {/* Background Image */}
-      <div className="absolute inset-0">
-        <img
-          src="https://leeplugshub.com/wp-content/uploads/2026/05/leeautoxhero.png"
-          alt="Luxury vehicle"
-          className="w-full h-full object-cover hidden md:block"
-        />
-        <video
-          src="https://leeplugshub.com/wp-content/uploads/2026/05/leeautox2.mp4"
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover md:hidden"
-        />
-
-        {/* Refined Geometric Motif */}
-        <div className="absolute inset-0 z-0 opacity-40 pointer-events-none">
-          {/* Top Right Concentration */}
-          <div className="absolute top-0 right-0 w-full h-full md:w-2/3 md:h-1/2">
-            {/* Gear Assembly Aspect 1 */}
-            <svg className="absolute top-[10%] right-[15%] w-64 h-64 text-white/[0.03] rotate-[15deg]" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="1 3" />
-              <circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" strokeWidth="0.2" />
-              {[...Array(12)].map((_, i) => (
-                <line
-                  key={i}
-                  x1="50" y1="15" x2="50" y2="22"
-                  transform={`rotate(${i * 30} 50 50)`}
-                  stroke="currentColor" strokeWidth="1"
-                />
-              ))}
-            </svg>
-
-            {/* Precision Contours */}
-            <svg className="absolute top-[5%] right-[-5%] w-[80%] h-full text-white/[0.05]" viewBox="0 0 400 400">
-              <path d="M400,50 Q300,60 200,150 T0,200" fill="none" stroke="url(#line-grad)" strokeWidth="0.5" />
-              <path d="M400,80 Q320,95 240,180 T20,240" fill="none" stroke="url(#line-grad)" strokeWidth="0.3" />
-              <defs>
-                <linearGradient id="line-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="white" stopOpacity="0" />
-                  <stop offset="50%" stopColor="white" stopOpacity="0.5" />
-                  <stop offset="100%" stopColor="white" stopOpacity="0.5" />
-                </linearGradient>
-              </defs>
-            </svg>
-
-            {/* Headlight Silhouettes */}
-            <div className="absolute top-[15%] right-[25%] w-48 h-12 rotate-[-10deg]">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.08] to-transparent rounded-full blur-[2px] border border-white/[0.05]" />
-              <div className="absolute left-[10%] top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border border-white/[0.1] shadow-[0_0_15px_rgba(255,255,255,0.1)]" />
-            </div>
-          </div>
-
-          {/* Scattered Elements */}
-          <div className="absolute bottom-[20%] left-[5%] w-32 h-32 text-white/[0.02]">
-            <svg className="w-full h-full" viewBox="0 0 100 100">
-              <rect x="10" y="10" width="80" height="80" fill="none" stroke="currentColor" strokeWidth="0.2" className="rotate-45 transform-gpu" />
-              <circle cx="50" cy="50" r="1" fill="currentColor" />
-            </svg>
-          </div>
-        </div>
-        
-        {/* Animated Headlights */}
-        <div className="absolute inset-0 pointer-events-none">
-          {/* Left Headlight */}
-          <motion.div
-            animate={{
-              opacity: [0, 0.4, 1, 0.8, 1, 0.2, 0],
-              scale: [1, 1.05, 1.1, 1.05, 1.1, 1, 1],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              times: [0, 0.1, 0.15, 0.5, 0.85, 0.95, 1],
-              ease: "easeInOut",
-            }}
-            className="absolute top-[48.5%] left-[58%] w-12 h-4 bg-cyan-200/40 rounded-full blur-xl shadow-[0_0_50px_20px_rgba(255,255,255,0.6)]"
-          />
-          <motion.div
-            animate={{
-              opacity: [0, 0.1, 0.5, 0.4, 0.5, 0.1, 0],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              times: [0, 0.1, 0.15, 0.5, 0.85, 0.95, 1],
-            }}
-            className="absolute top-[48.2%] left-[57.5%] w-16 h-6 bg-white/20 rounded-full blur-2xl"
-          />
-
-          {/* Right Headlight */}
-          <motion.div
-            animate={{
-              opacity: [0, 0.4, 1, 0.8, 1, 0.2, 0],
-              scale: [1, 1.05, 1.1, 1.05, 1.1, 1, 1],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              times: [0, 0.1, 0.15, 0.5, 0.85, 0.95, 1],
-              ease: "easeInOut",
-            }}
-            className="absolute top-[51.5%] left-[82.5%] w-10 h-3 bg-cyan-200/40 rounded-full blur-xl shadow-[0_0_40px_15px_rgba(255,255,255,0.5)]"
-          />
-          <motion.div
-            animate={{
-              opacity: [0, 0.1, 0.5, 0.4, 0.5, 0.1, 0],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              times: [0, 0.1, 0.15, 0.5, 0.85, 0.95, 1],
-            }}
-            className="absolute top-[51.2%] left-[82%] w-14 h-5 bg-white/20 rounded-full blur-2xl"
-          />
-        </div>
-
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+    <section className="relative py-20 md:py-24 px-6 md:px-12 bg-black text-white overflow-hidden">
+      {/* Background Graphic & Headlights */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-35">
+        <div className="absolute top-[20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-gradient-to-br from-[#2B59FF]/20 to-transparent blur-[120px]" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-gradient-to-tr from-cyan-500/10 to-transparent blur-[100px]" />
       </div>
 
-      <div className="max-w-7xl mx-auto w-full relative z-10">
+      <div className="max-w-7xl mx-auto w-full relative z-10 mb-12">
         {/* Eyebrow & Dynamic Rating Badge */}
         <div className="flex flex-wrap items-center gap-4 mb-6">
           <motion.p
@@ -141,7 +44,6 @@ export default function Hero() {
           >
             BUY — BID — EXPORT
           </motion.p>
-
           <motion.a
             href="#testimonials"
             initial={{ opacity: 0, scale: 0.95 }}
@@ -166,7 +68,7 @@ export default function Hero() {
           initial={{ y: 40, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.8, ease: 'easeOut' }}
-          className="font-serif text-5xl md:text-7xl font-black leading-[0.95] tracking-tight text-white text-balance mb-8 max-w-3xl"
+          className="font-serif text-5xl md:text-7xl font-black leading-[0.95] tracking-tight text-white text-balance mb-6 max-w-3xl"
         >
           Your vehicle,<br />
           <span className="italic font-normal">sourced from North America.</span>
@@ -177,7 +79,7 @@ export default function Hero() {
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.35, duration: 0.7 }}
-          className="hidden md:block text-white/70 font-light text-base md:text-lg max-w-sm leading-relaxed mb-10"
+          className="text-white/70 font-light text-base md:text-lg max-w-xl leading-relaxed mb-8"
         >
           LeeAutoX connects African buyers to premium vehicles directly from top auctions in the USA and Canada — with full shipping, containerization, and logistics handled end-to-end.
         </motion.p>
@@ -187,17 +89,17 @@ export default function Hero() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.45, duration: 0.7 }}
-          className="flex flex-col sm:flex-row items-start gap-4"
+          className="flex flex-col sm:flex-row items-start gap-4 mb-10"
         >
           <a
             href="#contact"
-            className="px-7 py-3 bg-[#2B59FF] text-white text-sm font-semibold border border-[#2B59FF] hover:bg-transparent hover:text-white transition-colors cursor-pointer tracking-wide"
+            className="px-7 py-3.5 bg-[#2B59FF] text-white text-sm font-semibold border border-[#2B59FF] hover:bg-transparent hover:text-white transition-colors cursor-pointer tracking-wide shadow-[0_0_20px_rgba(43,89,255,0.4)]"
           >
             Get a Free Quote
           </a>
           <a
             href="#catalogue"
-            className="group flex items-center gap-3 text-sm font-medium cursor-pointer hover:opacity-70 transition-opacity text-white"
+            className="group flex items-center gap-3 text-sm font-medium cursor-pointer hover:opacity-70 transition-opacity text-white py-3.5"
           >
             <span className="tracking-wide">Available Vehicles</span>
             <div className="w-8 h-8 border border-white flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
@@ -205,26 +107,169 @@ export default function Hero() {
             </div>
           </a>
         </motion.div>
-      </div>
 
-      {/* Stats Strip */}
-      <motion.div
-        initial={{ x: 40, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ delay: 0.9, duration: 0.6 }}
-        className="absolute bottom-5 right-6 md:right-12 z-10 bg-black/60 backdrop-blur-sm border border-white/10 flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-white/10"
-      >
-        {HERO_STATS.map((stat) => (
-          <div key={stat.label} className="px-5 py-4 text-center">
-            <div className="font-serif text-2xl font-bold text-[#2B59FF] leading-none mb-1">
-              {stat.value}
+        {/* CHANGE 1b — Copart / IAA Auction Vehicle Search UI */}
+        <motion.div
+          initial={{ y: 30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.55, duration: 0.8 }}
+          className="bg-black/80 backdrop-blur-2xl border border-white/25 p-6 md:p-8 shadow-2xl relative"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#2B59FF] animate-pulse" />
+              <h3 className="font-serif text-lg font-bold text-white tracking-wide">Live Copart & IAA Auction Lot Search</h3>
             </div>
-            <div className="font-mono text-[10px] tracking-[0.18em] text-white/40 uppercase">
-              {stat.label}
-            </div>
+            <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest hidden sm:inline">USA & Canada Live Inventory Feed</span>
           </div>
-        ))}
-      </motion.div>
+
+          <form onSubmit={handleAuctionSearch} className="flex flex-col gap-4">
+            {/* Primary keyword & Source row */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+              <div className="md:col-span-6 relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" size={18} />
+                <input
+                  type="text"
+                  placeholder="Enter Make, Model, Keyword, or Lot / VIN #..."
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  className="w-full bg-white/5 border border-white/20 pl-12 pr-4 py-3 text-sm text-white placeholder-white/40 focus:outline-none focus:border-[#2B59FF]"
+                />
+              </div>
+              <div className="md:col-span-3">
+                <select
+                  value={auctionSource}
+                  onChange={(e) => setAuctionSource(e.target.value)}
+                  className="w-full bg-black border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:border-[#2B59FF]"
+                >
+                  <option value="Both">Auction: Copart & IAA</option>
+                  <option value="Copart">Copart Auctions Only</option>
+                  <option value="IAA">IAA Insurance Auto Auctions</option>
+                </select>
+              </div>
+              <div className="md:col-span-3">
+                <select
+                  value={locationState}
+                  onChange={(e) => setLocationState(e.target.value)}
+                  className="w-full bg-black border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:border-[#2B59FF]"
+                >
+                  <option value="All States">Location: All US/CA States</option>
+                  <option value="ON">Ontario, Canada</option>
+                  <option value="QC">Quebec, Canada</option>
+                  <option value="TX">Texas, USA</option>
+                  <option value="CA">California, USA</option>
+                  <option value="NY">New York, USA</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Expanded Advanced Filters */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3 pt-2 border-t border-white/10">
+              <select
+                value={make}
+                onChange={(e) => setMake(e.target.value)}
+                className="bg-white/5 border border-white/15 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#2B59FF]"
+              >
+                <option value="All Makes">Make: All</option>
+                <option value="Toyota">Toyota</option>
+                <option value="Lexus">Lexus</option>
+                <option value="Hyundai">Hyundai</option>
+                <option value="Ford">Ford</option>
+                <option value="Mercedes">Mercedes-Benz</option>
+              </select>
+
+              <select
+                value={bodyType}
+                onChange={(e) => setBodyType(e.target.value)}
+                className="bg-white/5 border border-white/15 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#2B59FF]"
+              >
+                <option value="All">Body: All</option>
+                <option value="SUV">SUV</option>
+                <option value="Sedan">Sedan</option>
+                <option value="Truck">Truck</option>
+                <option value="Van">Van</option>
+              </select>
+
+              <select
+                value={condition}
+                onChange={(e) => setCondition(e.target.value)}
+                className="bg-white/5 border border-white/15 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#2B59FF]"
+              >
+                <option value="All">Condition: All</option>
+                <option value="Run & Drive">Run & Drive</option>
+                <option value="Enhanced">Enhanced</option>
+                <option value="Stationary">Stationary</option>
+              </select>
+
+              <select
+                value={titleType}
+                onChange={(e) => setTitleType(e.target.value)}
+                className="bg-white/5 border border-white/15 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#2B59FF]"
+              >
+                <option value="All">Title: All Types</option>
+                <option value="Clean">Clean Title</option>
+                <option value="Salvage">Salvage</option>
+                <option value="Parts">Parts Only</option>
+              </select>
+
+              <div className="flex items-center gap-1 bg-white/5 border border-white/15 px-3 py-2 text-xs text-white">
+                <span className="text-white/50 text-[10px]">Year:</span>
+                <input type="text" placeholder="From" value={yearFrom} onChange={(e) => setYearFrom(e.target.value)} className="w-12 bg-transparent text-white focus:outline-none text-center" />
+                <span>-</span>
+                <input type="text" placeholder="To" value={yearTo} onChange={(e) => setYearTo(e.target.value)} className="w-12 bg-transparent text-white focus:outline-none text-center" />
+              </div>
+
+              <button
+                type="submit"
+                className="py-2.5 bg-[#2B59FF] text-white font-bold text-xs uppercase tracking-widest hover:bg-[#1a41cc] transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(43,89,255,0.4)]"
+              >
+                <Search size={14} /> Search Lots
+              </button>
+            </div>
+          </form>
+
+          {/* Search Result Placeholder Modal / Drawer if submitted */}
+          <AnimatePresence>
+            {searchSubmitted && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="mt-6 p-5 bg-black/95 border border-[#2B59FF] relative"
+              >
+                <button
+                  onClick={() => setSearchSubmitted(false)}
+                  className="absolute top-4 right-4 text-white/60 hover:text-white"
+                >
+                  <X size={16} />
+                </button>
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-[#2B59FF]/20 text-[#2B59FF] border border-[#2B59FF]/40">
+                    <Car size={24} />
+                  </div>
+                  <div>
+                    <h4 className="font-serif text-base font-bold mb-1">Copart & IAA API Integration State</h4>
+                    <p className="text-xs text-white/70 leading-relaxed mb-3 font-mono">
+                      Query received for "{keyword || 'All vehicles'}" ({auctionSource}, {locationState}, {yearFrom}-{yearTo}). 
+                      No live auction API connection is currently active.
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <a
+                        href="#contact"
+                        onClick={() => setSearchSubmitted(false)}
+                        className="px-4 py-2 bg-[#2B59FF] text-white text-xs font-bold uppercase tracking-widest"
+                      >
+                        Request Manual Auction Sourcing
+                      </a>
+                      <span className="text-[10px] font-mono text-white/40">Connect your API to display live lot results here.</span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
     </section>
   );
 }

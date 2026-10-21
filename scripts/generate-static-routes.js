@@ -83,6 +83,21 @@ const ROUTES_SEO = {
     desc: 'Browse available SUVs, luxury sedans, and commercial trucks ready for auction bidding and shipping from Canada to Nigeria and Ghana.',
     keywords: 'car catalog canada, buy suv nigeria, luxury sedan shipping'
   },
+  '/inventory/': {
+    title: 'Verified Cars For Sale & Inventory Catalogue | LeeAutoX',
+    desc: 'Browse our active inventory of verified vehicles available for export from Canada to Nigeria and West Africa with full inspection and containerization.',
+    keywords: 'cars for sale, inventory, buy cars canada, lagos car sales'
+  },
+  '/cars-for-sale/': {
+    title: 'Cars For Sale from Canada & USA Auctions | LeeAutoX',
+    desc: 'Verified cars for sale in North America ready for direct container shipment to Lagos, Nigeria and West Africa.',
+    keywords: 'cars for sale nigeria, tokunbo cars, copart vehicle sale'
+  },
+  '/bkend/': {
+    title: 'LeeAutoX Admin Console | Fleet Management',
+    desc: 'Confidential portal for vehicle catalogue and inventory administration.',
+    keywords: 'admin console'
+  },
   '/services/': {
     title: 'Car Sourcing, Shipping & Port Clearance Services | LeeAutoX',
     desc: 'End-to-end car import services including Copart auction bidding, container consolidation, ocean freight, and customs port clearance at Apapa and Tin Can.',

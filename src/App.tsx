@@ -8,6 +8,7 @@ import WhatsAppFloat from './components/WhatsAppFloat';
 import SEOHelmet from './components/SEOHelmet';
 import { ThemeProvider } from './context/ThemeContext';
 import { ReviewsProvider } from './context/ReviewsContext';
+import { InventoryProvider } from './context/InventoryContext';
 
 // Import Page components
 import Home from './pages/Home';
@@ -18,127 +19,143 @@ import ContactPage from './pages/ContactPage';
 import TestimonialsPage from './pages/TestimonialsPage';
 import GeoPage from './pages/GeoPage';
 import VehiclesPage from './pages/VehiclesPage';
+import InventoryPage from './pages/InventoryPage';
+import VehicleDetailPage from './pages/VehicleDetailPage';
 import ServicesPage from './pages/ServicesPage';
 import GuidesPage from './pages/GuidesPage';
 import BlogPage from './pages/BlogPage';
 import LeeAutoPage from './pages/LeeAutoPage';
 import AdminReviewsPage from './pages/AdminReviewsPage';
 import SubmitReviewPage from './pages/SubmitReviewPage';
+import AdminBackend from './pages/AdminBackend';
 
 // Scroll Restoration Helper Component
 function ScrollToTopOnNavigate() {
   const { pathname } = useLocation();
-
   useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: 'instant' as any
     });
   }, [pathname]);
-
   return null;
 }
 
 export default function App() {
   return (
     <ThemeProvider>
-      <ReviewsProvider>
-        <Router>
-          <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-            {/* Dynamic Runtime SEO Meta and Schema Manager */}
-            <SEOHelmet />
-            
-            {/* Scroll Restoration across transitions */}
-            <ScrollToTopOnNavigate />
+      <InventoryProvider>
+        <ReviewsProvider>
+          <Router>
+            <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+              {/* Dynamic Runtime SEO Meta and Schema Manager */}
+              <SEOHelmet />
+              
+              {/* Scroll Restoration across transitions */}
+              <ScrollToTopOnNavigate />
 
-            {/* Persistent Shared Header Nav */}
-            <Navbar />
-            
-            <main>
-              <Routes>
-                {/* Primary Pages */}
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/about/" element={<AboutPage />} />
-                <Route path="/how-it-works" element={<HowItWorksPage />} />
-                <Route path="/how-it-works/" element={<HowItWorksPage />} />
-                <Route path="/faq" element={<FAQPage />} />
-                <Route path="/faq/" element={<FAQPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/contact/" element={<ContactPage />} />
-                <Route path="/testimonials" element={<TestimonialsPage />} />
-                <Route path="/testimonials/" element={<TestimonialsPage />} />
-                
-                {/* Shareable Client Review Submission Route */}
-                <Route path="/review" element={<SubmitReviewPage />} />
-                <Route path="/review/" element={<SubmitReviewPage />} />
+              {/* Persistent Shared Header Nav */}
+              <Navbar />
 
-                {/* Confidential Administrator Reviews & Export Portal */}
-                <Route path="/admin/reviews" element={<AdminReviewsPage />} />
-                <Route path="/admin/reviews/" element={<AdminReviewsPage />} />
-                
-                {/* Lee Auto Lagos Subsidiary Page */}
-                <Route path="/lee-auto" element={<LeeAutoPage />} />
-                <Route path="/lee-auto/" element={<LeeAutoPage />} />
+              <main>
+                <Routes>
+                  {/* Primary Pages */}
+                  <Route path="/" element={<Home />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/about/" element={<AboutPage />} />
+                  <Route path="/how-it-works" element={<HowItWorksPage />} />
+                  <Route path="/how-it-works/" element={<HowItWorksPage />} />
+                  <Route path="/faq" element={<FAQPage />} />
+                  <Route path="/faq/" element={<FAQPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/contact/" element={<ContactPage />} />
+                  <Route path="/testimonials" element={<TestimonialsPage />} />
+                  <Route path="/testimonials/" element={<TestimonialsPage />} />
 
-                {/* Sourcing Location Hubs */}
-                <Route path="/nigeria" element={<GeoPage />} />
-                <Route path="/nigeria/" element={<GeoPage />} />
-                <Route path="/nigeria/:region" element={<GeoPage />} />
-                <Route path="/nigeria/:region/" element={<GeoPage />} />
-                
-                <Route path="/ghana" element={<GeoPage />} />
-                <Route path="/ghana/" element={<GeoPage />} />
-                <Route path="/ghana/:region" element={<GeoPage />} />
-                <Route path="/ghana/:region/" element={<GeoPage />} />
-                
-                <Route path="/canada" element={<GeoPage />} />
-                <Route path="/canada/" element={<GeoPage />} />
-                <Route path="/canada/:region" element={<GeoPage />} />
-                <Route path="/canada/:region/" element={<GeoPage />} />
+                  {/* Inventory & Vehicle Detail Routes */}
+                  <Route path="/inventory" element={<InventoryPage />} />
+                  <Route path="/inventory/" element={<InventoryPage />} />
+                  <Route path="/cars-for-sale" element={<InventoryPage />} />
+                  <Route path="/cars-for-sale/" element={<InventoryPage />} />
+                  <Route path="/vehicle/:id" element={<VehicleDetailPage />} />
+                  <Route path="/vehicle/:id/" element={<VehicleDetailPage />} />
+                  <Route path="/car/:id" element={<VehicleDetailPage />} />
+                  <Route path="/car/:id/" element={<VehicleDetailPage />} />
 
-                {/* Sourced Fleet and Catalogue Pages */}
-                <Route path="/vehicles" element={<VehiclesPage />} />
-                <Route path="/vehicles/" element={<VehiclesPage />} />
-                <Route path="/vehicles/:category" element={<VehiclesPage />} />
-                <Route path="/vehicles/:category/" element={<VehiclesPage />} />
+                  {/* CHANGE 6 — Vehicle Catalogue Admin Portal */}
+                  <Route path="/bkend" element={<AdminBackend />} />
+                  <Route path="/bkend/" element={<AdminBackend />} />
 
-                {/* Sourcing and Splicing Logistics Services */}
-                <Route path="/services" element={<ServicesPage />} />
-                <Route path="/services/" element={<ServicesPage />} />
-                <Route path="/services/:subservice" element={<ServicesPage />} />
-                <Route path="/services/:subservice/" element={<ServicesPage />} />
+                  {/* Shareable Client Review Submission Route */}
+                  <Route path="/review" element={<SubmitReviewPage />} />
+                  <Route path="/review/" element={<SubmitReviewPage />} />
 
-                {/* Technical Importing Guides */}
-                <Route path="/guides/nigeria-import-duty-calculator" element={<Navigate to="/nigeria/import-duty-calculator/" replace />} />
-                <Route path="/guides/nigeria-import-duty-calculator/" element={<Navigate to="/nigeria/import-duty-calculator/" replace />} />
+                  {/* Administrator Reviews & Export Portal */}
+                  <Route path="/admin/reviews" element={<AdminReviewsPage />} />
+                  <Route path="/admin/reviews/" element={<AdminReviewsPage />} />
 
-                <Route path="/guides" element={<GuidesPage />} />
-                <Route path="/guides/" element={<GuidesPage />} />
-                <Route path="/guides/:slug" element={<GuidesPage />} />
-                <Route path="/guides/:slug/" element={<GuidesPage />} />
+                  {/* Lee Auto Lagos Subsidiary Page */}
+                  <Route path="/lee-auto" element={<LeeAutoPage />} />
+                  <Route path="/lee-auto/" element={<LeeAutoPage />} />
 
-                {/* Sourcing Insights and Blog Posts */}
-                <Route path="/blog" element={<BlogPage />} />
-                <Route path="/blog/" element={<BlogPage />} />
-                <Route path="/blog/:slug" element={<BlogPage />} />
-                <Route path="/blog/:slug/" element={<BlogPage />} />
+                  {/* Sourcing Location Hubs */}
+                  <Route path="/nigeria" element={<GeoPage />} />
+                  <Route path="/nigeria/" element={<GeoPage />} />
+                  <Route path="/nigeria/:region" element={<GeoPage />} />
+                  <Route path="/nigeria/:region/" element={<GeoPage />} />
 
-                {/* Catch-all Redirect Fallback to Home */}
-                <Route path="*" element={<Home />} />
-              </Routes>
-            </main>
+                  <Route path="/ghana" element={<GeoPage />} />
+                  <Route path="/ghana/" element={<GeoPage />} />
+                  <Route path="/ghana/:region" element={<GeoPage />} />
+                  <Route path="/ghana/:region/" element={<GeoPage />} />
 
-            {/* Persistent Shared Footer */}
-            <Footer />
-            
-            {/* Global Floaters */}
-            <ScrollToTop />
-            <WhatsAppFloat />
-            <ThemeToggle />
-          </div>
-        </Router>
-      </ReviewsProvider>
+                  <Route path="/canada" element={<GeoPage />} />
+                  <Route path="/canada/" element={<GeoPage />} />
+                  <Route path="/canada/:region" element={<GeoPage />} />
+                  <Route path="/canada/:region/" element={<GeoPage />} />
+
+                  {/* Sourced Fleet and Catalogue Pages */}
+                  <Route path="/vehicles" element={<VehiclesPage />} />
+                  <Route path="/vehicles/" element={<VehiclesPage />} />
+                  <Route path="/vehicles/:category" element={<VehiclesPage />} />
+                  <Route path="/vehicles/:category/" element={<VehiclesPage />} />
+
+                  {/* Sourcing and Splicing Logistics Services */}
+                  <Route path="/services" element={<ServicesPage />} />
+                  <Route path="/services/" element={<ServicesPage />} />
+                  <Route path="/services/:subservice" element={<ServicesPage />} />
+                  <Route path="/services/:subservice/" element={<ServicesPage />} />
+
+                  {/* Technical Importing Guides */}
+                  <Route path="/guides/nigeria-import-duty-calculator" element={<Navigate to="/nigeria/import-duty-calculator/" replace />} />
+                  <Route path="/guides/nigeria-import-duty-calculator/" element={<Navigate to="/nigeria/import-duty-calculator/" replace />} />
+                  <Route path="/guides" element={<GuidesPage />} />
+                  <Route path="/guides/" element={<GuidesPage />} />
+                  <Route path="/guides/:slug" element={<GuidesPage />} />
+                  <Route path="/guides/:slug/" element={<GuidesPage />} />
+
+                  {/* Sourcing Insights and Blog Posts */}
+                  <Route path="/blog" element={<BlogPage />} />
+                  <Route path="/blog/" element={<BlogPage />} />
+                  <Route path="/blog/:slug" element={<BlogPage />} />
+                  <Route path="/blog/:slug/" element={<BlogPage />} />
+
+                  {/* Catch-all Redirect Fallback to Home */}
+                  <Route path="*" element={<Home />} />
+                </Routes>
+              </main>
+
+              {/* Persistent Shared Footer */}
+              <Footer />
+
+              {/* Global Floaters */}
+              <ScrollToTop />
+              <WhatsAppFloat />
+              <ThemeToggle />
+            </div>
+          </Router>
+        </ReviewsProvider>
+      </InventoryProvider>
     </ThemeProvider>
   );
 }
