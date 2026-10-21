@@ -1,0 +1,60 @@
+{
+  "entities": {
+    "Vehicle": {
+      "title": "Vehicle",
+      "description": "Vehicle inventory item available for sale or sourcing",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 200 },
+        "make": { "type": "string", "maxLength": 100 },
+        "model": { "type": "string", "maxLength": 100 },
+        "year": { "type": "number" },
+        "price": { "type": "string", "maxLength": 50 },
+        "numericPrice": { "type": "number" },
+        "image": { "type": "string", "maxLength": 1000 },
+        "images": { "type": "array" },
+        "specs": { "type": "string", "maxLength": 500 },
+        "mileage": { "type": "string", "maxLength": 100 },
+        "bodyType": { "type": "string", "maxLength": 100 },
+        "transmission": { "type": "string", "maxLength": 100 },
+        "fuelType": { "type": "string", "maxLength": 100 },
+        "colour": { "type": "string", "maxLength": 100 },
+        "condition": { "type": "string", "maxLength": 200 },
+        "vin": { "type": "string", "maxLength": 100 },
+        "deposit": { "type": "string", "maxLength": 50 },
+        "location": { "type": "string", "maxLength": 200 },
+        "status": { "type": "string", "enum": ["Available", "Reserved", "Sold"] }
+      },
+      "required": ["id", "name", "make", "model", "year", "price", "numericPrice", "image", "status"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile for registered visitors and clients",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 200 },
+        "displayName": { "type": "string", "maxLength": 200 },
+        "photoURL": { "type": "string", "maxLength": 1000 },
+        "role": { "type": "string", "enum": ["client", "admin"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "email"]
+    }
+  },
+  "firestore": {
+    "/vehicles/{vehicleId}": {
+      "schema": "Vehicle",
+      "description": "Vehicle stock catalog synced across all devices"
+    },
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Visitor and client user profiles"
+    },
+    "/admins/{userId}": {
+      "schema": { "$ref": "UserProfile" },
+      "description": "Designated administrator credentials"
+    }
+  }
+}

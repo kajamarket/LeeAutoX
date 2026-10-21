@@ -7,6 +7,7 @@ import ThemeToggle from './components/ThemeToggle';
 import WhatsAppFloat from './components/WhatsAppFloat';
 import SEOHelmet from './components/SEOHelmet';
 import { ThemeProvider } from './context/ThemeContext';
+import { AuthProvider } from './context/AuthContext';
 import { ReviewsProvider } from './context/ReviewsContext';
 import { InventoryProvider } from './context/InventoryContext';
 
@@ -44,8 +45,9 @@ function ScrollToTopOnNavigate() {
 export default function App() {
   return (
     <ThemeProvider>
-      <InventoryProvider>
-        <ReviewsProvider>
+      <AuthProvider>
+        <InventoryProvider>
+          <ReviewsProvider>
           <Router>
             <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
               {/* Dynamic Runtime SEO Meta and Schema Manager */}
@@ -156,6 +158,7 @@ export default function App() {
           </Router>
         </ReviewsProvider>
       </InventoryProvider>
-    </ThemeProvider>
-  );
+    </AuthProvider>
+  </ThemeProvider>
+);
 }

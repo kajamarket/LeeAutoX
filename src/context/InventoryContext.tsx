@@ -1,18 +1,23 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { collection, doc, onSnapshot, setDoc, deleteDoc } from 'firebase/firestore';
+import { db, handleFirestoreError, OperationType } from '../firebase';
 import { VehicleItem, INITIAL_INVENTORY, getVehicleSlug } from '../data/inventory';
 
 interface InventoryContextType {
   vehicles: VehicleItem[];
   getVehicleById: (id: string | number) => VehicleItem | undefined;
   getVehicleBySlug: (slug: string) => VehicleItem | undefined;
-  addVehicle: (vehicle: Omit<VehicleItem, 'id'>) => VehicleItem;
-  updateVehicle: (id: string | number, updates: Partial<VehicleItem>) => void;
-  deleteVehicle: (id: string | number) => void;
-  toggleStatus: (id: string | number, status: 'Available' | 'Reserved' | 'Sold') => void;
-  resetToDefaults: () => void;
+  addVehicle: (vehicle: Omit<VehicleItem, 'id'>) => Promise<VehicleItem>;
+  updateVehicle: (id: string | number, updates: Partial<VehicleItem>) => Promise<void>;
+  deleteVehicle: (id: string | number) => Promise<void>;
+  toggleStatus: (id: string | number, status: 'Available' | 'Reserved' | 'Sold') => Promise<void>;
+  resetToDefaults: () => Promise<void>;
   inStockCount: number;
   minPrice: number;
   minPriceFormatted: string;
+  isSyncing: boolean;
+  cloudSyncStatus: 'synced' | 'local_only' | 'error' | 'syncing';
+  cloudSyncError: string | null;
 }
 
 const STORAGE_KEY = 'leeautox_inventory_v3';
@@ -35,29 +40,83 @@ export function InventoryProvider({ children }: { children: React.ReactNode }) {
     return INITIAL_INVENTORY;
   });
 
+  const [isSyncing, setIsSyncing] = useState(true);
+  const [cloudSyncStatus, setCloudSyncStatus] = useState<'synced' | 'local_only' | 'error' | 'syncing'>('syncing');
+  const [cloudSyncError, setCloudSyncError] = useState<string | null>(null);
+
+  // Subscribe to real-time Firestore updates across all devices
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(vehicles));
-    } catch (e) {
-      console.error('Failed to save inventory to localStorage', e);
-    }
-  }, [vehicles]);
+    const vehiclesCol = collection(db, 'vehicles');
+    let isInitialMount = true;
+
+    const unsubscribe = onSnapshot(
+      vehiclesCol,
+      async (snapshot) => {
+        setIsSyncing(false);
+        setCloudSyncStatus('synced');
+        setCloudSyncError(null);
+        if (snapshot.empty && isInitialMount) {
+          isInitialMount = false;
+          // Seed initial inventory to Firestore on initial provision
+          console.log('Seeding initial inventory to Cloud Firestore...');
+          for (const item of INITIAL_INVENTORY) {
+            try {
+              await setDoc(doc(db, 'vehicles', String(item.id)), item);
+            } catch (err) {
+              console.warn('Seeding item failed:', item.id, err);
+            }
+          }
+          return;
+        }
+
+        if (!snapshot.empty) {
+          const remoteVehicles: VehicleItem[] = snapshot.docs.map((docSnap) => {
+            const data = docSnap.data();
+            return {
+              ...data,
+              id: docSnap.id,
+            } as VehicleItem;
+          });
+
+          // Sort by newest
+          remoteVehicles.sort((a, b) => Number(b.id) - Number(a.id) || b.year - a.year);
+
+          setVehicles(remoteVehicles);
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(remoteVehicles));
+          } catch (e) {
+            // ignore
+          }
+        }
+      },
+      (error) => {
+        setIsSyncing(false);
+        setCloudSyncStatus('local_only');
+        setCloudSyncError(error?.message || 'Firestore connection in fallback mode');
+        console.warn('Firestore real-time listener error. Using local cached inventory.', error);
+        try {
+          handleFirestoreError(error, OperationType.GET, 'vehicles');
+        } catch {
+          // Keep app running smoothly with local data
+        }
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
 
   const getVehicleById = (idOrSlug: string | number): VehicleItem | undefined => {
     const raw = String(idOrSlug).toLowerCase().trim();
-    // 1. Direct id match
-    let found = vehicles.find(v => String(v.id).toLowerCase() === raw);
+    let found = vehicles.find((v) => String(v.id).toLowerCase() === raw);
     if (found) return found;
 
-    // 2. Full slug match (e.g. 1_2021hyundaisonata)
-    found = vehicles.find(v => getVehicleSlug(v).toLowerCase() === raw);
+    found = vehicles.find((v) => getVehicleSlug(v).toLowerCase() === raw);
     if (found) return found;
 
-    // 3. Prefix id match before underscore
     const underscoreIdx = raw.indexOf('_');
     if (underscoreIdx !== -1) {
       const prefix = raw.substring(0, underscoreIdx);
-      found = vehicles.find(v => String(v.id).toLowerCase() === prefix);
+      found = vehicles.find((v) => String(v.id).toLowerCase() === prefix);
       if (found) return found;
     }
 
@@ -68,45 +127,92 @@ export function InventoryProvider({ children }: { children: React.ReactNode }) {
     return getVehicleById(slug);
   };
 
-  const addVehicle = (vehicleData: Omit<VehicleItem, 'id'>): VehicleItem => {
+  const addVehicle = async (vehicleData: Omit<VehicleItem, 'id'>): Promise<VehicleItem> => {
     const newId = String(Date.now());
     const newVehicle: VehicleItem = {
       ...vehicleData,
       id: newId,
     };
-    setVehicles(prev => [newVehicle, ...prev]);
+    // Optimistic local update
+    setVehicles((prev) => [newVehicle, ...prev]);
+
+    // Remote sync to Firestore
+    try {
+      await setDoc(doc(db, 'vehicles', newId), newVehicle);
+      setCloudSyncStatus('synced');
+      setCloudSyncError(null);
+    } catch (error: any) {
+      console.warn('Cloud sync failed on addVehicle, saved locally:', error);
+      setCloudSyncStatus('local_only');
+      setCloudSyncError(error?.message || 'Remote sync denied. Please sign in as admin with Google.');
+    }
+
     return newVehicle;
   };
 
-  const updateVehicle = (id: string | number, updates: Partial<VehicleItem>) => {
-    setVehicles(prev =>
-      prev.map(v => (String(v.id) === String(id) ? { ...v, ...updates } : v))
+  const updateVehicle = async (id: string | number, updates: Partial<VehicleItem>): Promise<void> => {
+    setVehicles((prev) =>
+      prev.map((v) => (String(v.id) === String(id) ? { ...v, ...updates } : v))
     );
+
+    try {
+      await setDoc(doc(db, 'vehicles', String(id)), updates, { merge: true });
+      setCloudSyncStatus('synced');
+      setCloudSyncError(null);
+    } catch (error: any) {
+      console.warn('Cloud sync failed on updateVehicle, saved locally:', error);
+      setCloudSyncStatus('local_only');
+      setCloudSyncError(error?.message || 'Remote sync denied. Please sign in as admin with Google.');
+    }
   };
 
-  const deleteVehicle = (id: string | number) => {
-    setVehicles(prev => prev.filter(v => String(v.id) !== String(id)));
+  const deleteVehicle = async (id: string | number): Promise<void> => {
+    setVehicles((prev) => prev.filter((v) => String(v.id) !== String(id)));
+
+    try {
+      await deleteDoc(doc(db, 'vehicles', String(id)));
+      setCloudSyncStatus('synced');
+      setCloudSyncError(null);
+    } catch (error: any) {
+      console.warn('Cloud sync failed on deleteVehicle, deleted locally:', error);
+      setCloudSyncStatus('local_only');
+      setCloudSyncError(error?.message || 'Remote sync denied. Please sign in as admin with Google.');
+    }
   };
 
-  const toggleStatus = (id: string | number, status: 'Available' | 'Reserved' | 'Sold') => {
-    updateVehicle(id, { status });
+  const toggleStatus = async (
+    id: string | number,
+    status: 'Available' | 'Reserved' | 'Sold'
+  ): Promise<void> => {
+    await updateVehicle(id, { status });
   };
 
-  const resetToDefaults = () => {
+  const resetToDefaults = async (): Promise<void> => {
     setVehicles(INITIAL_INVENTORY);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_INVENTORY));
-    } catch (e) {
-      // ignore
+      for (const item of INITIAL_INVENTORY) {
+        await setDoc(doc(db, 'vehicles', String(item.id)), item);
+      }
+      setCloudSyncStatus('synced');
+      setCloudSyncError(null);
+    } catch (e: any) {
+      console.warn('Failed to reseed cloud defaults:', e);
+      setCloudSyncStatus('local_only');
+      setCloudSyncError(e?.message || 'Failed to reseed cloud defaults');
     }
   };
 
   // Stats calculation
-  const availableVehicles = vehicles.filter(v => v.status !== 'Sold');
+  const availableVehicles = vehicles.filter((v) => v.status !== 'Sold');
   const inStockCount = availableVehicles.length;
-  const minPrice = vehicles.length > 0
-    ? vehicles.reduce((min, v) => (v.numericPrice > 0 && v.numericPrice < min ? v.numericPrice : min), vehicles[0].numericPrice || 13000000)
-    : 13000000;
+  const minPrice =
+    vehicles.length > 0
+      ? vehicles.reduce(
+          (min, v) => (v.numericPrice > 0 && v.numericPrice < min ? v.numericPrice : min),
+          vehicles[0].numericPrice || 13000000
+        )
+      : 13000000;
   const minPriceFormatted = `₦${(minPrice / 1000000).toFixed(0)},000,000`;
 
   return (
@@ -114,6 +220,7 @@ export function InventoryProvider({ children }: { children: React.ReactNode }) {
       value={{
         vehicles,
         getVehicleById,
+        getVehicleBySlug,
         addVehicle,
         updateVehicle,
         deleteVehicle,
@@ -122,6 +229,9 @@ export function InventoryProvider({ children }: { children: React.ReactNode }) {
         inStockCount,
         minPrice,
         minPriceFormatted,
+        isSyncing,
+        cloudSyncStatus,
+        cloudSyncError,
       }}
     >
       {children}

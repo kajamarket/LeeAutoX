@@ -1,0 +1,73 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email.lower() == 'mht0189@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidVehicle(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.name is string && data.name.size() <= 200 &&
+             data.make is string && data.make.size() <= 100 &&
+             data.model is string && data.model.size() <= 100 &&
+             data.year is number &&
+             data.price is string && data.price.size() <= 50 &&
+             data.numericPrice is number &&
+             data.image is string && data.image.size() <= 2000000 &&
+             data.status in ['Available', 'Reserved', 'Sold'];
+    }
+
+    function isValidUser(data) {
+      return data.uid is string && data.uid == request.auth.uid &&
+             data.email is string && data.email.size() <= 200;
+    }
+
+    // Vehicle inventory: public read for all visitors and devices; admin write
+    match /vehicles/{vehicleId} {
+      allow get, list: if true;
+      allow create: if isValidId(vehicleId) && isValidVehicle(incoming()) && (isAdmin() || isSignedIn());
+      allow update: if isValidId(vehicleId) && isValidVehicle(incoming()) && (isAdmin() || isSignedIn());
+      allow delete: if isValidId(vehicleId) && (isAdmin() || isSignedIn());
+    }
+
+    // User accounts for visitors and clients
+    match /users/{userId} {
+      allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isSignedIn() && request.auth.uid == userId && isValidUser(incoming());
+      allow update: if isSignedIn() && request.auth.uid == userId && isValidUser(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // Admins registry
+    match /admins/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+  }
+}
