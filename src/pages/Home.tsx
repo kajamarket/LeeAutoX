@@ -7,6 +7,7 @@ import Fleet from '../components/Fleet';
 import VehicleCatalogue from '../components/VehicleCatalogue';
 import AutoStore from '../components/AutoStore';
 import Process from '../components/Process';
+import LatestArticles from '../components/LatestArticles';
 import DeliveriesTimeline from '../components/DeliveriesTimeline';
 import Testimonials from '../components/Testimonials';
 import InstagramFeed from '../components/InstagramFeed';
@@ -29,6 +30,7 @@ export default function Home() {
       <VehicleCatalogue />
       <AutoStore />
       <Process />
+      <LatestArticles />
       <DeliveriesTimeline />
       <Testimonials />
       <InstagramFeed />

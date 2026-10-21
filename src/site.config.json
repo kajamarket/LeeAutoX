@@ -1,0 +1,9 @@
+{
+  "name": "LeeAutoX",
+  "domain": "leeautox.com",
+  "slug": "leeautox",
+  "wordpress": {
+    "apiUrl": "https://leeautox.leeplugshub.com/wp-json/wp/v2",
+    "distributionSlug": "leeautox"
+  }
+}

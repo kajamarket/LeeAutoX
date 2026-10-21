@@ -1,320 +1,351 @@
-import React from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useState, useMemo } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
-import { SEO_DATA } from '../seoData';
 import { useTheme } from '../context/ThemeContext';
-import { BookOpen, Calendar, User, Clock, ArrowLeft, MessageSquare, ChevronRight } from 'lucide-react';
-import { CONTACT_INFO } from '../constants';
+import { BookOpen, Calendar, User, Clock, ArrowLeft, ChevronRight, Share2, Tag } from 'lucide-react';
 import WhatsAppCTA from '../components/WhatsAppCTA';
 import Contact from '../components/Contact';
-import { cleanPathname } from '../utils/path';
-
-const BLOG_CONTENT: Record<string, {
-  title: string;
-  author: string;
-  readTime: string;
-  date: string;
-  category: string;
-  summary: string;
-  paragraphs: string[];
-}> = {
-  '/blog/how-to-buy-clean-title-salvage-copart/': {
-    title: 'How to Bid & Buy Clean Title or Repairable Cars on Copart',
-    author: 'LeeAutoX Procurement Team',
-    readTime: '10 min read',
-    date: 'June 22, 2026',
-    category: 'Auctions',
-    summary: 'Master the technicalities of Copart Canada: understanding run-and-drive verification, calculating repair margins, and avoiding uninspected auction pitfalls.',
-    paragraphs: [
-      'Bidding on North American dealer car auctions like Copart Canada is one of the most effective ways for private buyers and commercial fleet managers to acquire quality automobiles at 25% to 40% below typical Nigerian or Ghanaian market retail values. However, purchasing without physical on-site verification introduces considerable financial risk.',
-      'Understanding Copart title classifications is the critical first step. Clean Title (or Ontario Non-Branded) indicates that the vehicle has never been reported as a total loss by an insurer. While these carry higher auction bid ceilings, they require minimal prep before export. Salvage Title vehicles, conversely, were settled by insurance underwriters following accidents, theft recovery, or minor hail. When selected intelligently, salvage vehicles offer unmatched profit margins.',
-      'Always inspect the secondary damage category. Often, auction listings describe primary damage as front-end while obscuring damaged undercarriage suspension parts or cracked steering racks. Our licensed team conducts physical on-site lot checks at Copart Cookstown and Bowmanville prior to placing bids, running live OBD2 diagnostic scans and frame alignment assessments.',
-      'When calculating your maximum bid ceiling, ensure you include auction buyer fees, domestic flatbed towing from the yard to our Scarborough loading depot, ocean freight, and destination port clearance duties. Never bid with your heart; establish a firm cost matrix and stick to it.'
-    ]
-  },
-  '/blog/shipping-car-canada-nigeria-complete-guide-2026/': {
-    title: 'Shipping a car from Canada to Nigeria: 2026 guide',
-    author: 'LeeAutoX Logistics Desk',
-    readTime: '12 min read',
-    date: 'July 14, 2026',
-    category: 'Logistics',
-    summary: 'A complete operational guide on RoRo versus container freight, port clearances at Apapa and Tin Can Island, current tariff bands, and expected transit schedules from Canadian ports.',
-    paragraphs: [
-      '### Quick answer box\nShipping a car from Canada to Nigeria costs between $1,850 and $4,200 depending on the vehicle size and chosen shipping method (RoRo vs. consolidated 40-foot container). Ocean transit from Montreal or Halifax ports to Lagos (Apapa or Tin Can Island) averages 25 to 35 days. Customs clearance requires standard import tariffs calculated via the Nigeria Customs VIN valuation system.',
-      '### Key takeaways\n- Container shipping offers superior cargo security and allows loading spare parts, while RoRo is the most economical single-vehicle option.\n- Ocean freight transit takes 25 to 35 days from Montreal or Halifax to Apapa or Tin Can Island.\n- Nigeria customs clearance utilizes the automated VIN valuation system under the Common External Tariff (CET).\n- Pre-arrival document preparation prevents terminal storage and shipping line demurrage fees.\n- LeeAutoX provides milestone-based financing and end-to-end logistics from Canadian auction lots to Lagos.',
-      'Importing a vehicle from Canada to Nigeria requires a clear understanding of international ocean freight logistics, Canadian export regulations, and Nigerian port clearance processes. Whether you are importing an SUV for personal use in Lagos or managing inventory for an auto dealership, choosing the right shipping method and preparing documentation in advance prevents costly delays and port demurrage.',
-      'Canadian vehicle exports depart primarily from the Port of Montreal in Quebec or the Port of Halifax in Nova Scotia. Vehicles sourced from Ontario auction lots in Toronto or Scarborough are moved via bonded auto-haulers to these coastal container terminals for ocean loading.',
-      '## RoRo vs. container shipping comparison\nTwo primary ocean freight methods are available for shipping motor vehicles from Canada to West African ports:',
-      '### Roll-on/roll-off (RoRo) shipping\nRoRo vessels operate like floating parking garages. Vehicles are driven directly onto specialized cargo decks and lashed down. RoRo is typically the most economical option for single, drivable vehicles with clean titles. However, loose personal effects or spare parts cannot be stored inside the vehicle during transit.',
-      '### Consolidated container shipping\nIn containerized shipping, vehicles are safely loaded and braced inside standard 20-foot or 40-foot ocean containers. A 40-foot high-cube container accommodates three to four sedans or compact SUVs using reinforced wooden ramps and industrial wheel straps. Container shipping provides protection from salt air, eliminates port pilferage risks, and allows spare parts or tires to accompany the shipment.',
-      '## Freight cost breakdown and transit times\nOcean freight rates vary based on fuel surcharges, vessel availability, and seasonal demand. Transit from Montreal or Halifax to Apapa Port or Tin Can Island typically takes between 25 and 35 days on the water.',
-      'Typical freight estimates (in USD):\n- Compact sedan (RoRo): $1,850 - $2,250\n- Mid-size SUV (RoRo): $2,100 - $2,600\n- Full-size SUV / Truck (RoRo): $2,400 - $2,950\n- Shared 40ft container spot (per vehicle): $2,200 - $2,800\n- Exclusive 20ft container (single vehicle): $3,400 - $4,200',
-      '## Nigeria customs clearance and port processes\nVehicles arriving at Apapa, Tin Can Island, or PTML terminals undergo mandatory customs valuation under the Nigeria Customs Service Common External Tariff (CET) schedule. Customs duty is calculated based on the Cost, Insurance, and Freight (CIF) value established through the national VIN valuation database.',
-      'Standard statutory charges include:\n- Import duty: 20% of CIF value (for passenger vehicles)\n- Port surcharge: 7% on the import duty amount\n- ECOWAS Trade Liberalization Scheme (ETLS): 0.5% on CIF value\n- Value Added Tax (VAT): 7.5% across cumulative CIF and duty charges',
-      'Additionally, terminal handling fees (Terminal Delivery Order) and shipping agency local handling charges must be cleared before the gate release is authorized. Working with our accredited clearing desk ensures your Single Goods Declaration (SGD) is lodged prior to vessel discharge to avoid terminal demurrage penalties.',
-      '## Required documentation for vehicle export\nTo maintain complete compliance across Canadian and Nigerian maritime authorities, the following documents are generated and transferred:\n- Original vehicle registration / provincial title slip (stamped for export)\n- Bill of Lading (Master B/L or House B/L)\n- Commercial invoice indicating purchase price and VIN\n- Canada Export Declaration (B13A / CERS electronic filing)\n- Packing list (for containerized cargo with spare parts)',
-      '## Frequently asked questions',
-      '### How long does it take for a car to arrive in Lagos from Canada?\nOcean transit from Montreal or Halifax to Lagos takes 25 to 35 days. Inland towing and container consolidation in Scarborough adds 5 to 7 days, while customs clearance at Apapa or Tin Can Island takes 5 to 8 business days once the vessel discharges.',
-      '### Can I pack goods or spare parts inside my car?\nPersonal goods and spare parts are strictly prohibited on RoRo vessels. If you wish to ship spare auto parts, tires, or personal cargo, you must choose consolidated or dedicated container shipping.',
-      '### How does LeeAutoX manage the shipping process?\nLeeAutoX manages the entire lifecycle: auction lot pickup in Canada, mechanical verification, container loading at our Scarborough depot, marine documentation, ocean freight, and customs clearance at Lagos ports.'
-    ]
-  },
-  '/blog/how-to-import-car-for-dealers-nigeria/': {
-    title: 'How Nigerian Car Dealers Can Import Vehicles from Canada',
-    author: 'LeeAutoX Commercial Desk',
-    readTime: '11 min read',
-    date: 'August 03, 2026',
-    category: 'Commercial',
-    summary: 'A blueprint for Nigerian commercial car dealers and fleet operators looking to source multi-car inventory from Canadian dealer wholesale auctions.',
-    paragraphs: [
-      'The traditional Tokunbo car importation model in Nigeria, relying on middlemen or random brokers on the ground in the US and Europe, is fraught with financial leakage. For established auto dealers in Lagos, Abuja, and Port Harcourt, transitioning to a direct Canadian dealer auction sourcing pipeline unlocks significant commercial advantages.',
-      'First, the foreign exchange dynamic: vehicles sourced in Canadian Dollars (CAD) often present a 10% to 15% currency arbitrage advantage over US Dollar purchases, even after adjusting for ocean freight. Additionally, Canadian highway vehicles generally exhibit higher scheduled maintenance adherence due to strict provincial safety inspection laws.',
-      'Second, multi-car container loading dramatically reduces shipping overhead. By consolidating four sedans or compact crossovers into a single 40ft high-cube container at our Scarborough depot, dealers save up to $600 per unit compared to individual RORO bookings. Furthermore, containers can be packed with high-turnover fast-moving service parts (brake pads, oil filters, suspension arms) at zero additional freight charge.',
-      'LeeAutoX acts as your dedicated buying office in Ontario. We provide live auction access, physical lot walk-arounds with real-time video, and handle the entire logistics trail straight through customs release at Apapa or PTML ports.'
-    ]
-  }
-};
+import { getAllPosts, getPostBySlug, PostItem } from '../data/posts';
 
 export default function BlogPage() {
+  const { slug } = useParams<{ slug?: string }>();
   const { theme } = useTheme();
-  const { pathname } = useLocation();
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [copied, setCopied] = useState(false);
 
-  let cleanPath = cleanPathname(pathname);
-  if (!cleanPath.endsWith('/')) {
-    cleanPath += '/';
-  }
+  const allPosts = useMemo(() => getAllPosts(), []);
 
-  const isArticle = cleanPath !== '/blog/';
-  const article = BLOG_CONTENT[cleanPath];
+  // Categories list
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    allPosts.forEach(p => p.categories.forEach(c => set.add(c.name)));
+    return ['All', ...Array.from(set)];
+  }, [allPosts]);
 
-  if (isArticle && !article) {
-    return (
-      <div className="min-h-screen bg-background py-20 px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-3xl font-black uppercase mb-4">Article Under Review</h1>
-          <p className="text-zinc-500 mb-8">
-            This briefing is currently undergoing final editorial verification by our logistics engineering team.
-          </p>
+  // If slug is provided, render individual article page
+  if (slug) {
+    const post = getPostBySlug(slug);
+
+    if (!post) {
+      return (
+        <div className={`min-h-screen pt-32 pb-20 px-4 text-center ${theme === 'dark' ? 'bg-[#0A0A0A] text-white' : 'bg-slate-50 text-slate-900'}`}>
+          <h1 className="text-3xl font-bold mb-4">Article Not Found</h1>
+          <p className="text-muted-foreground mb-8">The article you are looking for might have been moved or does not exist.</p>
           <Link
-            to="/blog/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#2B59FF] text-white font-bold uppercase text-xs tracking-wider"
+            to="/blog"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#2B59FF] text-white font-bold rounded-xl shadow-lg hover:bg-blue-600 transition-colors"
           >
-            <ArrowLeft size={16} /> Return to Blog Archive
+            <ArrowLeft size={18} />
+            Return to Blog
           </Link>
+        </div>
+      );
+    }
+
+    const relatedPosts = allPosts.filter(p => p.slug !== post.slug).slice(0, 3);
+
+    const handleShare = () => {
+      navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    };
+
+    return (
+      <div className={`min-h-screen pb-24 transition-colors duration-300 ${theme === 'dark' ? 'bg-[#0A0A0A] text-white' : 'bg-slate-50 text-slate-900'}`}>
+        <PageHeader
+          title={post.title}
+          subtitle={`Published on ${new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} • By ${post.author}`}
+        />
+
+        <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-10">
+          {/* Article Main Card */}
+          <div className={`rounded-3xl border shadow-2xl overflow-hidden p-6 sm:p-10 lg:p-12 ${
+            theme === 'dark' ? 'bg-[#141414] border-neutral-800' : 'bg-white border-slate-200'
+          }`}>
+            {/* Meta Bar */}
+            <div className="flex flex-wrap items-center justify-between gap-4 pb-6 mb-8 border-b border-neutral-200 dark:border-neutral-800 text-sm">
+              <div className="flex items-center gap-4 text-muted-foreground">
+                <span className="flex items-center gap-1.5"><Calendar size={15} /> {new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                <span className="flex items-center gap-1.5"><Clock size={15} /> {post.readingTime}</span>
+                <span className="flex items-center gap-1.5"><User size={15} /> {post.author}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                {post.categories.map((cat, idx) => (
+                  <span key={idx} className="px-3 py-1 bg-blue-500/10 text-[#2B59FF] font-semibold rounded-full text-xs">
+                    {cat.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Featured Image */}
+            <div className="mb-10 rounded-2xl overflow-hidden shadow-lg aspect-[16/9] bg-neutral-200 dark:bg-neutral-800">
+              <img
+                src={post.featuredImage.url}
+                alt={post.featuredImage.alt}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Content Body */}
+            <div className="prose prose-lg dark:prose-invert max-w-none space-y-6 text-foreground/90 leading-relaxed text-base sm:text-lg">
+              {post.contentHtml ? (
+                <div dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
+              ) : (
+                post.paragraphs?.map((para, idx) => (
+                  <p key={idx}>{para}</p>
+                ))
+              )}
+            </div>
+
+            {/* Tags Footer */}
+            {post.tags && post.tags.length > 0 && (
+              <div className="mt-12 pt-6 border-t border-neutral-200 dark:border-neutral-800 flex flex-wrap items-center gap-2">
+                <span className="text-sm font-semibold flex items-center gap-1 mr-2 text-muted-foreground">
+                  <Tag size={14} /> Tags:
+                </span>
+                {post.tags.map((tag, idx) => (
+                  <span key={idx} className="px-3 py-1 bg-neutral-100 dark:bg-neutral-800 text-muted-foreground text-xs rounded-lg">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Share and Back Action */}
+            <div className="mt-10 pt-6 border-t border-neutral-200 dark:border-neutral-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <Link
+                to="/blog"
+                className="inline-flex items-center gap-2 text-sm font-bold text-[#2B59FF] hover:underline"
+              >
+                <ArrowLeft size={16} /> Back to all articles
+              </Link>
+              <button
+                onClick={handleShare}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-xl text-sm font-semibold transition-colors"
+              >
+                <Share2 size={16} /> {copied ? 'Link Copied!' : 'Share Article'}
+              </button>
+            </div>
+          </div>
+
+          {/* Related Articles Section */}
+          {relatedPosts.length > 0 && (
+            <div className="mt-20">
+              <h3 className="text-2xl font-black mb-8">Related Articles</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {relatedPosts.map((rel, idx) => (
+                  <Link
+                    key={idx}
+                    to={`/blog/${rel.slug}/`}
+                    className={`group rounded-2xl border overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col ${
+                      theme === 'dark' ? 'bg-[#141414] border-neutral-800' : 'bg-white border-slate-200'
+                    }`}
+                  >
+                    <div className="aspect-[16/10] overflow-hidden bg-neutral-200 dark:bg-neutral-800">
+                      <img
+                        src={rel.featuredImage.url}
+                        alt={rel.featuredImage.alt}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                      <div>
+                        <span className="text-xs font-semibold text-[#2B59FF]">{rel.categories[0]?.name || 'Logistics'}</span>
+                        <h4 className="font-bold text-lg mt-1 group-hover:text-[#2B59FF] transition-colors line-clamp-2">
+                          {rel.title}
+                        </h4>
+                        <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
+                          {rel.excerpt}
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-between text-xs text-muted-foreground pt-3 border-t border-neutral-100 dark:border-neutral-800">
+                        <span>{rel.readingTime}</span>
+                        <span className="font-bold text-[#2B59FF] inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                          Read <ChevronRight size={14} />
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+        </article>
+
+        <div className="mt-20">
+          <WhatsAppCTA
+            title="Have Questions About Importing Your Next Vehicle?"
+            subtitle="Chat directly with our Canadian and Nigerian logistics desks for immediate shipping quotes and auction insights."
+          />
         </div>
       </div>
     );
   }
 
-  const seoData = SEO_DATA[cleanPath] || SEO_DATA['/blog/'];
+  // Blog Archive List View
+  const leadPost = allPosts[0];
+  const remainingPosts = allPosts.slice(1);
 
-  const renderParagraphText = (text: string) => {
-    const parseBold = (subStr: string, keyPrefix: string): React.ReactNode[] => {
-      const subParts: React.ReactNode[] = [];
-      let subLastIndex = 0;
-      let subMatch;
-      const subBoldRegex = /\*\*([^*]+)\*\*/g;
-      
-      while ((subMatch = subBoldRegex.exec(subStr)) !== null) {
-        const subMatchIndex = subMatch.index;
-        if (subMatchIndex > subLastIndex) {
-          subParts.push(subStr.substring(subLastIndex, subMatchIndex));
-        }
-        subParts.push(
-          <strong key={`${keyPrefix}-b-${subMatchIndex}`} className="font-bold text-foreground">
-            {subMatch[1]}
-          </strong>
-        );
-        subLastIndex = subBoldRegex.lastIndex;
-      }
-      if (subLastIndex < subStr.length) {
-        subParts.push(subStr.substring(subLastIndex));
-      }
-      return subParts;
-    };
+  const filteredPosts = remainingPosts.filter(p => {
+    const matchesCategory = selectedCategory === 'all' || p.categories.some(c => c.name.toLowerCase() === selectedCategory.toLowerCase());
+    const matchesSearch = searchQuery.trim() === '' || p.title.toLowerCase().includes(searchQuery.toLowerCase()) || p.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
-    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
-    const elements: React.ReactNode[] = [];
-    let lastIndex = 0;
-    let match;
-
-    while ((match = linkRegex.exec(text)) !== null) {
-      const matchIndex = match.index;
-      if (matchIndex > lastIndex) {
-        elements.push(...parseBold(text.substring(lastIndex, matchIndex), `txt-${lastIndex}`));
-      }
-      elements.push(
-        <Link 
-          key={`link-${matchIndex}`} 
-          to={match[2]} 
-          className="text-[#2B59FF] font-semibold underline hover:text-[#1a41cc] transition-colors"
-        >
-          {match[1]}
-        </Link>
-      );
-      lastIndex = linkRegex.lastIndex;
-    }
-
-    if (lastIndex < text.length) {
-      elements.push(...parseBold(text.substring(lastIndex), `txt-${lastIndex}`));
-    }
-
-    return elements;
-  };
+  const leadMatchesFilter = leadPost && (
+    (selectedCategory === 'all' || leadPost.categories.some(c => c.name.toLowerCase() === selectedCategory.toLowerCase())) &&
+    (searchQuery.trim() === '' || leadPost.title.toLowerCase().includes(searchQuery.toLowerCase()) || leadPost.excerpt.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen pb-24 transition-colors duration-300 ${theme === 'dark' ? 'bg-[#0A0A0A] text-white' : 'bg-slate-50 text-slate-900'}`}>
       <PageHeader
-        title={isArticle ? article.title : (seoData.heading || 'Auto Import & Logistics Blog')}
-        subtitle={isArticle ? article.summary : (seoData.description || 'Verified industry guides, import tutorials, and cost analyses.')}
-        breadcrumbs={seoData.breadcrumbs}
+        title="Automotive Export & Shipping Journal"
+        subtitle="Expert insights, Copart auction guides, customs clearing procedures, and container shipping strategies from Canada to West Africa."
       />
 
-      {isArticle ? (
-        <article className="py-16 px-6 md:px-12 max-w-4xl mx-auto">
-          <div className="flex flex-wrap items-center gap-6 pb-8 border-b border-border text-xs text-zinc-500 font-mono mb-10">
-            <div className="flex items-center gap-2">
-              <User size={14} className="text-[#2B59FF]" />
-              <span className="text-foreground font-semibold">{article.author}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Calendar size={14} className="text-[#2B59FF]" />
-              <span>{article.date}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Clock size={14} className="text-[#2B59FF]" />
-              <span>{article.readTime}</span>
-            </div>
-            <span className="px-2.5 py-0.5 bg-[#2B59FF]/10 text-[#2B59FF] font-bold uppercase rounded text-[10px]">
-              {article.category}
-            </span>
-          </div>
-
-          <div className="prose prose-invert max-w-none space-y-6 text-sm md:text-base leading-relaxed font-sans">
-            {article.paragraphs.map((p, idx) => {
-              if (p.startsWith('### Quick answer box')) {
-                const body = p.replace('### Quick answer box\n', '').trim();
-                return (
-                  <div key={idx} className={`p-6 border-l-4 border-[#2B59FF] my-6 rounded-r ${theme === 'dark' ? 'bg-zinc-900/90 text-zinc-200' : 'bg-blue-50/70 text-slate-800'}`}>
-                    <span className="text-[10px] font-mono uppercase font-bold tracking-widest text-[#2B59FF] block mb-2">QUICK ANSWER</span>
-                    <p className="text-sm md:text-base leading-relaxed">{renderParagraphText(body)}</p>
-                  </div>
-                );
-              }
-
-              if (p.startsWith('### Key takeaways')) {
-                const lines = p.replace('### Key takeaways\n', '').split('\n');
-                return (
-                  <aside key={idx} aria-label="summary" className={`p-6 border my-6 rounded ${theme === 'dark' ? 'bg-zinc-900 border-zinc-800 text-zinc-300' : 'bg-slate-50 border-slate-200 text-slate-800'}`}>
-                    <span className="text-[10px] font-mono uppercase font-bold tracking-widest text-[#2B59FF] block mb-3">KEY TAKEAWAYS</span>
-                    <ul className="space-y-2 text-xs md:text-sm">
-                      {lines.map((line, lIdx) => {
-                        const cleanLine = line.replace(/^[-\*\•]\s*/, '');
-                        return (
-                          <li key={lIdx} className="flex items-start gap-2">
-                            <span className="text-[#2B59FF] font-bold">•</span>
-                            <span>{renderParagraphText(cleanLine)}</span>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </aside>
-                );
-              }
-
-              if (p.startsWith('## ')) {
-                return (
-                  <h2 key={idx} className={`text-2xl font-extrabold uppercase mt-12 mb-4 tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
-                    {p.replace('## ', '')}
-                  </h2>
-                );
-              }
-
-              if (p.startsWith('### ')) {
-                return (
-                  <h3 key={idx} className={`text-xl font-bold uppercase mt-8 mb-2 tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
-                    {p.replace('### ', '')}
-                  </h3>
-                );
-              }
-
-              if (p.includes('\n- ')) {
-                const parts = p.split('\n');
-                const intro = parts[0];
-                const listItems = parts.slice(1);
-                return (
-                  <div key={idx} className="my-4">
-                    {intro && <p className={theme === 'dark' ? 'text-zinc-300' : 'text-slate-800'}>{renderParagraphText(intro)}</p>}
-                    <ul className={`list-disc list-inside pl-4 space-y-2 my-2 ${theme === 'dark' ? 'text-zinc-300' : 'text-slate-800'}`}>
-                      {listItems.map((li, lIdx) => (
-                        <li key={lIdx} className="leading-relaxed">
-                          {renderParagraphText(li.replace(/^[-\*\•]\s*/, ''))}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                );
-              }
-
-              return (
-                <p key={idx} className={`text-base leading-relaxed ${theme === 'dark' ? 'text-zinc-300' : 'text-slate-800'}`}>
-                  {renderParagraphText(p)}
-                </p>
-              );
-            })}
-          </div>
-
-          <div className="mt-16 pt-8 border-t border-border flex justify-between items-center">
-            <Link
-              to="/blog/"
-              className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#2B59FF] hover:underline"
-            >
-              <ArrowLeft size={14} /> Back to All Articles
-            </Link>
-          </div>
-        </article>
-      ) : (
-        <section className="py-16 px-6 md:px-12 max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {Object.entries(BLOG_CONTENT).map(([path, post]) => (
-              <Link
-                key={path}
-                to={path}
-                className={`group flex flex-col justify-between p-8 border transition-all duration-300 hover:border-[#2B59FF] ${
-                  theme === 'dark' ? 'bg-zinc-900/40 border-zinc-800' : 'bg-white border-slate-200'
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+        {/* Search & Category Filter Bar */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
+          {/* Category Pills */}
+          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto overflow-x-auto pb-2">
+            {categories.map((cat, idx) => (
+              <button
+                key={idx}
+                onClick={() => setSelectedCategory(cat.toLowerCase())}
+                className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                  selectedCategory === cat.toLowerCase()
+                    ? 'bg-[#2B59FF] text-white shadow-lg shadow-blue-500/25'
+                    : theme === 'dark' ? 'bg-[#141414] text-neutral-400 hover:text-white border border-neutral-800' : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
                 }`}
               >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* Search Input */}
+          <div className="w-full md:w-80">
+            <input
+              type="text"
+              placeholder="Search articles, guides..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none focus:ring-2 focus:ring-[#2B59FF] ${
+                theme === 'dark' ? 'bg-[#141414] border-neutral-800 text-white placeholder-neutral-500' : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400'
+              }`}
+            />
+          </div>
+        </div>
+
+        {/* Lead Featured Article (if matching filter) */}
+        {leadPost && leadMatchesFilter && (
+          <div className="mb-16">
+            <Link
+              to={`/blog/${leadPost.slug}/`}
+              className={`group rounded-3xl border overflow-hidden transition-all duration-300 hover:shadow-2xl grid grid-cols-1 lg:grid-cols-12 gap-0 ${
+                theme === 'dark' ? 'bg-[#141414] border-neutral-800' : 'bg-white border-slate-200'
+              }`}
+            >
+              <div className="lg:col-span-7 aspect-[16/10] lg:aspect-auto overflow-hidden bg-neutral-200 dark:bg-neutral-800">
+                <img
+                  src={leadPost.featuredImage.url}
+                  alt={leadPost.featuredImage.alt}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+              </div>
+              <div className="lg:col-span-5 p-8 lg:p-12 flex flex-col justify-between space-y-6">
                 <div>
-                  <div className="flex items-center justify-between gap-4 mb-4 text-xs text-zinc-500 font-mono">
-                    <span className="text-[#2B59FF] font-bold uppercase">{post.category}</span>
-                    <span>{post.readTime}</span>
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="px-3 py-1 bg-blue-500/10 text-[#2B59FF] font-bold text-xs rounded-full uppercase tracking-wider">
+                      Featured Guide
+                    </span>
+                    <span className="text-xs text-muted-foreground">{leadPost.readingTime}</span>
                   </div>
-                  <h2 className="text-lg font-bold uppercase tracking-tight text-foreground group-hover:text-[#2B59FF] transition-colors mb-3 leading-snug">
-                    {post.title}
+                  <h2 className="text-2xl sm:text-3xl font-black group-hover:text-[#2B59FF] transition-colors leading-tight">
+                    {leadPost.title}
                   </h2>
-                  <p className={`text-xs leading-relaxed line-clamp-3 mb-6 ${theme === 'dark' ? 'text-zinc-400' : 'text-slate-600'}`}>
-                    {post.summary}
+                  <p className="text-muted-foreground mt-4 text-base line-clamp-3">
+                    {leadPost.excerpt}
                   </p>
                 </div>
-                <div className="pt-4 border-t border-border/50 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-[#2B59FF]">
-                  <span>Read Briefing</span>
-                  <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                <div className="flex items-center justify-between pt-6 border-t border-neutral-100 dark:border-neutral-800">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Calendar size={14} />
+                    <span>{new Date(leadPost.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                  </div>
+                  <span className="inline-flex items-center gap-2 font-bold text-[#2B59FF] group-hover:translate-x-2 transition-transform">
+                    Read Article <ChevronRight size={16} />
+                  </span>
+                </div>
+              </div>
+            </Link>
+          </div>
+        )}
+
+        {/* Grid of Articles */}
+        {filteredPosts.length === 0 && !leadMatchesFilter ? (
+          <div className="text-center py-20">
+            <BookOpen size={48} className="mx-auto text-muted-foreground mb-4 opacity-50" />
+            <h3 className="text-xl font-bold mb-2">No articles found</h3>
+            <p className="text-muted-foreground">Try adjusting your search query or category filter.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {(leadMatchesFilter ? filteredPosts : allPosts.filter(p => {
+              const matchesCategory = selectedCategory === 'all' || p.categories.some(c => c.name.toLowerCase() === selectedCategory.toLowerCase());
+              const matchesSearch = searchQuery.trim() === '' || p.title.toLowerCase().includes(searchQuery.toLowerCase()) || p.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+              return matchesCategory && matchesSearch;
+            })).map((post, idx) => (
+              <Link
+                key={idx}
+                to={`/blog/${post.slug}/`}
+                className={`group rounded-2xl border overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl flex flex-col ${
+                  theme === 'dark' ? 'bg-[#141414] border-neutral-800' : 'bg-white border-slate-200'
+                }`}
+              >
+                <div className="aspect-[16/10] overflow-hidden bg-neutral-200 dark:bg-neutral-800">
+                  <img
+                    src={post.featuredImage.url}
+                    alt={post.featuredImage.alt}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <span className="text-xs font-bold text-[#2B59FF] uppercase tracking-wider">
+                        {post.categories[0]?.name || 'Logistics'}
+                      </span>
+                      <span className="text-xs text-muted-foreground">{post.readingTime}</span>
+                    </div>
+                    <h3 className="font-extrabold text-xl group-hover:text-[#2B59FF] transition-colors line-clamp-2">
+                      {post.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-2 line-clamp-3">
+                      {post.excerpt}
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground pt-4 border-t border-neutral-100 dark:border-neutral-800">
+                    <span className="flex items-center gap-1.5">
+                      <Calendar size={13} /> {new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </span>
+                    <span className="font-bold text-[#2B59FF] inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                      Read <ChevronRight size={14} />
+                    </span>
+                  </div>
                 </div>
               </Link>
             ))}
           </div>
-        </section>
-      )}
+        )}
+      </div>
 
-      <section className="py-16 px-6 md:px-12 max-w-7xl mx-auto">
-        <WhatsAppCTA 
-          message="Hello LeeAutoX, I just finished reading your auto import blog and would like to discuss logistics options for my vehicle."
-          title="Turn Industry Insights into a Verified Delivery"
-          subtitle="Do not navigate auction bids or cross-border maritime shipping blindly. Our verified teams in Canada and Nigeria handle every step."
-        />
-      </section>
-
-      <Contact />
+      <div className="mt-24">
+        <Contact />
+      </div>
     </div>
   );
 }
