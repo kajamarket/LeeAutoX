@@ -26,7 +26,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative py-20 md:py-24 px-6 md:px-12 bg-black text-white overflow-hidden">
+    <section className="relative py-10 md:py-12 px-6 md:px-12 bg-black text-white overflow-hidden">
       {/* Restored Hero Background Image - Visible across Mobile, Tablet, and Desktop */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         <img

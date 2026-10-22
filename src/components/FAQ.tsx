@@ -9,7 +9,7 @@ export default function FAQ() {
   const { theme } = useTheme();
 
   return (
-    <section id="faq" className={`relative transition-colors duration-500 px-6 md:px-12 py-24 overflow-hidden ${
+    <section id="faq" className={`relative transition-colors duration-500 px-6 md:px-12 py-12 overflow-hidden ${
       theme === 'dark' ? 'bg-black text-white' : 'bg-white text-black'
     }`}>
       {/* Background Graffiti - Sophisticated Typography Layer */}

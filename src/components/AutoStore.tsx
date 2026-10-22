@@ -25,7 +25,7 @@ export default function AutoStore() {
   }, []);
 
   return (
-    <section id="store" className={`relative transition-colors duration-500 px-6 md:px-12 py-24 overflow-hidden ${
+    <section id="store" className={`relative transition-colors duration-500 px-6 md:px-12 py-12 overflow-hidden ${
       theme === 'dark' ? 'bg-black text-white' : 'bg-foreground text-background'
     }`}>
       {/* Background Graffiti - Sophisticated Typography Layer */}

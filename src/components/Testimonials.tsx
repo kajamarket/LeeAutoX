@@ -18,7 +18,7 @@ export default function Testimonials() {
   const prev = () => setActive((prev) => (prev - 1 + reviews.length) % reviews.length);
 
   return (
-    <section id="testimonials" className={`relative transition-colors duration-500 px-6 md:px-12 py-24 overflow-hidden ${
+    <section id="testimonials" className={`relative transition-colors duration-500 px-6 md:px-12 py-12 overflow-hidden ${
       theme === 'dark' ? 'bg-black text-white' : 'bg-white text-black'
     }`}>
       {/* Background Graffiti - Sophisticated Typography Layer */}

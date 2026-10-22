@@ -3,6 +3,7 @@ import { motion, useInView, useReducedMotion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Sparkles, Send, ShieldCheck, CreditCard, Ship, MessageSquare } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import cargoContainersImg from '../assets/cargo-containers.jpg';
 
 export default function WhatWeDo() {
   const { theme } = useTheme();
@@ -12,8 +13,8 @@ export default function WhatWeDo() {
 
   const cards = [
     {
-      title: 'Cars & Trucks',
-      description: 'Luxury cars, SUVs, trucks and vans from US and Canadian auctions. Pay in installments.',
+      title: 'Cars & SUVs',
+      description: 'Buy Cars, SUVs, trucks, and vans from US and Canadian auctions. Pay in installments/stages.',
       image: 'https://leeplugshub.com/wp-content/uploads/2026/05/Luxury.jpg',
       linkText: 'View Cars →',
       href: '/inventory',
@@ -27,14 +28,14 @@ export default function WhatWeDo() {
       linkText: 'Shop Parts →',
       href: 'https://leeautox.leeplugshub.com/shop',
       isExternal: true,
-      badge: 'New',
+      badge: null,
     },
     {
-      title: 'Bikes, Phones & More',
-      description: 'Motorcycles, phones, laptops and general goods via Leeplugshub.com.',
-      image: 'https://leeplugshub.com/wp-content/uploads/2026/05/Vans.jpeg',
-      linkText: 'Visit Leeplugshub →',
-      href: 'https://leeplugshub.com',
+      title: 'Cargo, Bikes & More',
+      description: 'Ship cargo, motorcycles, phones, laptops and general goods in containers to Nigeria. Message us to get started.',
+      image: cargoContainersImg,
+      linkText: 'Message Us →',
+      href: 'https://wa.me/16473896162?text=Hello%20LeeAutoX!%20I%20would%20like%20to%20inquire%20about%20shipping%20cargo,%20motorcycles,%20phones,%20and%20general%20goods.',
       isExternal: true,
       badge: null,
     },
@@ -71,7 +72,7 @@ export default function WhatWeDo() {
     <section 
       id="what-we-do" 
       ref={ref}
-      className={`relative px-6 md:px-12 py-24 transition-colors duration-500 overflow-hidden ${
+      className={`relative px-6 md:px-12 py-12 transition-colors duration-500 overflow-hidden ${
         theme === 'dark' ? 'bg-[#0a0a0a] text-white' : 'bg-slate-50 text-slate-900'
       }`}
     >
@@ -116,7 +117,7 @@ export default function WhatWeDo() {
         </div>
 
         {/* 3 Merged Cards (Staggered Reveal, Glassmorphic, Responsive) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-12">
           {cards.map((card, i) => (
             <motion.div
               key={card.title}
@@ -190,7 +191,7 @@ export default function WhatWeDo() {
         </div>
 
         {/* 4 Steps: "How it works" (Staggered Reveal, Responsive: 4 in row on desktop, stacked on mobile) */}
-        <div className="border-t pt-20 transition-colors duration-500 ${theme === 'dark' ? 'border-white/10' : 'border-slate-200'}">
+        <div className={`border-t pt-10 transition-colors duration-500 ${theme === 'dark' ? 'border-white/10' : 'border-slate-200'}`}>
           <div className="text-center mb-12">
             <motion.h3
               initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 12 }}

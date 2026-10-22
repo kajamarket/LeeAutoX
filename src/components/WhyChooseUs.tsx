@@ -11,7 +11,7 @@ export default function WhyChooseUs() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section id="why-us" className={`relative transition-colors duration-500 px-6 md:px-12 py-24 overflow-hidden ${
+    <section id="why-us" className={`relative transition-colors duration-500 px-6 md:px-12 py-12 overflow-hidden ${
       theme === 'dark' ? 'bg-black text-white' : 'bg-white text-black'
     }`}>
       {/* Background Graffiti - Sophisticated Typography Layer */}

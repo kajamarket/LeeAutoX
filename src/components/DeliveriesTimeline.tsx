@@ -240,7 +240,7 @@ export default function DeliveriesTimeline() {
     <section 
       id="deliveries" 
       ref={sectionRef} 
-      className={`relative px-6 md:px-12 py-24 overflow-hidden transition-colors duration-500 border-t border-b ${
+      className={`relative px-6 md:px-12 py-12 overflow-hidden transition-colors duration-500 border-t border-b ${
         theme === 'dark' 
           ? 'bg-black text-white border-zinc-900' 
           : 'bg-[#FAFBFD] text-slate-950 border-slate-200'

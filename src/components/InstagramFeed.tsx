@@ -20,7 +20,7 @@ export default function InstagramFeed() {
   }, []);
 
   return (
-    <section className="px-6 md:px-12 py-24 bg-foreground dark:bg-muted/10 relative overflow-hidden">
+    <section className="px-6 md:px-12 py-12 bg-foreground dark:bg-muted/10 relative overflow-hidden">
       {/* Decorative Graffiti Background Asset (Simplified for integration) */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none select-none overflow-hidden">
          <div className="absolute top-1/4 left-1/4 font-serif text-[20rem] font-black -rotate-12 whitespace-nowrap">

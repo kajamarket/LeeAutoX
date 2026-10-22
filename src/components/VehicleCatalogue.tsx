@@ -48,12 +48,14 @@ export default function VehicleCatalogue() {
   return (
     <section
       id="catalogue"
-      className={`relative pt-36 pb-24 px-6 md:px-12 transition-colors duration-500 overflow-hidden ${
-        theme === "dark" ? "bg-[#090909] text-white" : "bg-slate-950 text-white"
+      className={`relative pt-36 pb-12 px-6 md:px-12 transition-colors duration-500 overflow-hidden ${
+        theme === "dark" ? "bg-[#090909] text-white" : "bg-white text-slate-900"
       }`}
     >
       {/* Background Graphic Elements */}
-      <div className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden opacity-[0.03] text-white">
+      <div className={`absolute inset-0 z-0 pointer-events-none select-none overflow-hidden transition-opacity ${
+        theme === "dark" ? "opacity-[0.03] text-white" : "opacity-[0.03] text-slate-900"
+      }`}>
         <div className="absolute top-10 -left-20 text-[20vw] font-black leading-none tracking-tighter rotate-[-10deg] whitespace-nowrap">
           LAGOS STOCK
         </div>
@@ -66,17 +68,25 @@ export default function VehicleCatalogue() {
         {/* Section Header with Lagos Inspection Copy */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-8 gap-6">
           <div className="max-w-3xl">
-            <div className="hidden md:inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 font-bold text-xs rounded-full uppercase tracking-wider mb-4 font-mono shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <div className={`hidden md:inline-flex items-center gap-2 px-3.5 py-1.5 font-bold text-xs rounded-full uppercase tracking-wider mb-4 font-mono shadow-sm border transition-colors ${
+              theme === "dark"
+                ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-400"
+                : "bg-emerald-50 border-emerald-300 text-emerald-800"
+            }`}>
+              <span className={`w-2 h-2 rounded-full animate-pulse ${theme === "dark" ? "bg-emerald-400" : "bg-emerald-600"}`} />
               <span>Available For Inspection Now in Lagos, Nigeria</span>
             </div>
             
-            <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.08] text-white mb-4">
+            <h1 className={`font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.08] mb-4 transition-colors ${
+              theme === "dark" ? "text-white" : "text-slate-950"
+            }`}>
               Cars For Sale in Lagos
             </h1>
             
-            <p className="text-sm sm:text-base text-white/75 font-light leading-relaxed max-w-2xl">
-              These vehicles are <strong>physically on ground in Lagos, Nigeria</strong> — fully customs-cleared with complete port documentation. Reach out to us today for a physical inspection, and test-drive. Or explore custom auction imports next.
+            <p className={`text-sm sm:text-base font-light leading-relaxed max-w-2xl transition-colors ${
+              theme === "dark" ? "text-white/75" : "text-slate-600"
+            }`}>
+              These vehicles are <strong className={theme === "dark" ? "text-white font-semibold" : "text-slate-900 font-semibold"}>physically on ground in Lagos, Nigeria</strong> — fully customs-cleared with complete port documentation. Reach out to us today for a physical inspection, and test-drive. Or explore custom auction imports next.
             </p>
           </div>
 
@@ -89,25 +99,39 @@ export default function VehicleCatalogue() {
             >
               <MessageSquare size={16} /> Book Inspection
             </a>
-            <div className="inline-flex items-center gap-2 px-4 py-3 text-xs sm:text-sm font-medium text-white/80 border border-white/10 rounded-xl bg-white/[0.04] whitespace-nowrap">
-              <MapPin size={16} className="text-emerald-400 shrink-0" />
+            <div className={`inline-flex items-center gap-2 px-4 py-3 text-xs sm:text-sm font-medium rounded-xl whitespace-nowrap border transition-colors ${
+              theme === "dark"
+                ? "text-white/80 border-white/10 bg-white/[0.04]"
+                : "text-slate-700 border-slate-200 bg-slate-50"
+            }`}>
+              <MapPin size={16} className={theme === "dark" ? "text-emerald-400 shrink-0" : "text-emerald-600 shrink-0"} />
               <span>5 Pepple Street, Ikeja, Lagos</span>
             </div>
           </div>
         </div>
 
         {/* Working Search & Filter Controls */}
-        <div className="p-6 rounded-3xl border mb-12 bg-white/5 border-white/15 backdrop-blur-xl shadow-xl">
+        <div className={`p-6 rounded-3xl border mb-12 backdrop-blur-xl shadow-xl transition-colors ${
+          theme === "dark"
+            ? "bg-white/5 border-white/15 shadow-black/40"
+            : "bg-slate-50 border-slate-200 shadow-slate-200/50"
+        }`}>
           <div className="flex flex-col lg:flex-row gap-4 items-center">
             {/* Search Input */}
             <div className="relative w-full lg:flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" size={16} />
+              <Search className={`absolute left-4 top-1/2 -translate-y-1/2 ${
+                theme === "dark" ? "text-white/50" : "text-slate-400"
+              }`} size={16} />
               <input
                 type="text"
                 placeholder="Search available Lagos stock by make, model, or specs..."
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
-                className="w-full pl-11 pr-4 py-3 text-xs sm:text-sm rounded-xl border border-white/20 bg-black/60 text-white placeholder-white/40 focus:outline-none focus:border-[#2B59FF] transition-colors"
+                className={`w-full pl-11 pr-4 py-3 text-xs sm:text-sm rounded-xl border transition-colors focus:outline-none focus:border-[#2B59FF] ${
+                  theme === "dark"
+                    ? "border-white/20 bg-black/60 text-white placeholder-white/40"
+                    : "border-slate-300 bg-white text-slate-900 placeholder-slate-400"
+                }`}
               />
             </div>
 
@@ -116,10 +140,14 @@ export default function VehicleCatalogue() {
               <select
                 value={filterMake}
                 onChange={(e) => setFilterMake(e.target.value)}
-                className="px-4 py-3 text-xs rounded-xl border border-white/20 bg-black/80 text-white focus:outline-none focus:border-[#2B59FF] cursor-pointer"
+                className={`px-4 py-3 text-xs rounded-xl border transition-colors focus:outline-none focus:border-[#2B59FF] cursor-pointer ${
+                  theme === "dark"
+                    ? "border-white/20 bg-black/80 text-white"
+                    : "border-slate-300 bg-white text-slate-900"
+                }`}
               >
                 {makes.map(m => (
-                  <option key={m} value={m} className="bg-zinc-900 text-white">
+                  <option key={m} value={m} className={theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-slate-900"}>
                     Make: {m}
                   </option>
                 ))}
@@ -128,10 +156,14 @@ export default function VehicleCatalogue() {
               <select
                 value={filterBody}
                 onChange={(e) => setFilterBody(e.target.value)}
-                className="px-4 py-3 text-xs rounded-xl border border-white/20 bg-black/80 text-white focus:outline-none focus:border-[#2B59FF] cursor-pointer"
+                className={`px-4 py-3 text-xs rounded-xl border transition-colors focus:outline-none focus:border-[#2B59FF] cursor-pointer ${
+                  theme === "dark"
+                    ? "border-white/20 bg-black/80 text-white"
+                    : "border-slate-300 bg-white text-slate-900"
+                }`}
               >
                 {bodyTypes.map(b => (
-                  <option key={b} value={b} className="bg-zinc-900 text-white">
+                  <option key={b} value={b} className={theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-slate-900"}>
                     Body: {b}
                   </option>
                 ))}
@@ -140,18 +172,24 @@ export default function VehicleCatalogue() {
               <select
                 value={filterBudget}
                 onChange={(e) => setFilterBudget(e.target.value)}
-                className="px-4 py-3 text-xs rounded-xl border border-white/20 bg-black/80 text-white focus:outline-none focus:border-[#2B59FF] cursor-pointer"
+                className={`px-4 py-3 text-xs rounded-xl border transition-colors focus:outline-none focus:border-[#2B59FF] cursor-pointer ${
+                  theme === "dark"
+                    ? "border-white/20 bg-black/80 text-white"
+                    : "border-slate-300 bg-white text-slate-900"
+                }`}
               >
-                <option value="100000000" className="bg-zinc-900 text-white">Max Budget: Any</option>
-                <option value="20000000" className="bg-zinc-900 text-white">Under ₦20M</option>
-                <option value="35000000" className="bg-zinc-900 text-white">Under ₦35M</option>
-                <option value="50000000" className="bg-zinc-900 text-white">Under ₦50M</option>
-                <option value="70000000" className="bg-zinc-900 text-white">Under ₦70M</option>
+                <option value="100000000" className={theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-slate-900"}>Max Budget: Any</option>
+                <option value="20000000" className={theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-slate-900"}>Under ₦20M</option>
+                <option value="35000000" className={theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-slate-900"}>Under ₦35M</option>
+                <option value="50000000" className={theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-slate-900"}>Under ₦50M</option>
+                <option value="70000000" className={theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-slate-900"}>Under ₦70M</option>
               </select>
             </div>
           </div>
 
-          <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/10 text-xs text-white/60">
+          <div className={`flex items-center justify-between mt-4 pt-3 border-t text-xs transition-colors ${
+            theme === "dark" ? "border-white/10 text-white/60" : "border-slate-200 text-slate-500"
+          }`}>
             <span className="font-mono">
               Showing <strong>{filteredVehicles.length}</strong> of {vehicles.length} cars available in Lagos
             </span>
@@ -159,7 +197,9 @@ export default function VehicleCatalogue() {
               <button
                 type="button"
                 onClick={resetFilters}
-                className="inline-flex items-center gap-1.5 text-emerald-400 hover:text-white font-mono font-bold active:scale-[0.98] cursor-pointer"
+                className={`inline-flex items-center gap-1.5 font-mono font-bold active:scale-[0.98] cursor-pointer transition-colors ${
+                  theme === "dark" ? "text-emerald-400 hover:text-white" : "text-emerald-600 hover:text-emerald-800"
+                }`}
               >
                 <RotateCcw size={13} /> Reset Active Filters
               </button>
@@ -170,10 +210,16 @@ export default function VehicleCatalogue() {
         {/* Vehicles Grid with Actual Car Images */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 min-h-[400px]">
           {filteredVehicles.length === 0 ? (
-            <div className="col-span-full flex flex-col items-center justify-center py-20 text-white/60 bg-white/5 border border-white/10 rounded-3xl p-8 text-center">
+            <div className={`col-span-full flex flex-col items-center justify-center py-20 border rounded-3xl p-8 text-center transition-colors ${
+              theme === "dark"
+                ? "text-white/60 bg-white/5 border-white/10"
+                : "text-slate-600 bg-slate-50 border-slate-200"
+            }`}>
               <Car size={44} className="text-[#2B59FF] mb-3 opacity-80" />
-              <h3 className="font-serif text-xl font-bold text-white mb-2">No Matching Cars on Ground in Lagos</h3>
-              <p className="text-xs font-mono max-w-md mb-6">
+              <h3 className={`font-serif text-xl font-bold mb-2 ${theme === "dark" ? "text-white" : "text-slate-900"}`}>
+                No Matching Cars on Ground in Lagos
+              </h3>
+              <p className={`text-xs font-mono max-w-md mb-6 ${theme === "dark" ? "text-white/60" : "text-slate-500"}`}>
                 No vehicles matched your current filter criteria. You can clear filters to see all available inventory, or pre-order directly from Canadian auctions.
               </p>
               <button
@@ -192,7 +238,11 @@ export default function VehicleCatalogue() {
                 whileInView={{ y: 0, opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.08 }}
-                className="rounded-3xl border border-white/10 bg-[#141414] group overflow-hidden flex flex-col justify-between hover:border-emerald-500/40 hover:shadow-2xl transition-all duration-300"
+                className={`rounded-3xl border group overflow-hidden flex flex-col justify-between transition-all duration-300 ${
+                  theme === "dark"
+                    ? "bg-black border-white/10 hover:border-emerald-500/40 hover:shadow-2xl hover:shadow-black/60"
+                    : "bg-white border-slate-200 shadow-sm hover:border-emerald-500/50 hover:shadow-xl hover:shadow-slate-200"
+                }`}
               >
                 <div>
                   {/* Real Image Container */}
@@ -223,26 +273,38 @@ export default function VehicleCatalogue() {
                   </div>
 
                   <div className="p-5">
-                    <div className="text-[11px] font-mono text-white/50 mb-1 flex items-center justify-between">
+                    <div className={`text-[11px] font-mono mb-1 flex items-center justify-between transition-colors ${
+                      theme === "dark" ? "text-white/50" : "text-slate-500"
+                    }`}>
                       <span>{vehicle.year} • {vehicle.make}</span>
                       <span>{vehicle.mileage}</span>
                     </div>
 
-                    <h3 className="font-serif text-lg font-bold text-white mb-2 truncate" title={vehicle.name}>
+                    <h3 className={`font-serif text-lg font-bold mb-2 truncate transition-colors ${
+                      theme === "dark" ? "text-white" : "text-slate-900"
+                    }`} title={vehicle.name}>
                       {vehicle.name}
                     </h3>
 
-                    <p className="text-xs mb-4 font-mono text-white/60 line-clamp-2">
+                    <p className={`text-xs mb-4 font-mono line-clamp-2 transition-colors ${
+                      theme === "dark" ? "text-white/60" : "text-slate-600"
+                    }`}>
                       {vehicle.specs}
                     </p>
                   </div>
                 </div>
 
                 {/* Card Footer with Price and View CTA */}
-                <div className="p-5 pt-0 flex items-center justify-between border-t border-white/10 mt-auto">
+                <div className={`p-5 pt-0 flex items-center justify-between border-t mt-auto transition-colors ${
+                  theme === "dark" ? "border-white/10" : "border-slate-100"
+                }`}>
                   <div>
-                    <span className="text-[10px] font-mono uppercase text-white/50 block">Price</span>
-                    <span className="text-[#2B59FF] font-bold text-base tracking-tight font-serif">
+                    <span className={`text-[10px] font-mono uppercase block ${
+                      theme === "dark" ? "text-white/50" : "text-slate-400"
+                    }`}>Price</span>
+                    <span className={`font-bold text-base tracking-tight font-serif ${
+                      theme === "dark" ? "text-[#2B59FF]" : "text-blue-600"
+                    }`}>
                       {vehicle.price}
                     </span>
                   </div>

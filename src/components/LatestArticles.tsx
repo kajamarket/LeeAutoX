@@ -11,7 +11,7 @@ export default function LatestArticles() {
 
   return (
     // Explicitly light mode article section with black/dark text on white/light background
-    <section className="py-24 bg-[#FAFBFD] text-slate-900 border-t border-slate-200 transition-colors duration-300">
+    <section className="py-12 bg-[#FAFBFD] text-slate-900 border-t border-slate-200 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div>
