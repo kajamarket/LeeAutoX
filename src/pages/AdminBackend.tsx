@@ -28,7 +28,11 @@ export default function AdminBackend() {
   
   // Security Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return sessionStorage.getItem('leeautox_bkend_authenticated') === 'true';
+    try {
+      return typeof window !== 'undefined' && window.sessionStorage?.getItem('leeautox_bkend_authenticated') === 'true';
+    } catch {
+      return false;
+    }
   });
   const [passcode, setPasscode] = useState('');
   const [passcodeError, setPasscodeError] = useState(false);
@@ -38,7 +42,11 @@ export default function AdminBackend() {
   useEffect(() => {
     if (isAdmin) {
       setIsAuthenticated(true);
-      sessionStorage.setItem('leeautox_bkend_authenticated', 'true');
+      try {
+        sessionStorage.setItem('leeautox_bkend_authenticated', 'true');
+      } catch {
+        // Storage access blocked or restricted
+      }
     }
   }, [isAdmin]);
 
@@ -86,7 +94,11 @@ export default function AdminBackend() {
     const correctPasscode = (import.meta as any).env?.VITE_ADMIN_PASSCODE || 'leeauto2026';
     if (passcode.trim() === correctPasscode || passcode.trim() === 'leeauto2026') {
       setIsAuthenticated(true);
-      sessionStorage.setItem('leeautox_bkend_authenticated', 'true');
+      try {
+        sessionStorage.setItem('leeautox_bkend_authenticated', 'true');
+      } catch {
+        // Handled safely
+      }
       setPasscodeError(false);
       showToast('Authentication successful. Welcome to Admin Portal.');
     } else {
@@ -99,7 +111,11 @@ export default function AdminBackend() {
       setIsSigningIn(true);
       await signInWithGoogle();
       setIsAuthenticated(true);
-      sessionStorage.setItem('leeautox_bkend_authenticated', 'true');
+      try {
+        sessionStorage.setItem('leeautox_bkend_authenticated', 'true');
+      } catch {
+        // Handled safely
+      }
       showToast('Signed in with Google. Real-time cross-device sync active.');
     } catch (e: any) {
       showToast(`Google Sign-In failed: ${e?.message || 'Error'}`);
@@ -110,7 +126,11 @@ export default function AdminBackend() {
 
   const handleLogout = async () => {
     setIsAuthenticated(false);
-    sessionStorage.removeItem('leeautox_bkend_authenticated');
+    try {
+      sessionStorage.removeItem('leeautox_bkend_authenticated');
+    } catch {
+      // Handled safely
+    }
     try {
       await googleLogout();
     } catch {

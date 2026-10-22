@@ -28,26 +28,36 @@
   <body>
     <script type="text/javascript">
       (function(l) {
-        if (l.search[1] === '/' ) {
-          var decoded = l.search.slice(1).split('&').map(function(s) { 
-            return s.replace(/~and~/g, '&')
-          }).join('?');
-          window.history.replaceState(null, null,
-              l.pathname.slice(0, -1) + decoded + l.hash
-          );
+        try {
+          if (l.search && l.search[1] === '/' ) {
+            var decoded = l.search.slice(1).split('&').map(function(s) { 
+              return s.replace(/~and~/g, '&')
+            }).join('?');
+            window.history.replaceState(null, null,
+                l.pathname.slice(0, -1) + decoded + l.hash
+            );
+          }
+        } catch (e) {
+          // Handled safely in restricted iframe environments
         }
       }(window.location))
     </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      // Anti-FOUC theme detector - default to light mode
+      // Anti-FOUC theme detector - default to light mode safely protected against storage access errors
       (function() {
-        const theme = localStorage.getItem("theme") || "light";
-        if (theme === "dark") {
-          document.documentElement.classList.add("dark");
-        } else {
-          document.documentElement.classList.remove("dark");
+        try {
+          var theme = (typeof window !== 'undefined' && window.localStorage) ? window.localStorage.getItem("theme") : "light";
+          if (theme === "dark") {
+            document.documentElement.classList.add("dark");
+          } else {
+            document.documentElement.classList.remove("dark");
+          }
+        } catch (e) {
+          try {
+            document.documentElement.classList.remove("dark");
+          } catch (_) {}
         }
       })();
     </script>
