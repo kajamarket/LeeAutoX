@@ -81,8 +81,8 @@ export default function Hero() {
           transition={{ delay: 0.2, duration: 0.8, ease: 'easeOut' }}
           className="font-serif text-5xl md:text-7xl font-black leading-[0.95] tracking-tight text-white text-balance mb-6 max-w-3xl"
         >
-          Your vehicle,<br />
-          <span className="italic font-normal">sourced from North America.</span>
+          Buy in Canada & USA.<br />
+          <span className="italic font-normal">Collect anywhere in Nigeria.</span>
         </motion.h1>
 
         {/* Body */}
@@ -92,7 +92,7 @@ export default function Hero() {
           transition={{ delay: 0.35, duration: 0.7 }}
           className="text-white/70 font-light text-base md:text-lg max-w-xl leading-relaxed mb-8"
         >
-          LeeAutoX connects African buyers to premium vehicles directly from top auctions in the USA and Canada — with full shipping, containerization, and logistics handled end-to-end.
+          We buy from Copart, IAA, all USA/Canadian auctions, dealerships, and ship to Nigeria or Anywhere in West Africa, and clear customs. Pay in installments, track every step, then collect.
         </motion.p>
 
         {/* CTAs */}
@@ -109,10 +109,14 @@ export default function Hero() {
             Get a Free Quote
           </a>
           <a
-            href="#catalogue"
+            href="#auction-search"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('auction-search')?.scrollIntoView({ behavior: 'smooth' });
+            }}
             className="group flex items-center gap-3 text-sm font-medium cursor-pointer hover:opacity-70 transition-opacity text-white py-3.5"
           >
-            <span className="tracking-wide">Available Vehicles</span>
+            <span className="tracking-wide">Search Auction Cars Below</span>
             <div className="w-8 h-8 border border-white flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
               <ArrowDownRight size={16} />
             </div>
@@ -121,10 +125,11 @@ export default function Hero() {
 
         {/* CHANGE 1b — Copart / IAA Auction Vehicle Search UI */}
         <motion.div
+          id="auction-search"
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.55, duration: 0.8 }}
-          className="bg-black/80 backdrop-blur-2xl border border-white/25 p-6 md:p-8 shadow-2xl relative"
+          className="bg-black/80 backdrop-blur-2xl border border-white/25 p-6 md:p-8 shadow-2xl relative scroll-mt-24"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">

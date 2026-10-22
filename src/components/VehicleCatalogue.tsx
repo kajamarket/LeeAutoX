@@ -76,7 +76,7 @@ export default function VehicleCatalogue() {
             </h1>
             
             <p className="text-sm sm:text-base text-white/75 font-light leading-relaxed max-w-2xl">
-              These vehicles are <strong>physically on ground in Lagos, Nigeria</strong> — fully customs-cleared with complete port documentation. Reach out to us today for a physical inspection, and test-drive.
+              These vehicles are <strong>physically on ground in Lagos, Nigeria</strong> — fully customs-cleared with complete port documentation. Reach out to us today for a physical inspection, and test-drive. Or explore custom auction imports next.
             </p>
           </div>
 
@@ -89,12 +89,10 @@ export default function VehicleCatalogue() {
             >
               <MessageSquare size={16} /> Book Inspection
             </a>
-            <Link
-              to="/inventory"
-              className="group inline-flex items-center gap-2 px-5 py-3 border border-white/20 hover:border-white/40 active:scale-[0.98] text-xs font-bold text-white uppercase tracking-wider rounded-xl transition-all"
-            >
-              Full Catalogue <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
-            </Link>
+            <div className="inline-flex items-center gap-2 px-4 py-3 text-xs sm:text-sm font-medium text-white/80 border border-white/10 rounded-xl bg-white/[0.04] whitespace-nowrap">
+              <MapPin size={16} className="text-emerald-400 shrink-0" />
+              <span>5 Pepple Street, Ikeja, Lagos</span>
+            </div>
           </div>
         </div>
 
@@ -267,7 +265,7 @@ export default function VehicleCatalogue() {
             to="/inventory"
             className="inline-flex items-center gap-3 px-10 py-4 bg-[#2B59FF] hover:bg-blue-600 active:scale-[0.98] text-white text-sm font-bold uppercase tracking-widest rounded-xl transition-all shadow-[0_0_25px_rgba(43,89,255,0.4)]"
           >
-            Browse all inventory <ArrowRight size={18} />
+            Shop Available Cars <ArrowRight size={18} />
           </Link>
         </div>
       </div>

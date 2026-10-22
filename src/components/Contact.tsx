@@ -43,7 +43,7 @@ export default function Contact() {
             <span className="italic font-normal">your next vehicle?</span>
           </h2>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-sm mb-10">
-            Tell us what you're looking for and we'll get back to you within 24 hours with availability, pricing, and shipping details — no commitment required.
+            Tell us what you're looking for and we'll get back to you within 24 hours with availability, pricing, and shipping details — no commitment required. Follow our daily arrivals on Instagram.
           </p>
 
           <div className="space-y-4 text-sm">

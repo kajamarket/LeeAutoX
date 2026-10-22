@@ -55,13 +55,13 @@ export default function AutoStore() {
               <span>Storefront</span>
             </div>
             <h2 className="font-serif text-5xl md:text-6xl font-bold leading-tight text-[#2B59FF]">
-              Parts & Tools
+              Shop Car Parts
             </h2>
           </div>
-          <p className={`text-sm max-w-xs leading-relaxed transition-colors duration-500 ${
+          <p className={`text-sm max-w-md leading-relaxed transition-colors duration-500 ${
             theme === 'dark' ? 'text-white/60' : 'text-background/60'
           }`}>
-            Premium automotive parts, professional-grade tools, and essential accessories for your vehicle's maintenance.
+            Shop auto parts here, and we can also source any vehicle part. Discover why vehicle owners trust our service.
           </p>
         </div>
 

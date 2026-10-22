@@ -18,7 +18,7 @@ export default function WhyCanada() {
               THE CANADIAN ADVANTAGE
             </span>
             <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight">
-              Why Import Vehicles From Canada?
+              Why Import Cars With LeeAutoX?
             </h2>
             <p className={`text-sm md:text-base mt-4 leading-relaxed ${
               theme === 'dark' ? 'text-zinc-400' : 'text-slate-600'

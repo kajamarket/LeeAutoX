@@ -48,10 +48,10 @@ export const MARQUEE_ITEMS: string[] = [
 ];
 
 export const WHY_CHOOSE_LABELS: string[] = [
-  'Secure Vehicle Export',
-  'Doorstep Delivery',
-  'Premium Selection',
-  'Transparent Pricing',
+  'Inspection reports before you pay',
+  'Flexible installment plans',
+  'Live shipment tracking',
+  'Nigeria and Ghana delivery',
 ];
 
 export const SERVICES: Service[] = [

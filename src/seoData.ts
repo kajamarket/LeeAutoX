@@ -27,8 +27,8 @@ export interface SEOPageData {
 
 export const RAW_SEO_DATA: Record<string, any> = {
   '/': {
-    title: 'Car Import from Canada to Nigeria & Ghana | LeeAutoX',
-    description: 'Source and ship luxury cars, SUVs, and trucks from top Canadian and US auctions directly to Lagos, Nigeria or Accra, Ghana. Installment plans, full port clearance, doorstep delivery.',
+    title: 'Car Import from Canada & USA to Nigeria & Ghana',
+    description: 'Buy and ship cars, SUVs, and trucks from US and Canadian auctions directly to Lagos, Nigeria or Accra, Ghana. We ship, clear customs, and deliver. Pay in installments, no hidden fees.',
     keywords: 'car sourcing, copart cars, shipping cars to nigeria, import cars from canada, luxury car procurement lagos, tokunbo cars',
     canonical: 'https://leeautox.com/',
     breadcrumbs: [{ name: 'Home', item: 'https://leeautox.com/' }],

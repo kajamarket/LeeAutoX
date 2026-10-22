@@ -49,7 +49,7 @@ export default function MapWhatsApp() {
               Speak to us directly on WhatsApp
             </h3>
             <p className="text-white/50 text-sm font-light leading-relaxed max-w-md">
-              Get instant answers about vehicle availability, pricing, and shipping — our team typically responds within minutes.
+              Get instant answers about vehicle availability, pricing, and shipping — our team typically responds within minutes. Or send a detailed inquiry below.
             </p>
           </div>
 

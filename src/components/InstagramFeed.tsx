@@ -42,7 +42,7 @@ export default function InstagramFeed() {
             Follow our journey
           </h2>
           <p className="text-background/60 dark:text-muted-foreground text-sm font-mono tracking-widest uppercase">
-            @{CONTACT_INFO.instagram}
+            @{CONTACT_INFO.instagram} — Read our expert automotive guides next.
           </p>
         </div>
 
