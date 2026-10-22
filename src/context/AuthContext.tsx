@@ -40,7 +40,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => unsubscribe();
   }, []);
 
-  const isAdmin = currentUser?.email?.toLowerCase() === 'mht0189@gmail.com';
+  const ADMIN_EMAILS = ['mht0189@gmail.com', 'kajamarket348@gmail.com'];
+  const isAdmin = currentUser?.email ? ADMIN_EMAILS.includes(currentUser.email.toLowerCase()) : false;
 
   const signInWithGoogle = async () => {
     try {
