@@ -228,7 +228,7 @@ export default function VehicleDetailPage() {
                 theme === 'dark' ? 'bg-[#181818] border-zinc-800' : 'bg-white border-slate-200 shadow-md'
               }`}>
                 <div className="flex justify-between items-baseline mb-3">
-                  <span className="text-xs uppercase font-mono tracking-wider text-slate-500 dark:text-zinc-400 font-medium">Estimated Landing Price</span>
+                  <span className="text-xs uppercase font-mono tracking-wider text-slate-500 dark:text-zinc-400 font-medium">Price</span>
                   <span className="text-2xl sm:text-3xl font-bold font-serif text-[#2B59FF]">{vehicle.price}</span>
                 </div>
                 <div className="flex justify-between items-center pt-3 border-t border-slate-200/20 dark:border-zinc-800 text-xs">
@@ -237,7 +237,7 @@ export default function VehicleDetailPage() {
                 </div>
                 <div className="flex justify-between items-center pt-2 text-[11px] text-slate-500 dark:text-zinc-400 font-mono">
                   <span>Balance terms:</span>
-                  <span>Installments available through transit</span>
+                  <span>Based on agreement</span>
                 </div>
               </div>
 
