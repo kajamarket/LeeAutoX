@@ -195,9 +195,9 @@ export default function VehicleDetailPage() {
                 <ShieldCheck size={24} />
               </div>
               <div>
-                <h4 className="font-serif text-base font-bold mb-1">LeeAutoX Verified Title Guarantee</h4>
+                <h4 className="font-serif text-base font-bold mb-1">LeeAutoX Verified Status Guarantee</h4>
                 <p className={`text-xs leading-relaxed font-light ${theme === 'dark' ? 'text-white/70' : 'text-slate-600'}`}>
-                  Every vehicle in our catalogue undergoes rigorous Canadian registry confirmation, mechanical diagnostic scan, and pre-loading container inspection in Scarborough, ON before export.
+                  Every vehicle displayed in our catalogue is currently available in Nigeria, with local availability confirmed.
                 </p>
               </div>
             </div>
@@ -276,15 +276,15 @@ export default function VehicleDetailPage() {
             }`}>
               <div className="flex items-center gap-2">
                 <CheckCircle size={15} className="text-emerald-500 shrink-0" />
-                <span>Ocean freight containerization handled end-to-end</span>
+                <span>Vehicle available locally in Nigeria</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle size={15} className="text-emerald-500 shrink-0" />
-                <span>Port clearing assistance at Apapa / Tin Can Island</span>
+                <span>Port cleared at Apapa / Tin Can Island</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle size={15} className="text-emerald-500 shrink-0" />
-                <span>Full VIN and insurance title verification supplied</span>
+                <span>Vehicle identification and documentation verification supplied</span>
               </div>
             </div>
           </div>
