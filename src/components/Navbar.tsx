@@ -182,13 +182,14 @@ export default function Navbar() {
               </div>
             ))}
 
-            {/* Navbar Dual Search Box (Lagos Stock & Copart Lots) */}
-            <div className="relative" ref={searchRef}>
+            {/* Navbar Dual Search Box (Lagos Stock & Copart Lots) - hidden from nav menu */}
+            <div className="relative hidden" style={{ display: "none" }} ref={searchRef}>
               <button
                 type="button"
                 onClick={() => setSearchOpen(!searchOpen)}
-                className="p-2 text-white/80 hover:text-[#2B59FF] transition-colors flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-3.5 cursor-pointer active:scale-[0.98]"
+                className="hidden p-2 text-white/80 hover:text-[#2B59FF] transition-colors flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-3.5 cursor-pointer active:scale-[0.98]"
                 aria-label="Search Inventory"
+                style={{ display: "none" }}
               >
                 <Search size={15} />
                 <span className="text-xs font-mono hidden lg:inline">Search cars & lots...</span>
@@ -312,7 +313,8 @@ export default function Navbar() {
           <div className="flex items-center gap-3 md:hidden">
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="text-white p-2 bg-white/10 rounded-lg active:scale-95"
+              className="hidden text-white p-2 bg-white/10 rounded-lg active:scale-95"
+              style={{ display: "none" }}
               aria-label="Search"
             >
               <Search size={18} />
