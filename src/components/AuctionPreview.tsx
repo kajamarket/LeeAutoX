@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Bookmark, Clock, ArrowRight, ChevronLeft, ChevronRight, ShieldCheck, Zap, Gavel, MapPin } from 'lucide-react';
+import { Clock, ArrowRight, ChevronLeft, ChevronRight, ShieldCheck, Zap, Gavel } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { VehicleLotItem } from '../types/auction';
 import { searchAuctionVehicles } from '../services/auctionService';
-import { generateBidWhatsAppUrl, getAuctionLotUrl } from '../utils/auctionBid';
 import { MOCK_AUCTION_VEHICLES } from '../data/mockAuctionLots';
+import AuctionVehicleCard from './AuctionVehicleCard';
 
 type AuctionTab = 'closing-soon' | 'upcoming' | 'buy-it-now' | 'recently-sold';
 
 export default function AuctionPreview() {
   const { theme } = useTheme();
   const [activeTab, setActiveTab] = useState<AuctionTab>('closing-soon');
-  const [savedBookmarks, setSavedBookmarks] = useState<Record<string, boolean>>({});
   const [lotsByTab, setLotsByTab] = useState<Record<AuctionTab, VehicleLotItem[]>>({
     'closing-soon': [],
     'upcoming': [],
@@ -20,16 +19,7 @@ export default function AuctionPreview() {
     'recently-sold': [],
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [now, setNow] = useState<number>(Date.now());
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-  // Ticking timer for real-time countdowns
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setNow(Date.now());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   // Fetch auction data for activeTab with caching per tab
   useEffect(() => {
@@ -67,7 +57,7 @@ export default function AuctionPreview() {
           }));
           setIsLoading(false);
         }
-      } catch (err) {
+      } catch {
         if (isMounted) {
           setLotsByTab((prev) => ({
             ...prev,
@@ -85,15 +75,6 @@ export default function AuctionPreview() {
     };
   }, [activeTab]);
 
-  const toggleBookmark = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setSavedBookmarks((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
-
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({ left: -360, behavior: 'smooth' });
@@ -104,23 +85,6 @@ export default function AuctionPreview() {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({ left: 360, behavior: 'smooth' });
     }
-  };
-
-  const formatCountdown = (dateString?: string) => {
-    if (!dateString) return '00h 00m 00s';
-    const target = new Date(dateString).getTime();
-    const diff = Math.max(0, Math.floor((target - now) / 1000));
-    if (diff <= 0) return 'Auction Live / Ended';
-
-    const days = Math.floor(diff / 86400);
-    const hours = Math.floor((diff % 86400) / 3600);
-    const minutes = Math.floor((diff % 3600) / 60);
-    const seconds = diff % 60;
-
-    if (days > 0) {
-      return `${days}d ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m`;
-    }
-    return `${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
   };
 
   const currentItems = lotsByTab[activeTab] || [];
@@ -139,6 +103,9 @@ export default function AuctionPreview() {
           <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
             Live Auction Cars <span className="text-base sm:text-lg font-mono font-normal opacity-60">(Copart · IAAI)</span>
           </h2>
+          <p className={`text-xs sm:text-sm font-mono mt-1 ${theme === 'dark' ? 'text-white/60' : 'text-slate-600'}`}>
+            Direct North American salvage, clean title, and wholesale auction feeds updated in real-time.
+          </p>
         </div>
 
         {/* Filter Tabs & Carousel Navigation Toolbar */}
@@ -272,187 +239,25 @@ export default function AuctionPreview() {
               </Link>
             </div>
           ) : (
-            currentItems.map((vehicle) => {
-              const isBookmarked = !!savedBookmarks[vehicle.id];
-              const remainingTimeStr = formatCountdown(vehicle.auction.auction_date);
-              const mainPhoto = vehicle.media.photo?.[0] || 'https://images.unsplash.com/photo-1590362891988-f7780479c656?w=800';
-              const lotUrl = getAuctionLotUrl(vehicle);
-              const whatsappUrl = generateBidWhatsAppUrl(vehicle);
-              const isBuyNow = !!vehicle.pricing.buy_now_price;
-
-              return (
-                <div
-                  key={vehicle.id}
-                  className={`w-[85vw] sm:w-[48vw] lg:w-[calc(33.333%-16px)] shrink-0 snap-start rounded-2xl border overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between ${
-                    theme === 'dark'
-                      ? 'bg-[#151515] border-white/10 hover:border-white/20'
-                      : 'bg-white border-slate-200 hover:border-slate-300 shadow-sm'
-                  }`}
-                >
-                  {/* Top: Media Container */}
-                  <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-950 group">
-                    <Link to={lotUrl} className="block w-full h-full">
-                      <img
-                        src={mainPhoto}
-                        alt={vehicle.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        loading="lazy"
-                      />
-                    </Link>
-
-                    {/* Source & Condition Badges */}
-                    <div className="absolute top-3 left-3 flex flex-wrap items-center gap-1.5 pointer-events-none">
-                      <span
-                        className={`px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider rounded-md text-white shadow-sm ${
-                          vehicle.platform === 'copart' ? 'bg-blue-600' : 'bg-red-600'
-                        }`}
-                      >
-                        {vehicle.platform.toUpperCase()}
-                      </span>
-                      <span className="px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider rounded-md bg-black/75 backdrop-blur-md text-emerald-400 border border-white/10 shadow-sm">
-                        {vehicle.specs.run_and_drive || 'RUNS AND DRIVES'}
-                      </span>
-                    </div>
-
-                    {/* Bookmark Toggle */}
-                    <button
-                      type="button"
-                      onClick={(e) => toggleBookmark(vehicle.id, e)}
-                      className={`absolute top-3 right-3 w-8 h-8 rounded-full backdrop-blur-md flex items-center justify-center transition-transform active:scale-90 cursor-pointer ${
-                        isBookmarked
-                          ? 'bg-[#2B59FF] text-white shadow-md'
-                          : 'bg-black/60 text-white/80 hover:text-white border border-white/15'
-                      }`}
-                      aria-label="Bookmark lot"
-                    >
-                      <Bookmark size={14} className={isBookmarked ? 'fill-current' : ''} />
-                    </button>
-
-                    {/* Countdown Timer Overlay Bar */}
-                    <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-3 pt-6 flex items-center justify-between text-white pointer-events-none">
-                      <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-amber-300">
-                        <Clock size={13} className="animate-spin" style={{ animationDuration: '6s' }} />
-                        <span>{remainingTimeStr}</span>
-                      </div>
-                      <span className="text-[10px] font-mono text-white/70">Lot #{vehicle.lot_number}</span>
-                    </div>
-                  </div>
-
-                  {/* Bottom: 2x2 Specs Grid + Actions */}
-                  <div className="p-5 flex-1 flex flex-col justify-between">
-                    <div>
-                      <h3 className="font-serif text-lg font-bold truncate mb-1" title={vehicle.title}>
-                        <Link to={lotUrl} className="hover:text-[#2B59FF] transition-colors">
-                          {vehicle.title}
-                        </Link>
-                      </h3>
-                      <p
-                        className={`text-xs font-mono truncate mb-4 flex items-center gap-1 ${
-                          theme === 'dark' ? 'text-white/50' : 'text-slate-500'
-                        }`}
-                      >
-                        <MapPin size={12} className="shrink-0" />
-                        {vehicle.location.city ? `${vehicle.location.city}, ${vehicle.location.state}` : vehicle.location.name}
-                      </p>
-
-                      {/* 2x2 Specs Grid */}
-                      <div
-                        className={`grid grid-cols-2 gap-2 p-3 rounded-xl mb-4 border ${
-                          theme === 'dark' ? 'bg-white/5 border-white/5' : 'bg-slate-50 border-slate-100'
-                        }`}
-                      >
-                        <div>
-                          <span
-                            className={`text-[10px] font-mono uppercase block ${
-                              theme === 'dark' ? 'text-white/40' : 'text-slate-400'
-                            }`}
-                          >
-                            {isBuyNow ? 'Buy It Now' : 'Current Bid'}
-                          </span>
-                          <span className="font-bold text-sm text-[#2B59FF]">
-                            ${(isBuyNow ? vehicle.pricing.buy_now_price : vehicle.pricing.current_bid || 0).toLocaleString()} USD
-                          </span>
-                        </div>
-
-                        <div>
-                          <span
-                            className={`text-[10px] font-mono uppercase block ${
-                              theme === 'dark' ? 'text-white/40' : 'text-slate-400'
-                            }`}
-                          >
-                            Est. Retail
-                          </span>
-                          <span className="font-semibold text-xs opacity-80">
-                            ${(vehicle.pricing.est_retail_value || 0).toLocaleString()} USD
-                          </span>
-                        </div>
-
-                        <div>
-                          <span
-                            className={`text-[10px] font-mono uppercase block ${
-                              theme === 'dark' ? 'text-white/40' : 'text-slate-400'
-                            }`}
-                          >
-                            Odometer
-                          </span>
-                          <span className="font-medium text-xs">
-                            {(vehicle.specs.odometer || 0).toLocaleString()} {vehicle.specs.odometer_unit || 'mi'}
-                          </span>
-                        </div>
-
-                        <div>
-                          <span
-                            className={`text-[10px] font-mono uppercase block ${
-                              theme === 'dark' ? 'text-white/40' : 'text-slate-400'
-                            }`}
-                          >
-                            Damage
-                          </span>
-                          <span className="font-medium text-xs truncate block" title={vehicle.damage.primary}>
-                            {vehicle.damage.primary || 'Normal Wear'}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Card Actions */}
-                    <div className="flex items-center gap-2 pt-2">
-                      <a
-                        href={whatsappUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1 py-2.5 px-3 bg-[#2B59FF] hover:bg-blue-600 active:scale-[0.98] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
-                      >
-                        <Gavel size={13} />
-                        Bid via LeeAutoX
-                      </a>
-                      <Link
-                        to={lotUrl}
-                        className={`p-2.5 rounded-xl border text-xs font-semibold transition-all active:scale-[0.98] cursor-pointer ${
-                          theme === 'dark'
-                            ? 'border-white/15 bg-white/5 hover:bg-white/10 text-white'
-                            : 'border-slate-300 bg-white hover:bg-slate-100 text-slate-800'
-                        }`}
-                        title="View lot report"
-                      >
-                        <ArrowRight size={14} />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              );
-            })
+            currentItems.map((vehicle) => (
+              <div 
+                key={vehicle.id} 
+                className="w-[85vw] sm:w-[48vw] lg:w-[calc(33.333%-16px)] shrink-0 snap-start"
+              >
+                <AuctionVehicleCard vehicle={vehicle} viewMode="grid" />
+              </div>
+            ))
           )}
         </div>
 
-        {/* Footer Link: Browse all auction vehicles */}
-        <div className="mt-12 text-center">
+        {/* View All Live Inventory CTA */}
+        <div className="mt-8 text-center">
           <Link
             to="/auction-search"
-            className="group inline-flex items-center gap-2 text-sm font-bold text-[#2B59FF] hover:underline cursor-pointer tracking-wide"
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#2B59FF] text-white text-xs sm:text-sm font-mono font-bold uppercase tracking-wider rounded-xl hover:bg-blue-600 transition-colors shadow-lg shadow-blue-500/20"
           >
-            <span>Browse all auction vehicles & lot catalogs</span>
-            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            <span>Explore All 50,000+ Auction Lots</span>
+            <ArrowRight size={16} />
           </Link>
         </div>
       </div>

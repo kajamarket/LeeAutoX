@@ -27,20 +27,42 @@ export const STATIC_FILTER_METADATA: FilterOptionsMetadata = {
     BMW: ['330I', '530I', 'X3', 'X5', 'X6', 'X7', 'M3', 'M5'],
     NISSAN: ['ALTIMA', 'ROGUE', 'PATHFINDER', 'MURANO', 'SENTRA', 'ARMADA', 'FRONTIER'],
   },
+  seriesOptionsByMake: {},
+  generationOptionsByMakeAndModel: {},
   types: [
-    { id: '1', name: 'SEDAN' },
-    { id: '2', name: 'AUTOMOBILE' },
-    { id: '3', name: 'COUPE' },
-    { id: '4', name: 'SUV' },
-    { id: '5', name: 'PICKUP' },
-    { id: '6', name: 'VAN' },
-    { id: '7', name: 'RECREATIONAL VEHICLE (RV)' },
-    { id: '8', name: 'HATCHBACK' },
-    { id: '9', name: 'CONVERTIBLE' },
-    { id: '10', name: 'WAGON' },
+    { id: 1, name: 'SEDAN' },
+    { id: 2, name: 'AUTOMOBILE' },
+    { id: 3, name: 'COUPE' },
+    { id: 4, name: 'SUV' },
+    { id: 5, name: 'PICKUP' },
+    { id: 6, name: 'VAN' },
+    { id: 7, name: 'RECREATIONAL VEHICLE (RV)' },
+    { id: 8, name: 'ATV' },
+    { id: 9, name: 'TRAILERS' },
+    { id: 10, name: 'MEDIUM DUTY/BOX TRUCKS' },
+    { id: 11, name: 'BOAT' },
+    { id: 12, name: 'JET SKI' },
+    { id: 13, name: 'MOTORCYCLE' },
+    { id: 14, name: 'HEAVY DUTY TRUCKS' },
+    { id: 15, name: 'INDUSTRIAL EQUIPMENT' },
+    { id: 16, name: 'INSPECTION' },
+    { id: 17, name: 'SNOWMOBILE' },
+    { id: 18, name: 'DIRT BIKE' },
+    { id: 19, name: 'CONSTRUCTION EQUIPMENT' },
+    { id: 20, name: 'TRAILER' },
+    { id: 21, name: 'TRAVEL TRAILER' },
+    { id: 22, name: 'TRUCK' },
+    { id: 23, name: 'MOTOR HOME' },
+    { id: 24, name: 'FARM EQUIPMENT' },
+    { id: 25, name: 'HEAVY EQUIPMENT' },
+    { id: 26, name: 'OTHER' },
+    { id: 27, name: 'BUS' },
+    { id: 28, name: 'PERSONAL WATERCRAFT' },
+    { id: 29, name: 'AGRICULTURE AND FARM EQUIPMENT' },
+    { id: 30, name: 'EMERGENCY EQUIPMENT' }
   ],
   colors: [
-    'Black', 'White', 'Silver', 'Gray', 'Blue', 'Red', 'Green', 'Gold', 'Brown', 'Burgundy', 'Yellow', 'Orange'
+    'Black', 'White', 'Silver', 'Gray', 'Blue', 'Red', 'Green', 'Yellow', 'Orange', 'Beige', 'Brown', 'Burgundy', 'Gold', 'Other'
   ],
   fuels: [
     'Gasoline', 'Diesel', 'Electric', 'Flexible', 'Hybrid', 'All others'
@@ -49,22 +71,36 @@ export const STATIC_FILTER_METADATA: FilterOptionsMetadata = {
     'Automatic', 'Manual', 'Unknown'
   ],
   driveTypes: [
-    'FWD', 'RWD', 'AWD', '4WD'
+    { value: 'FWD', label: 'FWD', desc: 'Front-wheel Drive' },
+    { value: 'RWD', label: 'RWD', desc: 'Rear-wheel Drive' },
+    { value: 'AWD', label: 'AWD', desc: 'All-wheel Drive' }
   ],
   runConditions: [
-    'RUNS AND DRIVES',
-    'ENGINE START PROGRAM',
-    'STATIONARY / NO INFORMATION'
+    { value: 'RUNS AND DRIVES', label: 'Run and Drive' },
+    { value: 'ENGINE START PROGRAM', label: 'Vehicle starts' },
+    { value: 'STATIONARY / NO INFORMATION', label: 'Stationary / No information' }
   ],
   damageTypes: [
-    'Front End', 'Rear End', 'Side', 'All Over', 'Mechanical', 'Hail', 'Water/Flood', 'Fire', 'Theft', 'Vandalism', 'Rollover', 'Minor Dent/Scratches', 'Suspension', 'Undercarriage'
+    'Mechanical', 'Hail', 'Fire', 'Water', 'Theft', 'Repossession', 'Rollover', 'Vandalized', 'Chemical'
   ],
   cylinderOptions: [
-    '3', '4', '5', '6', '8', '10', '12'
+    1, 2, 3, 4, 5, 6, 8, 10, 12
   ],
   engineTypes: [
-    'I - Inline', 'V - Engine', 'W - Engine', 'B - Boxer'
+    { value: 'I', label: 'I - Inline' },
+    { value: 'V', label: 'V - Engine' },
+    { value: 'W', label: 'W - Engine' },
+    { value: 'B', label: 'B - Boxer' }
   ],
+  hasKeyOptions: [
+    'With', 'No', 'All'
+  ],
+  ranges: {
+    price_usd: { min: 0, max: 250000, min_default: 0, max_default: 100000 },
+    year: { min: 1900, max: 2027, from_default: 1900, to_default: 2026 },
+    odometer_mi: { min: 0, max: 500000, from_default: 0, to_default: 250000 },
+    engine_size_l: { min: 0, max: 20, from_default: 0, to_default: 10, step: 0.1 }
+  },
   states: [
     'ON (Ontario, Canada)', 'QC (Quebec, Canada)', 'AB (Alberta, Canada)', 'BC (British Columbia, Canada)',
     'TX (Texas, USA)', 'CA (California, USA)', 'FL (Florida, USA)', 'GA (Georgia, USA)', 

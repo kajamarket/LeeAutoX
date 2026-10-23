@@ -112,15 +112,30 @@ export default function WhyChooseUs() {
           }}
         />
 
-        {/* Car Image with Smooth Scale Reveal */}
-        <motion.img
+        {/* Car Image with Smooth Scale Reveal - Instant theme swap with zero flash */}
+        <motion.div
           initial={shouldReduceMotion ? { opacity: 1 } : { scale: 0.95, opacity: 0 }}
           animate={inView ? { scale: 1, opacity: 1 } : {}}
           transition={{ delay: 0.3, duration: 0.85, ease: 'easeOut' }}
-          src="https://hercules-cdn.com/file_siaP29l0QmGIt1LzZaBx46SG"
-          alt="Silver supercar top view"
-          className="relative z-10 w-full object-contain drop-shadow-2xl"
-        />
+          className="relative z-10 w-full flex items-center justify-center"
+        >
+          <img
+            src="/cars/Silver%20Supercar%20with%20Open%20Scissor%20Doors.png"
+            alt="Silver Supercar with Open Scissor Doors"
+            className={`w-full object-contain drop-shadow-2xl transition-opacity duration-200 ${
+              theme === 'dark' ? 'hidden' : 'block'
+            }`}
+            loading="eager"
+          />
+          <img
+            src="https://hercules-cdn.com/file_siaP29l0QmGIt1LzZaBx46SG"
+            alt="Silver supercar top view"
+            className={`w-full object-contain drop-shadow-2xl transition-opacity duration-200 ${
+              theme === 'dark' ? 'block' : 'hidden'
+            }`}
+            loading="eager"
+          />
+        </motion.div>
 
         {/* Floating Chips - Desktop */}
         <div className="hidden md:block">

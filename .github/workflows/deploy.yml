@@ -27,6 +27,8 @@ jobs:
         run: npm install
 
       - name: Build project
+        env:
+          VITE_AUCTION_PROXY_URL: ${{ secrets.VITE_AUCTION_PROXY_URL || vars.VITE_AUCTION_PROXY_URL }}
         run: npm run build
 
       - name: Upload artifact

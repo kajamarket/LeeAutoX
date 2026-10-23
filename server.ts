@@ -14,6 +14,49 @@ const APIBARA_BASE = 'https://apibara.tech/api/v1/vehicle-auction';
 
 app.use(express.json());
 
+// CORS middleware for authorized origins
+const ALLOWED_ORIGIN_PATTERNS = [
+  /^https?:\/\/localhost(:\d+)?$/,
+  /^https?:\/\/127\.0\.0\.1(:\d+)?$/,
+  /^https:\/\/([a-z0-9-]+\.)*run\.app$/,
+  /^https:\/\/([a-z0-9-]+\.)*github\.io$/,
+  /^https:\/\/([a-z0-9-]+\.)*leeautox\.com$/,
+  /^https:\/\/leeautox\.com$/,
+];
+
+app.use((req: Request, res: Response, next) => {
+  const origin = req.headers.origin;
+  if (origin) {
+    const isAllowed = ALLOWED_ORIGIN_PATTERNS.some((p) => p.test(origin));
+    if (isAllowed) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+    }
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, X-API-Key, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    res.status(204).end();
+    return;
+  }
+  next();
+});
+
+// Relay diagnostics / health endpoint (never exposes key)
+app.get('/api/auction-status', (_req: Request, res: Response): void => {
+  const apiKey = process.env.AUCTION_API_KEY || process.env.APIBARA_API_KEY;
+  res.setHeader('Cache-Control', 'no-store');
+  res.json({
+    ok: true,
+    live_relay: true,
+    key_configured: Boolean(apiKey && apiKey.trim().length > 0),
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // Proxy endpoint for Apibara Vehicle Auction Data API
 // Keeps AUCTION_API_KEY strictly on the server; never exposed to browser
 app.all('/api/auction/*', async (req: Request, res: Response): Promise<void> => {
@@ -53,6 +96,10 @@ app.all('/api/auction/*', async (req: Request, res: Response): Promise<void> => 
     const contentType = response.headers.get('content-type');
     if (contentType) {
       res.setHeader('content-type', contentType);
+    }
+    // Add client-friendly cache headers for successful GETs
+    if (req.method === 'GET' && response.status === 200) {
+      res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=180');
     }
     res.send(data);
   } catch (error: any) {
