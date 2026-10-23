@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Quote, ChevronLeft, ChevronRight, Star, PlusCircle, Image as ImageIcon, Video, ShieldCheck } from 'lucide-react';
+import { Quote, ChevronLeft, ChevronRight, Star, PlusCircle, Image as ImageIcon, Video, ShieldCheck, X } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useReviews } from '../context/ReviewsContext';
 import LeaveReviewModal from './LeaveReviewModal';
@@ -11,6 +11,47 @@ export default function Testimonials() {
   const [active, setActive] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeMediaPreview, setActiveMediaPreview] = useState<{ url: string; type: 'image' | 'video' } | null>(null);
+
+  const closeBtnRef = useRef<HTMLButtonElement | null>(null);
+  const triggerElementRef = useRef<HTMLElement | null>(null);
+
+  const handleOpenPreview = (e: React.MouseEvent<HTMLButtonElement>, media: { url: string; type: 'image' | 'video' }) => {
+    triggerElementRef.current = e.currentTarget;
+    setActiveMediaPreview(media);
+  };
+
+  const handleClosePreview = () => {
+    setActiveMediaPreview(null);
+    setTimeout(() => {
+      triggerElementRef.current?.focus();
+    }, 50);
+  };
+
+  useEffect(() => {
+    if (!activeMediaPreview) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const focusTimeout = setTimeout(() => {
+      closeBtnRef.current?.focus();
+    }, 50);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        handleClosePreview();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+      clearTimeout(focusTimeout);
+    };
+  }, [activeMediaPreview]);
 
   const currentReview = reviews[active] || reviews[0];
 
@@ -119,7 +160,7 @@ export default function Testimonials() {
               {currentReview?.mediaUrl && (
                 <div className="mb-6">
                   <button
-                    onClick={() => setActiveMediaPreview({ url: currentReview.mediaUrl!, type: currentReview.mediaType || 'image' })}
+                    onClick={(e) => handleOpenPreview(e, { url: currentReview.mediaUrl!, type: currentReview.mediaType || 'image' })}
                     className={`inline-flex items-center gap-2 px-3 py-1.5 text-xs font-mono border rounded-full transition-colors cursor-pointer ${
                       theme === 'dark' ? 'border-white/20 bg-white/5 hover:bg-white/10 text-white/90' : 'border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-800'
                     }`}
@@ -211,9 +252,30 @@ export default function Testimonials() {
       {/* Media Lightbox Modal */}
       {activeMediaPreview && (
         <div 
-          onClick={() => setActiveMediaPreview(null)}
+          onClick={handleClosePreview}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Client review media proof"
           className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 cursor-pointer"
         >
+          {/* Top-Right Close Button */}
+          <button
+            ref={closeBtnRef}
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClosePreview();
+            }}
+            aria-label="Close image"
+            style={{
+              top: 'max(16px, env(safe-area-inset-top, 16px))',
+              right: 'max(16px, env(safe-area-inset-right, 16px))',
+            }}
+            className="fixed z-[60] w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-black/70 hover:bg-black/90 text-white border border-white/20 flex items-center justify-center transition-all cursor-pointer shadow-xl active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          >
+            <X size={20} className="text-white" />
+          </button>
+
           <div className="relative max-w-3xl max-h-[85vh] overflow-hidden" onClick={e => e.stopPropagation()}>
             {activeMediaPreview.type === 'video' ? (
               <video src={activeMediaPreview.url} controls autoPlay className="max-h-[80vh] w-auto rounded" />
