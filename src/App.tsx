@@ -29,6 +29,8 @@ import LeeAutoPage from './pages/LeeAutoPage';
 import AdminReviewsPage from './pages/AdminReviewsPage';
 import SubmitReviewPage from './pages/SubmitReviewPage';
 import AdminBackend from './pages/AdminBackend';
+import AuctionSearchPage from './pages/AuctionSearchPage';
+import AuctionLotPage from './pages/AuctionLotPage';
 
 // Scroll Restoration Helper Component
 function ScrollToTopOnNavigate() {
@@ -83,6 +85,14 @@ export default function App() {
                   <Route path="/vehicle/:id/" element={<VehicleDetailPage />} />
                   <Route path="/car/:id" element={<VehicleDetailPage />} />
                   <Route path="/car/:id/" element={<VehicleDetailPage />} />
+
+                  {/* Live Copart & IAAI Auction Search & Lot Routes */}
+                  <Route path="/auction-search" element={<AuctionSearchPage />} />
+                  <Route path="/auction-search/" element={<AuctionSearchPage />} />
+                  <Route path="/auction-search.html" element={<AuctionSearchPage />} />
+                  <Route path="/auction-lot" element={<AuctionLotPage />} />
+                  <Route path="/auction-lot/" element={<AuctionLotPage />} />
+                  <Route path="/auction-lot.html" element={<AuctionLotPage />} />
 
                   {/* CHANGE 6 — Vehicle Catalogue Admin Portal */}
                   <Route path="/bkend" element={<AdminBackend />} />

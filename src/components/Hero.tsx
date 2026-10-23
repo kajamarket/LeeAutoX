@@ -1,28 +1,73 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Star, ArrowDownRight, Search, SlidersHorizontal, X, Globe, Shield, Car } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'motion/react';
+import { Star, ArrowDownRight, Search, SlidersHorizontal, ChevronDown, ChevronUp } from 'lucide-react';
 import { useReviews } from '../context/ReviewsContext';
+import { STATIC_FILTER_METADATA } from '../data/auctionFilters';
+import { getAuctionFilterOptions, buildFilterQuery } from '../services/auctionService';
+import { AuctionFilterValues } from '../types/auction';
 
 export default function Hero() {
+  const navigate = useNavigate();
   const { averageRating, totalCount } = useReviews();
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchSubmitted, setSearchSubmitted] = useState(false);
-  
-  // Auction search filters
+  const [showAdvancedMobile, setShowAdvancedMobile] = useState(false);
+
+  // Available makes & dynamic models
+  const [makesList, setMakesList] = useState<string[]>(STATIC_FILTER_METADATA.makes);
   const [keyword, setKeyword] = useState('');
-  const [make, setMake] = useState('All Makes');
-  const [model, setModel] = useState('');
-  const [yearFrom, setYearFrom] = useState('2015');
-  const [yearTo, setYearTo] = useState('2024');
+  const [platform, setPlatform] = useState<string>('both');
+  const [make, setMake] = useState('All');
+  const [model, setModel] = useState('All');
   const [bodyType, setBodyType] = useState('All');
-  const [condition, setCondition] = useState('All');
-  const [titleType, setTitleType] = useState('All');
-  const [auctionSource, setAuctionSource] = useState('Both');
-  const [locationState, setLocationState] = useState('All States');
+  const [runningCond, setRunningCond] = useState('All');
+  const [lotStatus, setLotStatus] = useState('All');
+  const [yearFrom, setYearFrom] = useState('');
+  const [yearTo, setYearTo] = useState('');
+  const [locState, setLocState] = useState('All');
+
+  // Load dynamic makes list on mount
+  useEffect(() => {
+    let isMounted = true;
+    getAuctionFilterOptions().then((res) => {
+      if (isMounted && res.makes && res.makes.length > 0) {
+        setMakesList(res.makes);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Compute available models for selected make
+  const availableModels = useMemo(() => {
+    if (!make || make === 'All') return [];
+    const upper = make.toUpperCase();
+    return STATIC_FILTER_METADATA.modelsByMake[upper] || [];
+  }, [make]);
+
+  // Reset model when make changes
+  const handleMakeChange = (newMake: string) => {
+    setMake(newMake);
+    setModel('All');
+  };
 
   const handleAuctionSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setSearchSubmitted(true);
+    const filters: AuctionFilterValues = {};
+
+    if (keyword.trim()) filters.s = keyword.trim();
+    if (platform && platform !== 'both') filters.platform = platform;
+    if (make && make !== 'All') filters.make = make;
+    if (model && model !== 'All') filters.model = model;
+    if (bodyType && bodyType !== 'All') filters.body_style = bodyType;
+    if (runningCond && runningCond !== 'All') filters.running_condition = runningCond;
+    if (lotStatus && lotStatus !== 'All') filters.lot_status = lotStatus;
+    if (yearFrom.trim()) filters.year_from = yearFrom.trim();
+    if (yearTo.trim()) filters.year_to = yearTo.trim();
+    if (locState && locState !== 'All') filters.loc_state = locState.split(' ')[0];
+
+    const queryString = buildFilterQuery(filters);
+    navigate(`/auction-search${queryString ? `?${queryString}` : ''}`);
   };
 
   return (
@@ -141,7 +186,7 @@ export default function Hero() {
 
           <form onSubmit={handleAuctionSearch} className="flex flex-col gap-4">
             {/* Primary keyword & Source row */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
               <div className="md:col-span-6 relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" size={18} />
                 <input
@@ -149,141 +194,135 @@ export default function Hero() {
                   placeholder="Enter Make, Model, Keyword, or Lot / VIN #..."
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
-                  className="w-full bg-white/5 border border-white/20 pl-12 pr-4 py-3 text-sm text-white placeholder-white/40 focus:outline-none focus:border-[#2B59FF]"
+                  className="w-full bg-white/5 border border-white/20 pl-12 pr-4 py-3 text-sm text-white placeholder-white/40 focus:outline-none focus:border-[#2B59FF] transition-colors"
                 />
               </div>
+
               <div className="md:col-span-3">
                 <select
-                  value={auctionSource}
-                  onChange={(e) => setAuctionSource(e.target.value)}
-                  className="w-full bg-black border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:border-[#2B59FF]"
+                  value={platform}
+                  onChange={(e) => setPlatform(e.target.value)}
+                  className="w-full bg-zinc-950 border border-white/20 px-3 py-3 text-xs sm:text-sm text-white focus:outline-none focus:border-[#2B59FF] transition-colors cursor-pointer"
                 >
-                  <option value="Both">Auction: Copart & IAA</option>
-                  <option value="Copart">Copart Auctions Only</option>
-                  <option value="IAA">IAA Insurance Auto Auctions</option>
+                  <option value="both" className="bg-zinc-900 text-white">Auction: Copart & IAAI</option>
+                  <option value="copart" className="bg-zinc-900 text-white">Copart Auctions Only</option>
+                  <option value="iaai" className="bg-zinc-900 text-white">IAAI Auto Auctions Only</option>
                 </select>
               </div>
+
               <div className="md:col-span-3">
                 <select
-                  value={locationState}
-                  onChange={(e) => setLocationState(e.target.value)}
-                  className="w-full bg-black border border-white/20 px-4 py-3 text-sm text-white focus:outline-none focus:border-[#2B59FF]"
+                  value={locState}
+                  onChange={(e) => setLocState(e.target.value)}
+                  className="w-full bg-zinc-950 border border-white/20 px-3 py-3 text-xs sm:text-sm text-white focus:outline-none focus:border-[#2B59FF] transition-colors cursor-pointer"
                 >
-                  <option value="All States">Location: All US/CA States</option>
-                  <option value="ON">Ontario, Canada</option>
-                  <option value="QC">Quebec, Canada</option>
-                  <option value="TX">Texas, USA</option>
-                  <option value="CA">California, USA</option>
-                  <option value="NY">New York, USA</option>
+                  <option value="All" className="bg-zinc-900 text-white">Location: All US/CA States</option>
+                  {STATIC_FILTER_METADATA.states.map((s) => (
+                    <option key={s} value={s} className="bg-zinc-900 text-white">
+                      {s}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
 
+            {/* Mobile filter toggle */}
+            <div className="flex md:hidden justify-between items-center pt-1">
+              <button
+                type="button"
+                onClick={() => setShowAdvancedMobile((prev) => !prev)}
+                className="text-xs font-mono text-[#2B59FF] flex items-center gap-1.5 cursor-pointer py-1"
+              >
+                <SlidersHorizontal size={13} />
+                {showAdvancedMobile ? 'Hide Detailed Filters' : 'More Filters (Make, Model, Year, Run Status)'}
+                {showAdvancedMobile ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+              </button>
+            </div>
+
             {/* Expanded Advanced Filters */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3 pt-2 border-t border-white/10">
+            <div className={`grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3 pt-2 border-t border-white/10 ${
+              showAdvancedMobile ? 'grid' : 'hidden md:grid'
+            }`}>
               <select
                 value={make}
-                onChange={(e) => setMake(e.target.value)}
-                className="bg-white/5 border border-white/15 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#2B59FF]"
+                onChange={(e) => handleMakeChange(e.target.value)}
+                className="bg-zinc-950 border border-white/15 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#2B59FF] cursor-pointer"
               >
-                <option value="All Makes">Make: All</option>
-                <option value="Toyota">Toyota</option>
-                <option value="Lexus">Lexus</option>
-                <option value="Hyundai">Hyundai</option>
-                <option value="Ford">Ford</option>
-                <option value="Mercedes">Mercedes-Benz</option>
+                <option value="All" className="bg-zinc-900 text-white">Make: All</option>
+                {makesList.map((m) => (
+                  <option key={m} value={m} className="bg-zinc-900 text-white">
+                    {m}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={model}
+                onChange={(e) => setModel(e.target.value)}
+                disabled={!make || make === 'All'}
+                className="bg-zinc-950 border border-white/15 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#2B59FF] cursor-pointer disabled:opacity-40"
+              >
+                <option value="All" className="bg-zinc-900 text-white">
+                  {!make || make === 'All' ? 'Model: Pick Make First' : 'Model: All'}
+                </option>
+                {availableModels.map((mod) => (
+                  <option key={mod} value={mod} className="bg-zinc-900 text-white">
+                    {mod}
+                  </option>
+                ))}
               </select>
 
               <select
                 value={bodyType}
                 onChange={(e) => setBodyType(e.target.value)}
-                className="bg-white/5 border border-white/15 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#2B59FF]"
+                className="bg-zinc-950 border border-white/15 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#2B59FF] cursor-pointer"
               >
-                <option value="All">Body: All</option>
-                <option value="SUV">SUV</option>
-                <option value="Sedan">Sedan</option>
-                <option value="Truck">Truck</option>
-                <option value="Van">Van</option>
+                <option value="All" className="bg-zinc-900 text-white">Body: All</option>
+                {STATIC_FILTER_METADATA.types.map((t) => (
+                  <option key={t.id} value={t.name} className="bg-zinc-900 text-white">
+                    {t.name}
+                  </option>
+                ))}
               </select>
 
               <select
-                value={condition}
-                onChange={(e) => setCondition(e.target.value)}
-                className="bg-white/5 border border-white/15 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#2B59FF]"
+                value={runningCond}
+                onChange={(e) => setRunningCond(e.target.value)}
+                className="bg-zinc-950 border border-white/15 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#2B59FF] cursor-pointer"
               >
-                <option value="All">Condition: All</option>
-                <option value="Run & Drive">Run & Drive</option>
-                <option value="Enhanced">Enhanced</option>
-                <option value="Stationary">Stationary</option>
+                <option value="All" className="bg-zinc-900 text-white">Condition: All</option>
+                <option value="RUNS AND DRIVES" className="bg-zinc-900 text-white">Runs & Drives</option>
+                <option value="ENGINE START PROGRAM" className="bg-zinc-900 text-white">Starts (Engine Program)</option>
+                <option value="STATIONARY / NO INFORMATION" className="bg-zinc-900 text-white">Stationary</option>
               </select>
 
-              <select
-                value={titleType}
-                onChange={(e) => setTitleType(e.target.value)}
-                className="bg-white/5 border border-white/15 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#2B59FF]"
-              >
-                <option value="All">Title: All Types</option>
-                <option value="Clean">Clean Title</option>
-                <option value="Salvage">Salvage</option>
-                <option value="Parts">Parts Only</option>
-              </select>
-
-              <div className="flex items-center gap-1 bg-white/5 border border-white/15 px-3 py-2 text-xs text-white">
+              <div className="flex items-center gap-1 bg-white/5 border border-white/15 px-2.5 py-2 text-xs text-white">
                 <span className="text-white/50 text-[10px]">Year:</span>
-                <input type="text" placeholder="From" value={yearFrom} onChange={(e) => setYearFrom(e.target.value)} className="w-12 bg-transparent text-white focus:outline-none text-center" />
-                <span>-</span>
-                <input type="text" placeholder="To" value={yearTo} onChange={(e) => setYearTo(e.target.value)} className="w-12 bg-transparent text-white focus:outline-none text-center" />
+                <input
+                  type="text"
+                  placeholder="From"
+                  value={yearFrom}
+                  onChange={(e) => setYearFrom(e.target.value)}
+                  className="w-11 bg-transparent text-white focus:outline-none text-center placeholder-white/30 text-xs"
+                />
+                <span className="text-white/40">-</span>
+                <input
+                  type="text"
+                  placeholder="To"
+                  value={yearTo}
+                  onChange={(e) => setYearTo(e.target.value)}
+                  className="w-11 bg-transparent text-white focus:outline-none text-center placeholder-white/30 text-xs"
+                />
               </div>
 
               <button
                 type="submit"
-                className="py-2.5 bg-[#2B59FF] text-white font-bold text-xs uppercase tracking-widest hover:bg-[#1a41cc] transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(43,89,255,0.4)]"
+                className="py-2.5 bg-[#2B59FF] text-white font-bold text-xs uppercase tracking-widest hover:bg-[#1a41cc] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(43,89,255,0.4)] cursor-pointer"
               >
                 <Search size={14} /> Search Lots
               </button>
             </div>
           </form>
-
-          {/* Search Result Placeholder Modal / Drawer if submitted */}
-          <AnimatePresence>
-            {searchSubmitted && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                className="mt-6 p-5 bg-black/95 border border-[#2B59FF] relative"
-              >
-                <button
-                  onClick={() => setSearchSubmitted(false)}
-                  className="absolute top-4 right-4 text-white/60 hover:text-white"
-                >
-                  <X size={16} />
-                </button>
-                <div className="flex items-start gap-4">
-                  <div className="p-3 bg-[#2B59FF]/20 text-[#2B59FF] border border-[#2B59FF]/40">
-                    <Car size={24} />
-                  </div>
-                  <div>
-                    <h4 className="font-serif text-base font-bold mb-1">Copart & IAA API Integration State</h4>
-                    <p className="text-xs text-white/70 leading-relaxed mb-3 font-mono">
-                      Query received for "{keyword || 'All vehicles'}" ({auctionSource}, {locationState}, {yearFrom}-{yearTo}). 
-                      No live auction API connection is currently active.
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <a
-                        href="#contact"
-                        onClick={() => setSearchSubmitted(false)}
-                        className="px-4 py-2 bg-[#2B59FF] text-white text-xs font-bold uppercase tracking-widest"
-                      >
-                        Request Manual Auction Sourcing
-                      </a>
-                      <span className="text-[10px] font-mono text-white/40">Connect your API to display live lot results here.</span>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </motion.div>
       </div>
     </section>

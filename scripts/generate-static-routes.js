@@ -93,6 +93,16 @@ const ROUTES_SEO = {
     desc: 'Verified cars for sale in North America ready for direct container shipment to Lagos, Nigeria and West Africa.',
     keywords: 'cars for sale nigeria, tokunbo cars, copart vehicle sale'
   },
+  '/auction-search/': {
+    title: 'Live Copart & IAAI Auction Search | LeeAutoX',
+    desc: 'Search live Copart and IAAI vehicle auction inventory. Filter by make, model, damage, title, and bid directly through LeeAutoX.',
+    keywords: 'copart auction search, iaai lots, buy salvage cars nigeria, live auction tokunbo'
+  },
+  '/auction-lot/': {
+    title: 'Live Auction Lot Inspection & Bidding | LeeAutoX',
+    desc: 'Inspect detailed auction lot specifications, damage reports, odometer, and bid via LeeAutoX proxy desk.',
+    keywords: 'auction lot details, copart bid proxy, iaai inspection'
+  },
   '/bkend/': {
     title: 'LeeAutoX Admin Console | Fleet Management',
     desc: 'Confidential portal for vehicle catalogue and inventory administration.',
@@ -284,6 +294,15 @@ async function main() {
     const modifiedHtml = injectMeta(baseHtmlContent, route, data);
     fs.writeFileSync(targetHtmlFile, modifiedHtml, 'utf8');
     console.log(`  ✅ Generated: ${route}index.html`);
+
+    // Also write flat .html files for /auction-search and /auction-lot
+    if (route === '/auction-search/') {
+      fs.writeFileSync(path.join(DIST_DIR, 'auction-search.html'), modifiedHtml, 'utf8');
+      console.log('  ✅ Generated: auction-search.html');
+    } else if (route === '/auction-lot/') {
+      fs.writeFileSync(path.join(DIST_DIR, 'auction-lot.html'), modifiedHtml, 'utf8');
+      console.log('  ✅ Generated: auction-lot.html');
+    }
   }
 
   // Generate sitemap.xml
