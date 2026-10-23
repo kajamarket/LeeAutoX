@@ -131,14 +131,18 @@ export default function AuctionLotPage() {
 
   if (isLoading) {
     return (
-      <div className={`min-h-screen py-24 px-6 md:px-12 ${
+      <div className={`min-h-screen pt-36 pb-24 px-6 md:px-12 flex flex-col items-center justify-center transition-colors ${
         theme === 'dark' ? 'bg-[#090909] text-white' : 'bg-slate-50 text-slate-900'
       }`}>
-        <div className="max-w-7xl mx-auto space-y-6 animate-pulse">
-          <div className="h-8 bg-slate-200 dark:bg-white/10 rounded w-1/3" />
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-7 h-[460px] bg-slate-200 dark:bg-white/10 rounded-3xl" />
-            <div className="lg:col-span-5 h-[460px] bg-slate-200 dark:bg-white/10 rounded-3xl" />
+        <div className="flex flex-col items-center gap-4 text-center">
+          <div className="w-10 h-10 rounded-full border-3 border-slate-200 dark:border-white/15 border-t-[#2B59FF] dark:border-t-[#2B59FF] animate-spin" />
+          <div className="space-y-1">
+            <p className="font-mono text-xs font-bold tracking-wider text-slate-800 dark:text-zinc-200">
+              Loading auction vehicle details...
+            </p>
+            <p className="font-mono text-[11px] text-slate-500 dark:text-zinc-400">
+              Fetching lot specifications, photos, and live bidding status
+            </p>
           </div>
         </div>
       </div>
@@ -147,13 +151,13 @@ export default function AuctionLotPage() {
 
   if (!lot) {
     return (
-      <div className={`min-h-screen py-24 px-6 text-center ${
+      <div className={`min-h-screen pt-36 pb-24 px-6 text-center transition-colors ${
         theme === 'dark' ? 'bg-[#090909] text-white' : 'bg-slate-50 text-slate-900'
       }`}>
         <div className="max-w-md mx-auto p-8 rounded-3xl border border-slate-200 dark:border-white/10">
           <ShieldAlert size={48} className="mx-auto text-amber-500 mb-4" />
           <h2 className="text-xl font-bold mb-2">Auction Lot Not Found</h2>
-          <p className="text-xs font-mono mb-6 opacity-60">The requested lot has concluded or the identifier is invalid.</p>
+          <p className="text-xs font-mono mb-6 text-slate-500 dark:text-zinc-400">The requested lot has concluded or the identifier is invalid.</p>
           <Link to="/auction-search" className="px-5 py-2.5 bg-[#2B59FF] text-white text-xs font-bold uppercase rounded-xl">
             Back to Auction Search
           </Link>
@@ -198,7 +202,7 @@ export default function AuctionLotPage() {
     : '/auction-search';
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 pb-20 ${
+    <div className={`min-h-screen transition-colors duration-300 pt-24 sm:pt-28 md:pt-32 pb-20 ${
       theme === 'dark' ? 'bg-[#090909] text-white' : 'bg-slate-50 text-slate-900'
     }`}>
       {/* HEADER BAR (Task 4 specification: Platform, Lot #, Status, Title, Auction Date/Time, Location, Back to results, Copy VIN) */}
@@ -227,11 +231,11 @@ export default function AuctionLotPage() {
               <button
                 type="button"
                 onClick={() => copyToClipboard(lot.lot_number, 'lot')}
-                className="px-3 py-1 bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/15 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 cursor-pointer"
+                className="px-3 py-1 bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-800 dark:text-zinc-200 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 cursor-pointer transition-colors"
                 title="Click to copy lot number"
               >
                 <span>Lot #{lot.lot_number}</span>
-                {copiedLot ? <Check size={12} className="text-emerald-500" /> : <Copy size={12} className="opacity-60" />}
+                {copiedLot ? <Check size={12} className="text-emerald-500" /> : <Copy size={12} className="text-slate-400 dark:text-zinc-400" />}
               </button>
 
               {/* Status Badge */}
@@ -263,20 +267,20 @@ export default function AuctionLotPage() {
           {/* Title & Location / Auction Time */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
             <div>
-              <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+              <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
                 {lot.title}
               </h1>
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-xs font-mono opacity-75">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-xs font-mono text-slate-600 dark:text-zinc-300">
                 {lot.location?.display && (
                   <span className="flex items-center gap-1">
                     <MapPin size={13} className="text-[#2B59FF]" />
-                    {lot.location.display}
+                    <span>{lot.location.display}</span>
                   </span>
                 )}
                 {timeLeft?.localDateStr && (
                   <span className="flex items-center gap-1">
                     <Clock size={13} className="text-[#2B59FF]" />
-                    Auction Date: {timeLeft.localDateStr}
+                    <span>Auction Date: {timeLeft.localDateStr}</span>
                   </span>
                 )}
               </div>
@@ -401,34 +405,34 @@ export default function AuctionLotPage() {
               {timeLeft && (
                 <div className={`mb-6 p-3.5 rounded-2xl flex items-center justify-between text-xs font-mono ${
                   timeLeft.expired
-                    ? 'bg-zinc-100 text-zinc-600 dark:bg-white/5 dark:text-zinc-400'
+                    ? 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800/80 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700'
                     : 'bg-[#2B59FF]/10 text-[#2B59FF] border border-[#2B59FF]/20'
                 }`}>
                   <div className="flex items-center gap-2 font-bold text-sm">
                     <Clock size={16} />
                     <span>{timeLeft.text}</span>
                   </div>
-                  <span className="opacity-75">{timeLeft.localDateStr}</span>
+                  <span className="text-slate-600 dark:text-zinc-300 font-medium">{timeLeft.localDateStr}</span>
                 </div>
               )}
 
               {/* THREE-CELL PRICING STRIP */}
-              <div className="grid grid-cols-3 gap-2 p-3 rounded-2xl bg-slate-50 dark:bg-black/40 border border-slate-200/80 dark:border-white/5 mb-6 text-center">
+              <div className="grid grid-cols-3 gap-2 p-3 rounded-2xl bg-slate-50 dark:bg-zinc-900/90 border border-slate-200/80 dark:border-zinc-800 mb-6 text-center">
                 <div>
-                  <span className="block text-[10px] font-mono uppercase tracking-wider opacity-60">Current Bid</span>
+                  <span className="block text-[10px] font-mono uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-medium">Current Bid</span>
                   <span className="font-mono font-bold text-base sm:text-lg text-[#2B59FF]">
                     {currentBid !== null && currentBid !== undefined ? `$${Number(currentBid).toLocaleString()}` : '—'}
                   </span>
                 </div>
                 <div>
-                  <span className="block text-[10px] font-mono uppercase tracking-wider opacity-60">Buy Now</span>
+                  <span className="block text-[10px] font-mono uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-medium">Buy Now</span>
                   <span className="font-mono font-bold text-base sm:text-lg text-emerald-600 dark:text-emerald-400">
                     {buyNow !== null && buyNow !== undefined ? `$${Number(buyNow).toLocaleString()}` : '—'}
                   </span>
                 </div>
                 <div>
-                  <span className="block text-[10px] font-mono uppercase tracking-wider opacity-60">Est. Range</span>
-                  <span className="font-mono font-bold text-xs sm:text-sm block truncate" title={estCost || '—'}>
+                  <span className="block text-[10px] font-mono uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-medium">Est. Range</span>
+                  <span className="font-mono font-bold text-xs sm:text-sm block truncate text-slate-900 dark:text-zinc-100" title={estCost || '—'}>
                     {estCost || '—'}
                   </span>
                 </div>
@@ -436,31 +440,31 @@ export default function AuctionLotPage() {
 
               {/* KEY SPECS GRID */}
               <div className="grid grid-cols-2 gap-3 text-xs font-mono mb-6 pb-6 border-b border-slate-200 dark:border-white/10">
-                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-                  <span className="block text-[10px] opacity-60">Odometer</span>
-                  <span className="font-bold">{odoFormatted}</span>
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-900/70 border border-slate-200 dark:border-zinc-800">
+                  <span className="block text-[10px] text-slate-500 dark:text-zinc-400 font-medium">Odometer</span>
+                  <span className="font-bold text-slate-900 dark:text-zinc-100">{odoFormatted}</span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-                  <span className="block text-[10px] opacity-60">Run Condition</span>
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-900/70 border border-slate-200 dark:border-zinc-800">
+                  <span className="block text-[10px] text-slate-500 dark:text-zinc-400 font-medium">Run Condition</span>
                   <span className="font-bold text-emerald-600 dark:text-emerald-400">
                     {lot.specs?.run_condition_label || lot.specs?.run_and_drive || 'Run and Drive'}
                   </span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-                  <span className="block text-[10px] opacity-60">Primary Damage</span>
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-900/70 border border-slate-200 dark:border-zinc-800">
+                  <span className="block text-[10px] text-slate-500 dark:text-zinc-400 font-medium">Primary Damage</span>
                   <span className="font-bold text-amber-500">{lot.damage?.primary || 'None'}</span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-                  <span className="block text-[10px] opacity-60">Drive Line</span>
-                  <span className="font-bold">{lot.specs?.drive_type || 'FWD'}</span>
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-900/70 border border-slate-200 dark:border-zinc-800">
+                  <span className="block text-[10px] text-slate-500 dark:text-zinc-400 font-medium">Drive Line</span>
+                  <span className="font-bold text-slate-900 dark:text-zinc-100">{lot.specs?.drive_type || 'FWD'}</span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5 col-span-2">
-                  <span className="block text-[10px] opacity-60">Engine</span>
-                  <span className="font-bold truncate block">{engineFull}</span>
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-900/70 border border-slate-200 dark:border-zinc-800 col-span-2">
+                  <span className="block text-[10px] text-slate-500 dark:text-zinc-400 font-medium">Engine</span>
+                  <span className="font-bold text-slate-900 dark:text-zinc-100 truncate block">{engineFull}</span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5 col-span-2">
-                  <span className="block text-[10px] opacity-60">Fuel / Transmission</span>
-                  <span className="font-bold">{lot.specs?.fuel_type || 'Gasoline'} · {lot.specs?.transmission || 'Automatic'}</span>
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-900/70 border border-slate-200 dark:border-zinc-800 col-span-2">
+                  <span className="block text-[10px] text-slate-500 dark:text-zinc-400 font-medium">Fuel / Transmission</span>
+                  <span className="font-bold text-slate-900 dark:text-zinc-100">{lot.specs?.fuel_type || 'Gasoline'} · {lot.specs?.transmission || 'Automatic'}</span>
                 </div>
               </div>
 
@@ -476,7 +480,7 @@ export default function AuctionLotPage() {
                   <span>Bid via LeeAutoX on WhatsApp</span>
                 </a>
 
-                <p className="text-[11px] font-mono text-center opacity-60">
+                <p className="text-[11px] font-mono text-center text-slate-500 dark:text-zinc-400">
                   We verify title, inspect records, submit proxy bids, handle containerization & Nigerian customs.
                 </p>
               </div>
@@ -488,82 +492,35 @@ export default function AuctionLotPage() {
         <div className={`p-6 sm:p-8 rounded-3xl border transition-colors ${
           theme === 'dark' ? 'bg-[#121212] border-white/10' : 'bg-white border-slate-200 shadow-sm'
         }`}>
-          <h2 className="font-serif text-xl sm:text-2xl font-bold mb-6 flex items-center gap-2">
+          <h2 className="font-serif text-xl sm:text-2xl font-bold mb-6 flex items-center gap-2 text-slate-900 dark:text-white">
             <Car size={20} className="text-[#2B59FF]" />
-            Complete Vehicle & Auction Lot Details
+            <span>Complete Vehicle & Auction Lot Details</span>
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 text-xs font-mono">
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-              <span className="block opacity-60 text-[10px]">VIN</span>
-              <span className="font-bold">{lot.vin || '—'}</span>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-              <span className="block opacity-60 text-[10px]">Lot Number</span>
-              <span className="font-bold">{lot.lot_number || '—'}</span>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-              <span className="block opacity-60 text-[10px]">Platform</span>
-              <span className="font-bold uppercase">{lot.platform}</span>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-              <span className="block opacity-60 text-[10px]">Keys</span>
-              <span className="font-bold">{lot.specs?.keys || (lot.specs?.has_key ? 'With' : 'No')}</span>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-              <span className="block opacity-60 text-[10px]">Body Style</span>
-              <span className="font-bold">{lot.specs?.body_style || '—'}</span>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-              <span className="block opacity-60 text-[10px]">Exterior Colour</span>
-              <span className="font-bold">{lot.specs?.color || '—'}</span>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-              <span className="block opacity-60 text-[10px]">Interior Colour</span>
-              <span className="font-bold">{lot.specs?.interior_color || 'Unknown'}</span>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-              <span className="block opacity-60 text-[10px]">Cylinders</span>
-              <span className="font-bold">{lot.specs?.cylinders ? `${lot.specs.cylinders} Cylinders` : '—'}</span>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-              <span className="block opacity-60 text-[10px]">Airbags</span>
-              <span className="font-bold">{lot.specs?.airbags || 'Intact'}</span>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-              <span className="block opacity-60 text-[10px]">Restraint System</span>
-              <span className="font-bold truncate block" title={lot.specs?.restraint_system || '—'}>
-                {lot.specs?.restraint_system || '—'}
-              </span>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-              <span className="block opacity-60 text-[10px]">Secondary Damage</span>
-              <span className="font-bold">{lot.damage?.secondary || 'None Reported'}</span>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-              <span className="block opacity-60 text-[10px]">Sale Document / Title</span>
-              <span className="font-bold truncate block">{lot.sale_document?.name || 'Salvage Document'}</span>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-              <span className="block opacity-60 text-[10px]">Seller (Source)</span>
-              <span className="font-bold truncate block">{lot.seller?.name || 'Insurance / Auto Facility'}</span>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-              <span className="block opacity-60 text-[10px]">Actual Cash Value (ACV)</span>
-              <span className="font-bold">
-                {lot.pricing?.est_retail_value ? `$${lot.pricing.est_retail_value.toLocaleString()} USD` : '—'}
-              </span>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-              <span className="block opacity-60 text-[10px]">Estimated Repair Cost</span>
-              <span className="font-bold">
-                {lot.pricing?.repair_cost ? `$${lot.pricing.repair_cost.toLocaleString()} USD` : '—'}
-              </span>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
-              <span className="block opacity-60 text-[10px]">Auction Facility Location</span>
-              <span className="font-bold truncate block">{lot.location?.display || lot.location?.city || '—'}</span>
-            </div>
+            {[
+              { label: 'VIN', val: lot.vin || '—' },
+              { label: 'Lot Number', val: lot.lot_number || '—' },
+              { label: 'Platform', val: lot.platform?.toUpperCase() || '—' },
+              { label: 'Keys', val: lot.specs?.keys || (lot.specs?.has_key ? 'With' : 'No') },
+              { label: 'Body Style', val: lot.specs?.body_style || '—' },
+              { label: 'Exterior Colour', val: lot.specs?.color || '—' },
+              { label: 'Interior Colour', val: lot.specs?.interior_color || 'Unknown' },
+              { label: 'Cylinders', val: lot.specs?.cylinders ? `${lot.specs.cylinders} Cylinders` : '—' },
+              { label: 'Airbags', val: lot.specs?.airbags || 'Intact' },
+              { label: 'Restraint System', val: lot.specs?.restraint_system || '—' },
+              { label: 'Secondary Damage', val: lot.damage?.secondary || 'None Reported' },
+              { label: 'Sale Document / Title', val: lot.sale_document?.name || 'Salvage Document' },
+              { label: 'Seller (Source)', val: lot.seller?.name || 'Insurance / Auto Facility' },
+              { label: 'Actual Cash Value (ACV)', val: lot.pricing?.est_retail_value ? `$${lot.pricing.est_retail_value.toLocaleString()} USD` : '—' },
+              { label: 'Estimated Repair Cost', val: lot.pricing?.repair_cost ? `$${lot.pricing.repair_cost.toLocaleString()} USD` : '—' },
+              { label: 'Auction Facility Location', val: lot.location?.display || lot.location?.city || '—' },
+            ].map((item, idx) => (
+              <div key={idx} className="p-3 rounded-xl bg-slate-50 dark:bg-zinc-900/70 border border-slate-200 dark:border-zinc-800">
+                <span className="block text-slate-500 dark:text-zinc-400 text-[10px] font-medium mb-0.5">{item.label}</span>
+                <span className="font-bold text-slate-900 dark:text-zinc-100 truncate block" title={String(item.val)}>{item.val}</span>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -571,40 +528,40 @@ export default function AuctionLotPage() {
         <div className={`p-6 sm:p-8 rounded-3xl border transition-colors ${
           theme === 'dark' ? 'bg-[#121212] border-white/10' : 'bg-white border-slate-200 shadow-sm'
         }`}>
-          <h2 className="font-serif text-xl sm:text-2xl font-bold mb-4 flex items-center gap-2">
+          <h2 className="font-serif text-xl sm:text-2xl font-bold mb-4 flex items-center gap-2 text-slate-900 dark:text-white">
             <Clock size={20} className="text-[#2B59FF]" />
-            Sale History
+            <span>Sale History</span>
           </h2>
-          <p className="text-xs font-mono opacity-60 mb-6">Latest auction appearances and bidding events recorded for this vehicle.</p>
+          <p className="text-xs font-mono text-slate-500 dark:text-zinc-400 mb-6">Latest auction appearances and bidding events recorded for this vehicle.</p>
 
           {lot.history && lot.history.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full text-xs font-mono text-left">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-white/10 opacity-70">
+                  <tr className="border-b border-slate-200 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 font-semibold">
                     <th className="py-2.5 px-3">Date</th>
                     <th className="py-2.5 px-3">Status</th>
                     <th className="py-2.5 px-3">Bid / Sale Price</th>
                     <th className="py-2.5 px-3">Location</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200 dark:divide-white/5">
+                <tbody className="divide-y divide-slate-200 dark:divide-zinc-800 text-slate-800 dark:text-zinc-200">
                   {lot.history.map((ev, i) => (
-                    <tr key={i}>
-                      <td className="py-3 px-3">{ev.date || '—'}</td>
-                      <td className="py-3 px-3 font-bold">{ev.status || 'Auction Event'}</td>
+                    <tr key={i} className="hover:bg-slate-50/50 dark:hover:bg-zinc-800/30 transition-colors">
+                      <td className="py-3 px-3 text-slate-700 dark:text-zinc-300">{ev.date || '—'}</td>
+                      <td className="py-3 px-3 font-bold text-slate-900 dark:text-zinc-100">{ev.status || 'Auction Event'}</td>
                       <td className="py-3 px-3 font-bold text-[#2B59FF]">
                         {ev.sale_price ? `$${Number(ev.sale_price).toLocaleString()}` : ev.bid ? `$${Number(ev.bid).toLocaleString()}` : '—'}
                       </td>
-                      <td className="py-3 px-3">{ev.location || '—'}</td>
+                      <td className="py-3 px-3 text-slate-700 dark:text-zinc-300">{ev.location || '—'}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           ) : (
-            <div className="py-8 px-4 text-center rounded-2xl bg-slate-50 dark:bg-white/5 border border-dashed border-slate-200 dark:border-white/10">
-              <p className="text-xs font-mono opacity-60">No history returned for this lot.</p>
+            <div className="py-8 px-4 text-center rounded-2xl bg-slate-50 dark:bg-zinc-900/60 border border-dashed border-slate-200 dark:border-zinc-800">
+              <p className="text-xs font-mono text-slate-500 dark:text-zinc-400">No history returned for this lot.</p>
             </div>
           )}
         </div>
@@ -614,10 +571,10 @@ export default function AuctionLotPage() {
           <div>
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight">
+                <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
                   Similar Auction Vehicles
                 </h2>
-                <p className="text-xs font-mono opacity-60 mt-0.5">
+                <p className="text-xs font-mono text-slate-500 dark:text-zinc-400 mt-0.5">
                   Other live auction lots matching {lot.make} {lot.model}
                 </p>
               </div>

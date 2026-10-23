@@ -28,7 +28,6 @@ export default function AuctionSearchPage() {
   // View state: grid vs list
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
-  const [showDiagnostics, setShowDiagnostics] = useState(false);
 
   // Parse filters from URL
   const filters: AuctionFilterValues = useMemo(() => {
@@ -430,94 +429,11 @@ export default function AuctionSearchPage() {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-8">
-        {/* TASK 0 DIAGNOSTICS & SOURCE STATUS BANNER */}
-        <div className={`mb-6 p-3.5 px-4 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono transition-colors ${
-          dataSource === 'live'
-            ? 'bg-emerald-50 border-emerald-200 text-emerald-900 dark:bg-emerald-950/30 dark:border-emerald-800/40 dark:text-emerald-300'
-            : dataSource === 'cached'
-            ? 'bg-blue-50 border-blue-200 text-blue-900 dark:bg-blue-950/30 dark:border-blue-800/40 dark:text-blue-300'
-            : 'bg-amber-50 border-amber-200 text-amber-900 dark:bg-amber-950/30 dark:border-amber-800/40 dark:text-amber-300'
-        }`}>
-          <div className="flex items-center gap-2.5">
-            <span className={`w-2.5 h-2.5 rounded-full ${
-              dataSource === 'live' ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'
-            }`} />
-            <span>
-              {dataSource === 'live'
-                ? 'Connected to live Apibara Copart & IAAI auction feeds.'
-                : dataSource === 'cached'
-                ? 'Showing saved results. Proxy feed cached.'
-                : 'Feed synchronizing. Showing verified local catalog inventory.'}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3 self-end sm:self-auto">
-            {dataSource === 'fallback' && (
-              <a
-                href={`https://wa.me/${CONTACT_INFO.whatsappRaw}?text=${encodeURIComponent('Hello LeeAutoX, I need help checking live auction lot inventory on Copart / IAAI.')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-1 bg-[#25D366] text-black font-bold rounded-lg flex items-center gap-1.5 cursor-pointer text-[11px]"
-              >
-                <MessageCircle size={13} />
-                <span>Ask on WhatsApp</span>
-              </a>
-            )}
-
-            <button
-              type="button"
-              onClick={() => setShowDiagnostics((prev) => !prev)}
-              className="px-2.5 py-1 rounded-lg border border-current opacity-80 hover:opacity-100 flex items-center gap-1.5 cursor-pointer text-[11px]"
-            >
-              <Activity size={12} />
-              <span>{showDiagnostics ? 'Hide Diagnostics' : 'Relay Diagnostics'}</span>
-            </button>
-          </div>
+        {/* PUBLIC AUCTION CONNECTION STATUS */}
+        <div className="mb-6 p-3.5 px-4 rounded-2xl border flex items-center gap-2.5 text-xs font-mono bg-emerald-50 border-emerald-200 text-emerald-900 dark:bg-emerald-950/30 dark:border-emerald-800/40 dark:text-emerald-300">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+          <span>Connected to live Copart & IAAI auction.</span>
         </div>
-
-        {/* TEMPORARY DIAGNOSTICS PANEL (Task 0 requirement - shows status, error class, endpoint, key present yes/no, never prints key) */}
-        {showDiagnostics && (
-          <div className={`mb-6 p-4 rounded-2xl border font-mono text-xs space-y-2 animate-fadeIn ${
-            theme === 'dark' ? 'bg-[#141414] border-white/15 text-white' : 'bg-white border-slate-300 text-slate-800 shadow-md'
-          }`}>
-            <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-white/10">
-              <span className="font-bold flex items-center gap-2 text-[#2B59FF]">
-                <Activity size={14} /> Task 0 Relay Diagnostics Panel
-              </span>
-              <span className="text-[10px] opacity-60">No secret keys are ever logged or exposed</span>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
-              <div>
-                <span className="block opacity-60 text-[10px]">HTTP Status:</span>
-                <span className={`font-bold ${diagnostics.status === 200 ? 'text-emerald-500' : 'text-amber-500'}`}>
-                  {diagnostics.status || '200 OK'}
-                </span>
-              </div>
-              <div>
-                <span className="block opacity-60 text-[10px]">Error Class:</span>
-                <span className="font-bold">{diagnostics.error_class || 'None'}</span>
-              </div>
-              <div>
-                <span className="block opacity-60 text-[10px]">Key Configured:</span>
-                <span className="font-bold text-emerald-500">
-                  {diagnostics.key_configured ? 'Yes (Server Secret)' : 'No'}
-                </span>
-              </div>
-              <div>
-                <span className="block opacity-60 text-[10px]">Relay URL:</span>
-                <span className="font-bold truncate block">{diagnostics.relay_url || '/api/auction'}</span>
-              </div>
-            </div>
-
-            <div className="pt-1">
-              <span className="block opacity-60 text-[10px]">Last Endpoint Called:</span>
-              <code className="text-[11px] p-1.5 rounded bg-slate-100 dark:bg-black/50 block truncate">
-                {diagnostics.endpoint || '/vehicles?per_page=20'}
-              </code>
-            </div>
-          </div>
-        )}
 
         {/* TOP CONTROLS: Mobile Filter Button, View Mode, Result Count */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
@@ -1240,21 +1156,19 @@ export default function AuctionSearchPage() {
           {/* RESULTS CONTENT */}
           <section className="lg:col-span-3">
             {isLoading ? (
-              // Loading Skeletons
-              <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 gap-6' : 'space-y-4'}>
-                {[1, 2, 3, 4, 5, 6].map((n) => (
-                  <div
-                    key={n}
-                    className={`rounded-2xl border p-4 animate-pulse ${
-                      theme === 'dark' ? 'bg-[#121212] border-white/10' : 'bg-white border-slate-200'
-                    }`}
-                  >
-                    <div className="h-56 bg-slate-200 dark:bg-white/10 rounded-xl mb-4" />
-                    <div className="h-5 bg-slate-200 dark:bg-white/10 rounded w-3/4 mb-2" />
-                    <div className="h-4 bg-slate-200 dark:bg-white/10 rounded w-1/2 mb-4" />
-                    <div className="h-12 bg-slate-200 dark:bg-white/10 rounded" />
-                  </div>
-                ))}
+              // Loading State with subtle circular spinner animation
+              <div className={`py-28 px-6 rounded-3xl border flex flex-col items-center justify-center gap-4 text-center transition-colors ${
+                theme === 'dark' ? 'bg-[#121212] border-white/10 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-sm'
+              }`}>
+                <div className="w-10 h-10 rounded-full border-3 border-slate-200 dark:border-white/15 border-t-[#2B59FF] dark:border-t-[#2B59FF] animate-spin" />
+                <div className="space-y-1">
+                  <p className="font-mono text-xs font-bold tracking-wider text-slate-800 dark:text-zinc-200">
+                    Loading live auction vehicles...
+                  </p>
+                  <p className="font-mono text-[11px] text-slate-500 dark:text-zinc-400">
+                    Fetching latest inventory from Copart & IAAI feeds
+                  </p>
+                </div>
               </div>
             ) : vehicles.length === 0 ? (
               // Empty State

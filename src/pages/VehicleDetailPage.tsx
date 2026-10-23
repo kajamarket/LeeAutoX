@@ -206,7 +206,7 @@ export default function VehicleDetailPage() {
           {/* Right Column (5 cols): Pricing, Specs & CTAs */}
           <div className="lg:col-span-5 flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-2 mb-2 font-mono text-xs opacity-60 uppercase">
+              <div className="flex items-center gap-2 mb-2 font-mono text-xs text-slate-500 dark:text-zinc-400 uppercase font-medium">
                 <span>{vehicle.year}</span>
                 <span>•</span>
                 <span>{vehicle.make}</span>
@@ -214,28 +214,28 @@ export default function VehicleDetailPage() {
                 <span>{vehicle.bodyType}</span>
               </div>
 
-              <h1 className="font-serif text-3xl sm:text-4xl font-bold leading-tight mb-4">
+              <h1 className="font-serif text-3xl sm:text-4xl font-bold leading-tight mb-4 text-slate-900 dark:text-white">
                 {vehicle.name}
               </h1>
 
-              <div className="flex items-center gap-2 text-xs font-mono opacity-70 mb-6">
+              <div className="flex items-center gap-2 text-xs font-mono text-slate-600 dark:text-zinc-300 mb-6 font-medium">
                 <MapPin size={14} className="text-[#2B59FF]" />
                 <span>Current Location: {vehicle.location}</span>
               </div>
 
               {/* Price & Deposit Box */}
               <div className={`p-6 rounded-3xl border mb-6 ${
-                theme === 'dark' ? 'bg-[#181818] border-white/15' : 'bg-white border-slate-200 shadow-md'
+                theme === 'dark' ? 'bg-[#181818] border-zinc-800' : 'bg-white border-slate-200 shadow-md'
               }`}>
                 <div className="flex justify-between items-baseline mb-3">
-                  <span className="text-xs uppercase font-mono tracking-wider opacity-60">Estimated Landing Price</span>
+                  <span className="text-xs uppercase font-mono tracking-wider text-slate-500 dark:text-zinc-400 font-medium">Estimated Landing Price</span>
                   <span className="text-2xl sm:text-3xl font-bold font-serif text-[#2B59FF]">{vehicle.price}</span>
                 </div>
-                <div className="flex justify-between items-center pt-3 border-t border-slate-200/20 text-xs">
-                  <span className="opacity-70 font-mono">Commitment Deposit:</span>
+                <div className="flex justify-between items-center pt-3 border-t border-slate-200/20 dark:border-zinc-800 text-xs">
+                  <span className="text-slate-600 dark:text-zinc-300 font-mono font-medium">Commitment Deposit:</span>
                   <span className="font-mono font-bold text-emerald-500">{vehicle.deposit}</span>
                 </div>
-                <div className="flex justify-between items-center pt-2 text-[11px] opacity-50 font-mono">
+                <div className="flex justify-between items-center pt-2 text-[11px] text-slate-500 dark:text-zinc-400 font-mono">
                   <span>Balance terms:</span>
                   <span>Installments available through transit</span>
                 </div>
@@ -307,49 +307,49 @@ export default function VehicleDetailPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="p-4 rounded-xl border border-slate-200/10">
-              <span className="text-[11px] font-mono uppercase opacity-50 block mb-1">Make</span>
-              <span className="font-serif text-lg font-bold">{vehicle.make}</span>
+            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
+              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Make</span>
+              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.make}</span>
             </div>
-            <div className="p-4 rounded-xl border border-slate-200/10">
-              <span className="text-[11px] font-mono uppercase opacity-50 block mb-1">Model</span>
-              <span className="font-serif text-lg font-bold">{vehicle.model}</span>
+            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
+              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Model</span>
+              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.model}</span>
             </div>
-            <div className="p-4 rounded-xl border border-slate-200/10">
-              <span className="text-[11px] font-mono uppercase opacity-50 block mb-1">Model Year</span>
-              <span className="font-serif text-lg font-bold">{vehicle.year}</span>
+            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
+              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Model Year</span>
+              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.year}</span>
             </div>
-            <div className="p-4 rounded-xl border border-slate-200/10">
-              <span className="text-[11px] font-mono uppercase opacity-50 block mb-1">Mileage / Odometer</span>
-              <span className="font-serif text-lg font-bold">{vehicle.mileage}</span>
+            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
+              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Mileage / Odometer</span>
+              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.mileage}</span>
             </div>
-            <div className="p-4 rounded-xl border border-slate-200/10">
-              <span className="text-[11px] font-mono uppercase opacity-50 block mb-1">Transmission</span>
-              <span className="font-serif text-lg font-bold">{vehicle.transmission}</span>
+            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
+              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Transmission</span>
+              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.transmission}</span>
             </div>
-            <div className="p-4 rounded-xl border border-slate-200/10">
-              <span className="text-[11px] font-mono uppercase opacity-50 block mb-1">Fuel Type</span>
-              <span className="font-serif text-lg font-bold">{vehicle.fuelType}</span>
+            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
+              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Fuel Type</span>
+              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.fuelType}</span>
             </div>
-            <div className="p-4 rounded-xl border border-slate-200/10">
-              <span className="text-[11px] font-mono uppercase opacity-50 block mb-1">Body Style</span>
-              <span className="font-serif text-lg font-bold">{vehicle.bodyType}</span>
+            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
+              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Body Style</span>
+              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.bodyType}</span>
             </div>
-            <div className="p-4 rounded-xl border border-slate-200/10">
-              <span className="text-[11px] font-mono uppercase opacity-50 block mb-1">Exterior Colour</span>
-              <span className="font-serif text-lg font-bold">{vehicle.colour}</span>
+            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
+              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Exterior Colour</span>
+              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.colour}</span>
             </div>
-            <div className="p-4 rounded-xl border border-slate-200/10">
-              <span className="text-[11px] font-mono uppercase opacity-50 block mb-1">Condition Status</span>
+            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
+              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Condition Status</span>
               <span className="font-serif text-lg font-bold text-emerald-500">{vehicle.condition}</span>
             </div>
-            <div className="p-4 rounded-xl border border-slate-200/10">
-              <span className="text-[11px] font-mono uppercase opacity-50 block mb-1">Vehicle VIN</span>
-              <span className="font-mono text-sm font-bold tracking-wider">{vehicle.vin || 'Available on request'}</span>
+            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
+              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Vehicle VIN</span>
+              <span className="font-mono text-sm font-bold tracking-wider text-slate-900 dark:text-zinc-100">{vehicle.vin || 'Available on request'}</span>
             </div>
-            <div className="p-4 rounded-xl border border-slate-200/10 sm:col-span-2">
-              <span className="text-[11px] font-mono uppercase opacity-50 block mb-1">Hub Location</span>
-              <span className="font-serif text-lg font-bold">{vehicle.location}</span>
+            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60 sm:col-span-2">
+              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Hub Location</span>
+              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.location}</span>
             </div>
           </div>
         </section>
