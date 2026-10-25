@@ -26,9 +26,10 @@ interface PaymentPlannerProps {
   fullPrice: number;
   initialDeposit: string;
   theme: string;
+  isCanadaUSA?: boolean;
 }
 
-function PaymentPlanner({ fullPrice, initialDeposit, theme }: PaymentPlannerProps) {
+function PaymentPlanner({ fullPrice, initialDeposit, theme, isCanadaUSA = false }: PaymentPlannerProps) {
   // Parse initial numeric deposit or default to 30% of fullPrice
   const parsedDefault = useMemo(() => {
     const raw = Number(String(initialDeposit).replace(/[^0-9]/g, ''));
@@ -131,7 +132,7 @@ function PaymentPlanner({ fullPrice, initialDeposit, theme }: PaymentPlannerProp
                 onClick={() => setIsEditingDeposit(true)}
                 className="text-[10px] text-[#2B59FF] hover:underline cursor-pointer font-mono"
               >
-                (Customise)
+                ({isCanadaUSA ? 'Change' : 'Customise'})
               </button>
             )}
           </div>
@@ -411,6 +412,11 @@ export default function VehicleDetailPage() {
                   </span>
                 )}
               </div>
+
+              {/* Gallery Image Count Badge (Pill at bottom-right) */}
+              <div className="absolute bottom-4 right-4 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md text-white text-xs font-mono font-bold tracking-wider flex items-center gap-1.5 border border-white/20 shadow-md pointer-events-none z-10">
+                <span>{activeImageIndex + 1}/{galleryImages.length}</span>
+              </div>
             </div>
 
             {/* Thumbnail Strip */}
@@ -479,6 +485,7 @@ export default function VehicleDetailPage() {
                   fullPrice={vehicle.numericPrice}
                   initialDeposit={vehicle.deposit}
                   theme={theme}
+                  isCanadaUSA={isOverseas}
                 />
               ) : (
                 <div className={`p-6 rounded-3xl border mb-6 ${
@@ -603,10 +610,12 @@ export default function VehicleDetailPage() {
               <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Exterior Colour</span>
               <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.colour}</span>
             </div>
-            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
-              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Condition Status</span>
-              <span className="font-serif text-lg font-bold text-emerald-500">{vehicle.condition}</span>
-            </div>
+            {!isOverseas && (
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
+                <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Condition Status</span>
+                <span className="font-serif text-lg font-bold text-emerald-500">{vehicle.condition}</span>
+              </div>
+            )}
             <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
               <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Vehicle VIN</span>
               <span className="font-mono text-sm font-bold tracking-wider text-slate-900 dark:text-zinc-100">{vehicle.vin || 'Available on request'}</span>

@@ -12,7 +12,7 @@ export default function VehicleCatalogue() {
   const { vehicles, inStockCount, minPriceFormatted } = useInventory();
 
   // Filter state for available cars
-  const [filterLocation, setFilterLocation] = useState<string>("Nigeria");
+  const [filterLocation, setFilterLocation] = useState<string>("All Locations");
   const [filterMake, setFilterMake] = useState("All");
   const [filterBody, setFilterBody] = useState("All");
   const [filterBudget, setFilterBudget] = useState("100000000");
@@ -32,7 +32,7 @@ export default function VehicleCatalogue() {
                              (v.vin && v.vin.toLowerCase().includes(q)) ||
                              (v.location && v.location.toLowerCase().includes(q)) ||
                              (v.currentLocation && v.currentLocation.toLowerCase().includes(q));
-      const matchesLocation = !filterLocation || v.location === filterLocation;
+      const matchesLocation = !filterLocation || filterLocation === "All Locations" || v.location === filterLocation;
       const matchesMake = filterMake === "All" || v.make.toLowerCase() === filterMake.toLowerCase();
       const matchesBody = filterBody === "All" || v.bodyType.toLowerCase() === filterBody.toLowerCase();
       const matchesBudget = v.numericPrice <= Number(filterBudget);
@@ -42,7 +42,7 @@ export default function VehicleCatalogue() {
   }, [vehicles, filterLocation, filterMake, filterBody, filterBudget, searchKeyword]);
 
   const resetFilters = () => {
-    setFilterLocation("Nigeria");
+    setFilterLocation("All Locations");
     setFilterMake("All");
     setFilterBody("All");
     setFilterBudget("100000000");
@@ -366,6 +366,7 @@ export default function VehicleCatalogue() {
                       : "border-slate-300 bg-white text-slate-900"
                   }`}
                 >
+                  <option value="All Locations" className={theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-slate-900"}>All Locations</option>
                   <option value="Nigeria" className={theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-slate-900"}>Nigeria</option>
                   <option value="Canada & USA" className={theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-slate-900"}>Canada & USA</option>
                 </select>
@@ -437,6 +438,7 @@ export default function VehicleCatalogue() {
                     : "border-slate-300 bg-white text-slate-900"
                 }`}
               >
+                <option value="All Locations" className={theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-slate-900"}>All Locations</option>
                 <option value="Nigeria" className={theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-slate-900"}>Nigeria</option>
                 <option value="Canada & USA" className={theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-slate-900"}>Canada & USA</option>
               </select>
@@ -447,9 +449,9 @@ export default function VehicleCatalogue() {
             theme === "dark" ? "border-white/10 text-white/60" : "border-slate-200 text-slate-500"
           }`}>
             <span className="font-mono">
-              Showing <strong>{filteredVehicles.length}</strong> of {vehicles.length} cars in {filterLocation}
+              Showing <strong>{filteredVehicles.length}</strong> of {vehicles.length} cars {filterLocation === "All Locations" ? "across All Locations" : `in ${filterLocation}`}
             </span>
-            {(filterMake !== "All" || filterBody !== "All" || filterBudget !== "100000000" || searchKeyword.trim()) && (
+            {(filterLocation !== "All Locations" || filterMake !== "All" || filterBody !== "All" || filterBudget !== "100000000" || searchKeyword.trim()) && (
               <button
                 type="button"
                 onClick={resetFilters}
