@@ -20,19 +20,21 @@ interface InventoryContextType {
   cloudSyncError: string | null;
 }
 
-const STORAGE_KEY = 'leeautox_inventory_v5';
+const STORAGE_KEY = 'leeautox_inventory_v6';
 
 const normalizeVehicle = (item: any): VehicleItem => {
   let loc = item.location;
   let currLoc = item.currentLocation;
+  let cond = item.condition;
   if (!loc || loc === "Lagos, Nigeria" || loc === "Nigeria") {
     loc = "Nigeria";
     if (!currLoc) currLoc = "Lagos, Nigeria";
   } else if (loc === "Canada & USA" || loc.includes("Canada") || loc.includes("USA")) {
     loc = "Canada & USA";
     if (!currLoc) currLoc = item.currentLocation || "Ontario, Canada";
+    if (cond === "Located in Canada & USA" || !cond) cond = "Located Overseas";
   }
-  return { ...item, location: loc, currentLocation: currLoc };
+  return { ...item, location: loc, currentLocation: currLoc, condition: cond || item.condition };
 };
 
 const InventoryContext = createContext<InventoryContextType | undefined>(undefined);

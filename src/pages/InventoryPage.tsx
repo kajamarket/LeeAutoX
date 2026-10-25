@@ -295,7 +295,7 @@ export default function InventoryPage() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute top-3 left-3 bg-[#2B59FF] text-white text-[10px] font-mono px-2.5 py-1 uppercase tracking-wider font-bold rounded-md shadow-md">
-                      {vehicle.condition}
+                      {vehicle.location === "Canada & USA" ? "Located Overseas" : vehicle.condition}
                     </div>
                     {vehicle.status !== 'Available' && (
                       <div className={`absolute top-3 right-3 text-[10px] font-mono px-2.5 py-1 uppercase tracking-wider font-bold rounded-md shadow-md ${

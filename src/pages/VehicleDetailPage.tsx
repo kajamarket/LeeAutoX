@@ -382,7 +382,7 @@ export default function VehicleDetailPage() {
               <span>{copied ? 'Link Copied!' : 'Share Vehicle'}</span>
             </button>
             <span className="font-mono text-xs uppercase px-3 py-1 rounded-full bg-[#2B59FF]/15 text-[#2B59FF] font-bold">
-              {vehicle.condition}
+              {isOverseas ? "Located Overseas" : vehicle.condition}
             </span>
           </div>
         </div>
@@ -402,7 +402,7 @@ export default function VehicleDetailPage() {
               />
               <div className="absolute top-4 left-4 flex gap-2">
                 <span className="px-3 py-1 bg-[#2B59FF] text-white text-xs font-mono font-bold uppercase rounded-md shadow-md">
-                  {vehicle.condition}
+                  {isOverseas ? "Located Overseas" : vehicle.condition}
                 </span>
                 {vehicle.status !== 'Available' && (
                   <span className={`px-3 py-1 text-xs font-mono font-bold uppercase rounded-md shadow-md ${
@@ -655,7 +655,7 @@ export default function VehicleDetailPage() {
                   <div className="aspect-[16/10] overflow-hidden relative bg-black">
                     <img src={rel.image} alt={rel.name} className="w-full h-full object-cover" />
                     <span className="absolute top-3 left-3 bg-[#2B59FF] text-white text-[10px] font-mono px-2 py-0.5 rounded font-bold">
-                      {rel.condition}
+                      {rel.location === "Canada & USA" ? "Located Overseas" : rel.condition}
                     </span>
                   </div>
                   <div className="p-5 flex-1 flex flex-col justify-between">

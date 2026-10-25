@@ -565,7 +565,7 @@ export default function VehicleCatalogue() {
                         <MapPin size={10} /> {vehicle.location === "Canada & USA" ? "Canada & USA" : "Lagos"}
                       </span>
                       <span className="bg-black/70 backdrop-blur-md text-white text-[9px] font-mono px-2 py-0.5 rounded uppercase tracking-wider">
-                        {vehicle.condition}
+                        {vehicle.location === "Canada & USA" ? "Located Overseas" : vehicle.condition}
                       </span>
                     </div>
 
