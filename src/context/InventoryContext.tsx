@@ -20,7 +20,20 @@ interface InventoryContextType {
   cloudSyncError: string | null;
 }
 
-const STORAGE_KEY = 'leeautox_inventory_v3';
+const STORAGE_KEY = 'leeautox_inventory_v4';
+
+const normalizeVehicle = (item: any): VehicleItem => {
+  let loc = item.location;
+  let currLoc = item.currentLocation;
+  if (!loc || loc === "Lagos, Nigeria" || loc === "Nigeria") {
+    loc = "Nigeria";
+    if (!currLoc) currLoc = "Lagos, Nigeria";
+  } else if (loc === "Canada & USA" || loc.includes("Canada") || loc.includes("USA")) {
+    loc = "Canada & USA";
+    if (!currLoc) currLoc = item.currentLocation || "Ontario, Canada";
+  }
+  return { ...item, location: loc, currentLocation: currLoc };
+};
 
 const InventoryContext = createContext<InventoryContextType | undefined>(undefined);
 
@@ -31,7 +44,7 @@ export function InventoryProvider({ children }: { children: React.ReactNode }) {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          return parsed.map(normalizeVehicle);
         }
       }
     } catch (e) {
@@ -72,10 +85,10 @@ export function InventoryProvider({ children }: { children: React.ReactNode }) {
         if (!snapshot.empty) {
           const remoteVehicles: VehicleItem[] = snapshot.docs.map((docSnap) => {
             const data = docSnap.data();
-            return {
+            return normalizeVehicle({
               ...data,
               id: docSnap.id,
-            } as VehicleItem;
+            });
           });
 
           // Sort by newest

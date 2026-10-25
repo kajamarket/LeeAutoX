@@ -17,13 +17,10 @@ import Contact from '../components/Contact';
 export default function Home() {
   return (
     <>
-      {/* SECTION 1: Cars for Sale — On Ground in Lagos Nigeria */}
-      <VehicleCatalogue />
-
-      {/* SECTION 2: North American Sourcing & Live Copart/IAA Lot Search */}
+      {/* North American Sourcing & Live Copart/IAA Lot Search */}
       <Hero />
 
-      {/* SECTION 3: Live Auction Cars (Copart · IAA) */}
+      {/* Live Auction Cars (Copart · IAA) */}
       <AuctionPreview />
 
       <Marquee />
@@ -33,10 +30,13 @@ export default function Home() {
         <WhyCanada />
       </div>
 
-      {/* SECTION 5: What We Do (Merged What We Offer & What We Source + How It Works Steps) */}
+      {/* What We Do */}
       <WhatWeDo />
 
-      {/* SECTION 6: Parts & Tools (Moved directly after What We Do) */}
+      {/* Cars for Sale (Directly below What We Do and before Shop Car Parts) */}
+      <VehicleCatalogue />
+
+      {/* Shop Car Parts (AutoStore) */}
       <AutoStore />
 
       {/* SECTION 7: Why Choose Us (Moved directly above Verified Deliveries) */}

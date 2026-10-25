@@ -81,7 +81,8 @@ export default function AdminBackend() {
     colour: '',
     condition: 'Clean Title',
     vin: '',
-    location: 'Toronto, ON (Canada)',
+    location: 'Nigeria' as 'Nigeria' | 'Canada & USA',
+    currentLocation: 'Lagos, Nigeria',
     status: 'Available' as 'Available' | 'Reserved' | 'Sold',
     image: '',
     imagesText: ''
@@ -180,7 +181,8 @@ export default function AdminBackend() {
       colour: 'Midnight Black',
       condition: 'Clean Title',
       vin: '1NXBR32E' + Math.floor(10000000 + Math.random() * 90000000),
-      location: 'Toronto, ON (Canada)',
+      location: 'Canada & USA' as 'Nigeria' | 'Canada & USA',
+      currentLocation: 'Ontario, Canada',
       status: 'Available',
       image: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=1000',
       imagesText: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=1000\nhttps://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&q=80&w=1000'
@@ -206,7 +208,8 @@ export default function AdminBackend() {
       colour: v.colour,
       condition: v.condition,
       vin: v.vin,
-      location: v.location,
+      location: (v.location === 'Canada & USA' ? 'Canada & USA' : 'Nigeria') as 'Nigeria' | 'Canada & USA',
+      currentLocation: v.currentLocation || (v.location === 'Canada & USA' ? 'Ontario, Canada' : 'Lagos, Nigeria'),
       status: v.status,
       image: v.image,
       imagesText: v.images ? v.images.join('\n') : v.image
@@ -264,6 +267,7 @@ export default function AdminBackend() {
       condition: formData.condition,
       vin: formData.vin,
       location: formData.location,
+      currentLocation: formData.currentLocation || (formData.location === 'Canada & USA' ? 'Ontario, Canada' : 'Lagos, Nigeria'),
       status: formData.status,
       image: primaryImage,
       images: imagesList
@@ -912,12 +916,33 @@ export default function AdminBackend() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-mono text-zinc-400 block mb-1">Location</label>
+                  <label className="text-xs font-mono text-zinc-400 block mb-1">Location Region *</label>
+                  <select
+                    value={formData.location}
+                    onChange={(e) => {
+                      const newLoc = e.target.value as 'Nigeria' | 'Canada & USA';
+                      setFormData({ 
+                        ...formData, 
+                        location: newLoc,
+                        currentLocation: newLoc === 'Canada & USA' 
+                          ? (formData.currentLocation === 'Lagos, Nigeria' ? 'Ontario, Canada' : formData.currentLocation)
+                          : 'Lagos, Nigeria'
+                      });
+                    }}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black border border-zinc-700 text-sm focus:outline-none focus:border-[#2B59FF]"
+                  >
+                    <option value="Nigeria">Nigeria</option>
+                    <option value="Canada & USA">Canada & USA</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-xs font-mono text-zinc-400 block mb-1">Current Hub Location</label>
                   <input
                     type="text"
-                    placeholder="e.g. Toronto, ON (Canada)"
-                    value={formData.location}
-                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                    placeholder="e.g. Ontario, Canada or Lagos, Nigeria"
+                    value={formData.currentLocation}
+                    onChange={(e) => setFormData({ ...formData, currentLocation: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl bg-black border border-zinc-700 text-sm focus:outline-none focus:border-[#2B59FF]"
                   />
                 </div>

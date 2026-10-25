@@ -304,6 +304,11 @@ export default function InventoryPage() {
                         {vehicle.status}
                       </div>
                     )}
+
+                    {/* Gallery Image Count Indicator */}
+                    <div className="absolute bottom-3 right-3 px-2 py-0.5 rounded-full bg-black/75 backdrop-blur-md text-white text-[10px] font-mono font-bold tracking-wider flex items-center gap-1 border border-white/20 shadow-sm pointer-events-none z-10">
+                      <span>1/{vehicle.images && vehicle.images.length > 0 ? vehicle.images.length : 1}</span>
+                    </div>
                   </div>
 
                   {/* Body Content */}
@@ -318,7 +323,13 @@ export default function InventoryPage() {
                     <p className={`text-xs font-mono mb-4 truncate ${
                       theme === 'dark' ? 'text-white/60' : 'text-slate-500'
                     }`}>
-                      {vehicle.specs}
+                      {vehicle.location === "Canada & USA" ? (
+                        <span className="text-emerald-500 font-semibold">
+                          Reserve Deposit: {vehicle.deposit || '₦10,000 min'}
+                        </span>
+                      ) : (
+                        vehicle.specs
+                      )}
                     </p>
 
                     <div className={`p-3 rounded-xl text-xs mb-4 grid grid-cols-2 gap-2 border ${
@@ -330,7 +341,7 @@ export default function InventoryPage() {
                       </div>
                       <div>
                         <span className="text-[10px] uppercase font-mono block opacity-60">Location</span>
-                        <span className="font-semibold truncate block">{vehicle.location}</span>
+                        <span className="font-semibold truncate block">{vehicle.currentLocation || vehicle.location}</span>
                       </div>
                     </div>
                   </div>

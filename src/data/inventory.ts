@@ -17,7 +17,8 @@ export interface VehicleItem {
   condition: string;
   vin: string;
   deposit: string;
-  location: string;
+  location: "Nigeria" | "Canada & USA" | string;
+  currentLocation?: string;
   status: "Available" | "Reserved" | "Sold";
 }
 
@@ -56,7 +57,8 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     condition: "On Ground in Lagos",
     vin: "5NPE24AF8MH891234",
     deposit: "₦10,400,000",
-    location: "Lagos, Nigeria",
+    location: "Nigeria",
+    currentLocation: "Lagos, Nigeria",
     status: "Available"
   },
   {
@@ -82,7 +84,8 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     condition: "On Ground in Lagos",
     vin: "KMHJ24JH8MU654321",
     deposit: "₦15,600,000",
-    location: "Lagos, Nigeria",
+    location: "Nigeria",
+    currentLocation: "Lagos, Nigeria",
     status: "Available"
   },
   {
@@ -107,7 +110,8 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     condition: "On Ground in Lagos",
     vin: "5NPE34AF8HH345678",
     deposit: "₦8,600,000",
-    location: "Lagos, Nigeria",
+    location: "Nigeria",
+    currentLocation: "Lagos, Nigeria",
     status: "Available"
   },
   {
@@ -134,7 +138,8 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     condition: "On Ground in Lagos",
     vin: "1NXBR32E8HZ987654",
     deposit: "₦7,000,000",
-    location: "Lagos, Nigeria",
+    location: "Nigeria",
+    currentLocation: "Lagos, Nigeria",
     status: "Available"
   },
   {
@@ -157,10 +162,11 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     transmission: "Automatic",
     fuelType: "Gasoline",
     colour: "Magnetic Gray Metallic",
-    condition: "On Ground in Lagos",
+    condition: "Located in Canada & USA",
     vin: "2T3C1RFV8LC459201",
-    deposit: "₦11,600,000",
-    location: "Lagos, Nigeria",
+    deposit: "₦6,000,000",
+    location: "Canada & USA",
+    currentLocation: "Scarborough, ON (Canada)",
     status: "Available"
   },
   {
@@ -186,7 +192,8 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     condition: "On Ground in Lagos",
     vin: "JTMCV83J5N4012345",
     deposit: "₦10,000,000",
-    location: "Lagos, Nigeria",
+    location: "Nigeria",
+    currentLocation: "Lagos, Nigeria",
     status: "Available"
   },
   {
@@ -210,10 +217,11 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     transmission: "Automatic",
     fuelType: "Gasoline",
     colour: "Blood Red",
-    condition: "On Ground in Lagos",
+    condition: "Located in Canada & USA",
     vin: "1FTFW1ED8LFA78901",
-    deposit: "₦15,600,000",
-    location: "Lagos, Nigeria",
+    deposit: "₦8,500,000",
+    location: "Canada & USA",
+    currentLocation: "Toronto, ON (Canada)",
     status: "Available"
   },
   {
@@ -235,10 +243,11 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     transmission: "Automatic",
     fuelType: "Gasoline",
     colour: "Polar White",
-    condition: "On Ground in Lagos",
+    condition: "Located in Canada & USA",
     vin: "WDC0G4JB0KF456789",
-    deposit: "₦7,200,000",
-    location: "Lagos, Nigeria",
+    deposit: "₦12,000,000",
+    location: "Canada & USA",
+    currentLocation: "Montreal, QC (Canada)",
     status: "Available"
   }
 ];

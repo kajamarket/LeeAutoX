@@ -11,7 +11,8 @@ export default function VehicleCatalogue() {
   const { theme } = useTheme();
   const { vehicles, inStockCount, minPriceFormatted } = useInventory();
 
-  // Filter state for available Lagos cars
+  // Filter state for available cars
+  const [filterLocation, setFilterLocation] = useState<string>("Nigeria");
   const [filterMake, setFilterMake] = useState("All");
   const [filterBody, setFilterBody] = useState("All");
   const [filterBudget, setFilterBudget] = useState("100000000");
@@ -29,16 +30,19 @@ export default function VehicleCatalogue() {
                              v.make.toLowerCase().includes(q) ||
                              v.model.toLowerCase().includes(q) ||
                              (v.vin && v.vin.toLowerCase().includes(q)) ||
-                             (v.location && v.location.toLowerCase().includes(q));
+                             (v.location && v.location.toLowerCase().includes(q)) ||
+                             (v.currentLocation && v.currentLocation.toLowerCase().includes(q));
+      const matchesLocation = !filterLocation || v.location === filterLocation;
       const matchesMake = filterMake === "All" || v.make.toLowerCase() === filterMake.toLowerCase();
       const matchesBody = filterBody === "All" || v.bodyType.toLowerCase() === filterBody.toLowerCase();
       const matchesBudget = v.numericPrice <= Number(filterBudget);
 
-      return matchesKeyword && matchesMake && matchesBody && matchesBudget;
+      return matchesKeyword && matchesLocation && matchesMake && matchesBody && matchesBudget;
     });
-  }, [vehicles, filterMake, filterBody, filterBudget, searchKeyword]);
+  }, [vehicles, filterLocation, filterMake, filterBody, filterBudget, searchKeyword]);
 
   const resetFilters = () => {
+    setFilterLocation("Nigeria");
     setFilterMake("All");
     setFilterBody("All");
     setFilterBudget("100000000");
@@ -268,7 +272,7 @@ export default function VehicleCatalogue() {
   return (
     <section
       id="catalogue"
-      className={`relative pt-36 pb-12 px-6 md:px-12 transition-colors duration-500 overflow-hidden ${
+      className={`relative pt-14 pb-12 px-6 md:px-12 transition-colors duration-500 overflow-hidden ${
         theme === "dark" ? "bg-[#090909] text-white" : "bg-white text-slate-900"
       }`}
     >
@@ -306,27 +310,19 @@ export default function VehicleCatalogue() {
             <p className={`text-sm sm:text-base font-light leading-relaxed max-w-2xl transition-colors ${
               theme === "dark" ? "text-white/75" : "text-slate-600"
             }`}>
-              These vehicles are <strong className={theme === "dark" ? "text-white font-semibold" : "text-slate-900 font-semibold"}>physically on ground in Lagos, Nigeria</strong> — fully customs-cleared with complete port documentation. Reach out to us today for a physical inspection, and test-drive. Or explore custom auction imports next.
+              Beyond auction sourcing, we also <strong className={theme === "dark" ? "text-white font-semibold" : "text-slate-900 font-semibold"}>own vehicles in our inventory</strong> — available <strong className={theme === "dark" ? "text-white font-semibold" : "text-slate-900 font-semibold"}>physically in Lagos and across Canada & USA</strong>. Contact us today for direct inspection, local pickup, or fast overseas delivery.
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
             <a
-              href="https://wa.me/16473896162?text=Hello%20LeeAutoX!%20I%20want%20to%20book%20a%20physical%20inspection%20for%20a%20vehicle%20in%20Lagos."
+              href="https://wa.me/16473896162?text=Hello%20LeeAutoX!%20I%20want%20to%20book%20a%20physical%20inspection%20for%20a%20vehicle."
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-5 py-3 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-md"
             >
               <MessageSquare size={16} /> Book Inspection
             </a>
-            <div className={`inline-flex items-center gap-2 px-4 py-3 text-xs sm:text-sm font-medium rounded-xl whitespace-nowrap border transition-colors ${
-              theme === "dark"
-                ? "text-white/80 border-white/10 bg-white/[0.04]"
-                : "text-slate-700 border-slate-200 bg-slate-50"
-            }`}>
-              <MapPin size={16} className={theme === "dark" ? "text-emerald-400 shrink-0" : "text-emerald-600 shrink-0"} />
-              <span>5 Pepple Street, Ikeja, Lagos</span>
-            </div>
           </div>
         </div>
 
@@ -336,15 +332,15 @@ export default function VehicleCatalogue() {
             ? "bg-white/5 border-white/15 shadow-black/40"
             : "bg-slate-50 border-slate-200 shadow-slate-200/50"
         }`}>
-          <div className="flex flex-col lg:flex-row gap-4 items-center">
-            {/* Search Input */}
+          <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
+            {/* Search Input - reduced width on desktop and tablet to accommodate location dropdown */}
             <div className="relative w-full lg:flex-1">
               <Search className={`absolute left-4 top-1/2 -translate-y-1/2 ${
                 theme === "dark" ? "text-white/50" : "text-slate-400"
               }`} size={16} />
               <input
                 type="text"
-                placeholder="Search available Lagos stock by make, model, or specs..."
+                placeholder="Search available stock by make, model, or specs..."
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
                 className={`w-full pl-11 pr-4 py-3 text-xs sm:text-sm rounded-xl border transition-colors focus:outline-none focus:border-[#2B59FF] ${
@@ -353,6 +349,27 @@ export default function VehicleCatalogue() {
                     : "border-slate-300 bg-white text-slate-900 placeholder-slate-400"
                 }`}
               />
+            </div>
+
+            {/* Location Dropdown with MapPin SVG (Desktop and Tablet in same row) */}
+            <div className="hidden sm:flex items-center gap-2 shrink-0">
+              <div className="relative flex items-center">
+                <MapPin size={16} className={`absolute left-3.5 pointer-events-none z-10 ${
+                  theme === "dark" ? "text-emerald-400" : "text-emerald-600"
+                }`} />
+                <select
+                  value={filterLocation}
+                  onChange={(e) => setFilterLocation(e.target.value)}
+                  className={`pl-9 pr-4 py-3 text-xs rounded-xl border transition-colors focus:outline-none focus:border-[#2B59FF] cursor-pointer font-medium ${
+                    theme === "dark"
+                      ? "border-white/20 bg-black/80 text-white"
+                      : "border-slate-300 bg-white text-slate-900"
+                  }`}
+                >
+                  <option value="Nigeria" className={theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-slate-900"}>Nigeria</option>
+                  <option value="Canada & USA" className={theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-slate-900"}>Canada & USA</option>
+                </select>
+              </div>
             </div>
 
             {/* Filter Dropdowns */}
@@ -405,13 +422,32 @@ export default function VehicleCatalogue() {
                 <option value="70000000" className={theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-slate-900"}>Under ₦70M</option>
               </select>
             </div>
+
+            {/* Mobile-only Location Dropdown (stacks below existing dropdowns) */}
+            <div className="sm:hidden relative flex items-center w-full">
+              <MapPin size={16} className={`absolute left-3.5 pointer-events-none z-10 ${
+                theme === "dark" ? "text-emerald-400" : "text-emerald-600"
+              }`} />
+              <select
+                value={filterLocation}
+                onChange={(e) => setFilterLocation(e.target.value)}
+                className={`w-full pl-9 pr-4 py-3 text-xs rounded-xl border transition-colors focus:outline-none focus:border-[#2B59FF] cursor-pointer font-medium ${
+                  theme === "dark"
+                    ? "border-white/20 bg-black/80 text-white"
+                    : "border-slate-300 bg-white text-slate-900"
+                }`}
+              >
+                <option value="Nigeria" className={theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-slate-900"}>Nigeria</option>
+                <option value="Canada & USA" className={theme === "dark" ? "bg-zinc-900 text-white" : "bg-white text-slate-900"}>Canada & USA</option>
+              </select>
+            </div>
           </div>
 
           <div className={`flex items-center justify-between mt-4 pt-3 border-t text-xs transition-colors ${
             theme === "dark" ? "border-white/10 text-white/60" : "border-slate-200 text-slate-500"
           }`}>
             <span className="font-mono">
-              Showing <strong>{filteredVehicles.length}</strong> of {vehicles.length} cars available in Lagos
+              Showing <strong>{filteredVehicles.length}</strong> of {vehicles.length} cars in {filterLocation}
             </span>
             {(filterMake !== "All" || filterBody !== "All" || filterBudget !== "100000000" || searchKeyword.trim()) && (
               <button
@@ -524,11 +560,16 @@ export default function VehicleCatalogue() {
                     {/* Location & Status Badges */}
                     <div className="absolute top-3 left-3 flex flex-col gap-1 items-start">
                       <span className="bg-emerald-600 text-white text-[10px] font-mono px-2.5 py-1 uppercase tracking-wider font-bold rounded-md shadow-md flex items-center gap-1">
-                        <MapPin size={10} /> Lagos
+                        <MapPin size={10} /> {vehicle.location === "Canada & USA" ? "Canada & USA" : "Lagos"}
                       </span>
                       <span className="bg-black/70 backdrop-blur-md text-white text-[9px] font-mono px-2 py-0.5 rounded uppercase tracking-wider">
                         {vehicle.condition}
                       </span>
+                    </div>
+
+                    {/* Gallery Image Count Badge (Pill at bottom-right) */}
+                    <div className="absolute bottom-3 right-3 px-2 py-0.5 rounded-full bg-black/75 backdrop-blur-md text-white text-[10px] font-mono font-bold tracking-wider flex items-center gap-1 border border-white/20 shadow-sm pointer-events-none z-10">
+                      <span>1/{vehicle.images && vehicle.images.length > 0 ? vehicle.images.length : 1}</span>
                     </div>
 
                     {vehicle.status !== "Available" && (
@@ -554,10 +595,17 @@ export default function VehicleCatalogue() {
                       {vehicle.name}
                     </h3>
 
+                    {/* Feature tags line replaced with reserve deposit price for Canada & USA */}
                     <p className={`text-xs mb-4 font-mono line-clamp-2 transition-colors ${
                       theme === "dark" ? "text-white/60" : "text-slate-600"
                     }`}>
-                      {vehicle.specs}
+                      {vehicle.location === "Canada & USA" ? (
+                        <span className="text-emerald-500 font-semibold">
+                          Reserve Deposit: {vehicle.deposit || '₦10,000 min'}
+                        </span>
+                      ) : (
+                        vehicle.specs
+                      )}
                     </p>
                   </div>
                 </div>

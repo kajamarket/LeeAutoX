@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Sparkles, Send, ShieldCheck, CreditCard, Ship, MessageSquare } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import cargoContainersImg from '../assets/cargo-containers.jpg';
+import carPartsImg from '../assets/images/car_parts_accessories_1792921764930.jpg';
 
 export default function WhatWeDo() {
   const { theme } = useTheme();
@@ -24,7 +25,7 @@ export default function WhatWeDo() {
     {
       title: 'Car Parts & Accessories',
       description: "Shop parts and accessories on our website. Can't find one? We'll source it for you.",
-      image: 'https://leeplugshub.com/wp-content/uploads/2026/05/Shipping.jpeg',
+      image: carPartsImg,
       linkText: 'Shop Parts →',
       href: 'https://leeautox.leeplugshub.com/shop',
       isExternal: true,
@@ -112,12 +113,12 @@ export default function WhatWeDo() {
               theme === 'dark' ? 'text-white/70' : 'text-slate-600'
             }`}
           >
-            Tell us what you need. We find it, check it, ship it, and deliver it. Explore our genuine auto parts catalogue next.
+            Tell us what you need. We find it, check it, ship it, and deliver it. We also sell cars directly, with vehicles physically on ground in Lagos as well as in Canada & USA — view our available inventory in the next section.
           </motion.p>
         </div>
 
         {/* 3 Merged Cards (Staggered Reveal, Glassmorphic, Responsive) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-10">
           {cards.map((card, i) => (
             <motion.div
               key={card.title}
@@ -190,78 +191,65 @@ export default function WhatWeDo() {
           ))}
         </div>
 
-        {/* 4 Steps: "How it works" (Staggered Reveal, Responsive: 4 in row on desktop, stacked on mobile) */}
-        <div className={`border-t pt-10 transition-colors duration-500 ${theme === 'dark' ? 'border-white/10' : 'border-slate-200'}`}>
-          <div className="text-center mb-12">
-            <motion.h3
-              initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 12 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.35, duration: 0.6 }}
-              className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#2B59FF]"
-            >
+        {/* Integrated Minimalist How It Works Flow (Reduced ~80% in vertical footprint) */}
+        <div className={`pt-6 border-t transition-colors duration-500 ${theme === 'dark' ? 'border-white/10' : 'border-slate-200'}`}>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
+            <h3 className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-[#2B59FF]">
               How it works
-            </motion.h3>
+            </h3>
+            <span className="text-[11px] font-mono uppercase tracking-wider opacity-60">
+              4-Step Transparent Fulfillment
+            </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {steps.map((step, i) => {
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {steps.map((step) => {
               const StepIcon = step.icon;
               return (
-                <motion.div
+                <div
                   key={step.num}
-                  initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
-                  animate={inView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: 0.45 + i * 0.1, duration: 0.6, ease: 'easeOut' }}
-                  whileHover={shouldReduceMotion ? {} : { y: -3 }}
-                  className={`p-6 rounded-2xl border transition-all duration-300 shadow-sm ${
-                    theme === 'dark' 
-                      ? 'bg-white/[0.03] border-white/10 hover:border-white/20' 
-                      : 'bg-white/80 border-slate-200 hover:border-slate-300'
+                  className={`p-3.5 rounded-2xl border transition-all duration-300 shadow-xs flex items-start gap-3 ${
+                    theme === 'dark'
+                      ? 'bg-white/[0.03] border-white/10 hover:border-[#2B59FF]/40'
+                      : 'bg-white border-slate-200 hover:border-[#2B59FF]/40'
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="font-mono text-xs font-bold tracking-[0.25em] text-[#2B59FF]">
-                      {step.num}
-                    </span>
-                    <div className="w-8 h-8 rounded-full bg-[#2B59FF]/10 text-[#2B59FF] flex items-center justify-center">
-                      <StepIcon size={16} />
-                    </div>
+                  <div className="w-8 h-8 rounded-xl bg-[#2B59FF]/10 text-[#2B59FF] flex items-center justify-center shrink-0 mt-0.5">
+                    <StepIcon size={16} />
                   </div>
-                  <h4 className="font-serif text-lg font-bold mb-2">
-                    {step.title}
-                  </h4>
-                  <p className={`text-xs leading-relaxed font-light ${
-                    theme === 'dark' ? 'text-white/70' : 'text-slate-600'
-                  }`}>
-                    {step.detail}
-                  </p>
-                </motion.div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-mono text-xs font-bold tracking-wider text-[#2B59FF]">
+                        {step.num}
+                      </span>
+                      <h4 className="font-serif text-sm font-bold truncate">
+                        {step.title}
+                      </h4>
+                    </div>
+                    <p className={`text-xs leading-relaxed font-light ${
+                      theme === 'dark' ? 'text-white/70' : 'text-slate-600'
+                    }`}>
+                      {step.detail}
+                    </p>
+                  </div>
+                </div>
               );
             })}
           </div>
-        </div>
 
-        {/* Call to Action */}
-        <motion.div
-          initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.7, duration: 0.6 }}
-          className={`mt-16 p-8 sm:p-10 rounded-3xl border text-center max-w-3xl mx-auto shadow-xl backdrop-blur-xl ${
-            theme === 'dark'
-              ? 'bg-zinc-950/70 border-white/10'
-              : 'bg-white/90 border-slate-200'
-          }`}
-        >
-          <p className="font-serif text-xl sm:text-2xl font-bold mb-6">
-            Ready to start? Tell us what you need.
-          </p>
-          <a
-            href="#contact"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-[#2B59FF] hover:bg-blue-600 active:scale-[0.98] text-white text-xs sm:text-sm font-bold uppercase tracking-widest rounded-xl transition-all shadow-[0_0_20px_rgba(43,89,255,0.4)]"
-          >
-            <span>Send Us Your Request →</span>
-          </a>
-        </motion.div>
+          {/* Relocated CTA Button at the bottom of What we do */}
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
+            <p className="font-serif text-base sm:text-lg font-bold">
+              Ready to start? Tell us what you need.
+            </p>
+            <a
+              href="#contact"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#2B59FF] hover:bg-blue-600 active:scale-[0.98] text-white text-xs sm:text-sm font-bold uppercase tracking-widest rounded-xl transition-all shadow-[0_0_15px_rgba(43,89,255,0.35)]"
+            >
+              <span>Send Us Your Request →</span>
+            </a>
+          </div>
+        </div>
       </div>
     </section>
   );

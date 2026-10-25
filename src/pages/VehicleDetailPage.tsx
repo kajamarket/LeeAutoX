@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link, useNavigate, Navigate } from 'react-router-dom';
 import { useInventory } from '../context/InventoryContext';
 import { getVehicleSlug, getVehicleUrl } from '../data/inventory';
@@ -18,8 +18,246 @@ import {
   Gauge, 
   Fuel, 
   Car,
-  FileText
+  FileText,
+  AlertCircle
 } from 'lucide-react';
+
+interface PaymentPlannerProps {
+  fullPrice: number;
+  initialDeposit: string;
+  theme: string;
+}
+
+function PaymentPlanner({ fullPrice, initialDeposit, theme }: PaymentPlannerProps) {
+  // Parse initial numeric deposit or default to 30% of fullPrice
+  const parsedDefault = useMemo(() => {
+    const raw = Number(String(initialDeposit).replace(/[^0-9]/g, ''));
+    return raw > 0 && raw < fullPrice ? raw : Math.round(fullPrice * 0.3);
+  }, [initialDeposit, fullPrice]);
+
+  const [depositAmount, setDepositAmount] = useState<number>(parsedDefault);
+  const [selectedSplits, setSelectedSplits] = useState<number>(1);
+  const [isEditingDeposit, setIsEditingDeposit] = useState<boolean>(false);
+  const [depositInput, setDepositInput] = useState<string>(String(parsedDefault));
+  const [hasError, setHasError] = useState<boolean>(false);
+
+  // Currency formatting utility with comma thousand-separators and ₦ symbol prefix
+  const formatNaira = (val: number): string => {
+    if (isNaN(val) || !isFinite(val)) return '₦0';
+    return `₦${Math.round(val).toLocaleString('en-US')}`;
+  };
+
+  // Core Mathematical Mechanics
+  const balanceAfterDeposit = Math.max(0, fullPrice - depositAmount);
+  const installmentAmount = selectedSplits > 0 ? balanceAfterDeposit / selectedSplits : balanceAfterDeposit;
+
+  // Constraint: minimum installment amount is ₦10,000
+  const MIN_INSTALLMENT = 10000;
+  const isInvalid = installmentAmount < MIN_INSTALLMENT || balanceAfterDeposit < MIN_INSTALLMENT;
+
+  // Check split availability (disable if balance / s < 10,000)
+  const isSplitAvailable = (s: number) => {
+    if (s <= 0) return false;
+    return (balanceAfterDeposit / s) >= MIN_INSTALLMENT;
+  };
+
+  // Handlers for deposit changes
+  const handleDepositChange = (newVal: number) => {
+    if (isNaN(newVal) || newVal < 0) return;
+    const prospectiveBalance = Math.max(0, fullPrice - newVal);
+    const prospectiveInstallment = prospectiveBalance / selectedSplits;
+    if (prospectiveInstallment < MIN_INSTALLMENT) {
+      setHasError(true);
+    } else {
+      setHasError(false);
+    }
+    setDepositAmount(newVal);
+    setDepositInput(String(newVal));
+  };
+
+  const handleDepositSubmit = () => {
+    const parsed = Number(depositInput.replace(/[^0-9]/g, ''));
+    if (!isNaN(parsed) && parsed > 0 && parsed <= fullPrice) {
+      const prospectiveBalance = Math.max(0, fullPrice - parsed);
+      const prospectiveInstallment = prospectiveBalance / selectedSplits;
+      if (prospectiveInstallment < MIN_INSTALLMENT) {
+        setHasError(true);
+      } else {
+        setHasError(false);
+      }
+      setDepositAmount(parsed);
+    } else {
+      setDepositInput(String(depositAmount));
+    }
+    setIsEditingDeposit(false);
+  };
+
+  // Auto-adjust selectedSplits if currently chosen split becomes invalid
+  useEffect(() => {
+    if (!isSplitAvailable(selectedSplits) && selectedSplits > 1) {
+      for (let s = selectedSplits - 1; s >= 1; s--) {
+        if (isSplitAvailable(s)) {
+          setSelectedSplits(s);
+          setHasError(false);
+          return;
+        }
+      }
+      setSelectedSplits(1);
+    }
+  }, [balanceAfterDeposit, selectedSplits]);
+
+  return (
+    <div className={`p-6 rounded-3xl border mb-6 transition-all ${
+      theme === 'dark' ? 'bg-[#181818] border-zinc-800' : 'bg-white border-slate-200 shadow-md'
+    }`}>
+      {/* Target 2: Metadata display field for static full price */}
+      <div className="flex justify-between items-baseline mb-3">
+        <span className="text-xs uppercase font-mono tracking-wider text-slate-500 dark:text-zinc-400 font-medium">
+          Full Price (Static)
+        </span>
+        <span className="text-2xl sm:text-3xl font-bold font-serif text-[#2B59FF]">
+          {formatNaira(fullPrice)}
+        </span>
+      </div>
+
+      <div className="pt-3 border-t border-slate-200/20 dark:border-zinc-800 space-y-3">
+        {/* Target 1: Display field for active deposit value */}
+        <div className="flex justify-between items-center text-xs">
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-600 dark:text-zinc-300 font-mono font-medium">Active Deposit:</span>
+            {!isEditingDeposit && (
+              <button
+                type="button"
+                onClick={() => setIsEditingDeposit(true)}
+                className="text-[10px] text-[#2B59FF] hover:underline cursor-pointer font-mono"
+              >
+                (Customise)
+              </button>
+            )}
+          </div>
+          {!isEditingDeposit ? (
+            <span className="font-mono font-bold text-emerald-500 text-sm">
+              {formatNaira(depositAmount)}
+            </span>
+          ) : (
+            <div className="flex items-center gap-1">
+              <input
+                type="number"
+                value={depositInput}
+                onChange={(e) => setDepositInput(e.target.value)}
+                onBlur={handleDepositSubmit}
+                onKeyDown={(e) => e.key === 'Enter' && handleDepositSubmit()}
+                autoFocus
+                className="w-28 px-2 py-1 text-xs rounded bg-black/60 border border-[#2B59FF] text-white font-mono focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={handleDepositSubmit}
+                className="px-2 py-1 bg-[#2B59FF] text-white text-[10px] rounded font-mono font-bold cursor-pointer"
+              >
+                Apply
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Deposit Quick Adjustment Slider */}
+        <div className="flex items-center gap-2">
+          <input
+            type="range"
+            min={10000}
+            max={Math.max(10000, fullPrice - 10000)}
+            step={50000}
+            value={depositAmount}
+            onChange={(e) => handleDepositChange(Number(e.target.value))}
+            className="w-full accent-[#2B59FF] cursor-pointer h-1.5 bg-slate-200 dark:bg-zinc-700 rounded-lg"
+          />
+        </div>
+
+        {/* Target 3: Calculated display field for remaining balance */}
+        <div className="flex justify-between items-center pt-2 border-t border-slate-200/20 dark:border-zinc-800 text-xs">
+          <span className="text-slate-600 dark:text-zinc-300 font-mono font-medium">
+            Calculated Remaining Balance:
+          </span>
+          <span className="font-mono font-bold text-slate-900 dark:text-white">
+            {formatNaira(balanceAfterDeposit)}
+          </span>
+        </div>
+
+        {/* Target 4: 4-way toggle option array (1, 2, 3, 4) for active split configuration */}
+        <div className="pt-2">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] uppercase font-mono tracking-wider text-slate-500 dark:text-zinc-400 font-medium">
+              Payment Splits:
+            </span>
+            <span className="text-[10px] font-mono text-slate-500 dark:text-zinc-400">
+              Min. ₦10,000 / split
+            </span>
+          </div>
+
+          <div className="grid grid-cols-4 gap-2">
+            {[1, 2, 3, 4].map((split) => {
+              const available = isSplitAvailable(split);
+              const isSelected = selectedSplits === split;
+
+              return (
+                <button
+                  key={split}
+                  type="button"
+                  disabled={!available}
+                  onClick={() => {
+                    if (available) {
+                      setSelectedSplits(split);
+                      setHasError(false);
+                    }
+                  }}
+                  className={`py-2 px-1 text-center rounded-xl border text-xs font-mono font-bold transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-[#2B59FF] text-white border-[#2B59FF] shadow-md shadow-[#2B59FF]/20 scale-[1.02]'
+                      : available
+                      ? theme === 'dark'
+                        ? 'bg-white/5 border-white/10 text-white hover:border-[#2B59FF]/50 hover:bg-white/10'
+                        : 'bg-slate-50 border-slate-200 text-slate-800 hover:border-[#2B59FF]/50 hover:bg-white'
+                      : 'opacity-30 cursor-not-allowed border-dashed bg-black/20 text-slate-500'
+                  }`}
+                >
+                  <div>{split} {split === 1 ? 'Stage' : 'Stages'}</div>
+                  <div className="text-[9px] font-normal opacity-80 mt-0.5">
+                    {available ? formatNaira(balanceAfterDeposit / split) : 'Locked'}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Warning visual cues when constraint is reached */}
+        {(hasError || isInvalid) && (
+          <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs flex items-center gap-2">
+            <AlertCircle size={15} className="shrink-0 text-amber-400" />
+            <span>Installment amount cannot fall below ₦10,000 minimum.</span>
+          </div>
+        )}
+
+        {/* Target 5: Prominent callout output for single installment amount */}
+        <div className="mt-4 p-4 rounded-2xl bg-[#2B59FF]/10 border border-[#2B59FF]/25 text-center">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#2B59FF] font-bold block mb-1">
+            {selectedSplits === 1 ? 'Single Installment Amount' : `Installment Amount (${selectedSplits} Equal Splits)`}
+          </span>
+          <div className="font-serif text-2xl sm:text-3xl font-extrabold text-[#2B59FF]">
+            {formatNaira(installmentAmount)}
+            <span className="text-xs font-mono font-normal opacity-70 ml-1 text-slate-600 dark:text-zinc-300">
+              / installment
+            </span>
+          </div>
+          <p className="text-[11px] font-light mt-1.5 opacity-80 text-slate-600 dark:text-zinc-300">
+            Shipped upon deposit confirmation. Balance spread across container shipping and port clearing.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function VehicleDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -32,10 +270,16 @@ export default function VehicleDetailPage() {
   const [copied, setCopied] = useState(false);
   const [sourcingModalOpen, setSourcingModalOpen] = useState(false);
 
+  const isOverseas = vehicle?.location === 'Canada & USA';
+
   useEffect(() => {
     if (vehicle) {
-      const pageTitle = `${vehicle.year} ${vehicle.make} ${vehicle.model} For Sale | Lagos Nigeria Import | LeeAutoX`;
-      const metaDescription = `Buy verified ${vehicle.year} ${vehicle.make} ${vehicle.model} on ground in Lagos, Nigeria. Fully customs cleared, 100% duty paid, available for physical inspection and test drive.`;
+      const pageTitle = isOverseas
+        ? `${vehicle.year} ${vehicle.make} ${vehicle.model} For Sale | Canada & USA Sourcing | LeeAutoX`
+        : `${vehicle.year} ${vehicle.make} ${vehicle.model} For Sale | Lagos Nigeria Import | LeeAutoX`;
+      const metaDescription = isOverseas
+        ? `Buy verified ${vehicle.year} ${vehicle.make} ${vehicle.model} located in ${vehicle.currentLocation || 'Canada & USA'}. Shipped to Nigeria upon your request once deposit is made.`
+        : `Buy verified ${vehicle.year} ${vehicle.make} ${vehicle.model} on ground in Lagos, Nigeria. Fully customs cleared, 100% duty paid, available for physical inspection and test drive.`;
       const canonicalUrl = `https://leeautox.com${getVehicleUrl(vehicle)}`;
 
       document.title = pageTitle;
@@ -56,7 +300,7 @@ export default function VehicleDetailPage() {
       }
       canonical.setAttribute('href', canonicalUrl);
     }
-  }, [vehicle]);
+  }, [vehicle, isOverseas]);
 
   if (vehicle && id && id.toLowerCase() !== getVehicleSlug(vehicle).toLowerCase()) {
     return <Navigate to={getVehicleUrl(vehicle)} replace />;
@@ -106,7 +350,9 @@ export default function VehicleDetailPage() {
   };
 
   const whatsappMessage = encodeURIComponent(
-    `Hello LeeAutoX! I am inquiring about the ${vehicle.name} (Year: ${vehicle.year}, VIN: ${vehicle.vin || 'N/A'}, Price: ${vehicle.price}) currently in Lagos. I would like to book a physical inspection and test drive.`
+    isOverseas
+      ? `Hello LeeAutoX! I am inquiring about the ${vehicle.name} (Year: ${vehicle.year}, VIN: ${vehicle.vin || 'N/A'}, Price: ${vehicle.price}) located in ${vehicle.currentLocation || 'Canada & USA'}. I would like to make a deposit and arrange shipping to Nigeria.`
+      : `Hello LeeAutoX! I am inquiring about the ${vehicle.name} (Year: ${vehicle.year}, VIN: ${vehicle.vin || 'N/A'}, Price: ${vehicle.price}) currently in Lagos. I would like to book a physical inspection and test drive.`
   );
 
   return (
@@ -195,9 +441,13 @@ export default function VehicleDetailPage() {
                 <ShieldCheck size={24} />
               </div>
               <div>
-                <h4 className="font-serif text-base font-bold mb-1">LeeAutoX Verified Status Guarantee</h4>
+                <h4 className="font-serif text-base font-bold mb-1">
+                  {isOverseas ? 'LeeAutoX Overseas Sourcing Guarantee' : 'LeeAutoX Verified Status Guarantee'}
+                </h4>
                 <p className={`text-xs leading-relaxed font-light ${theme === 'dark' ? 'text-white/70' : 'text-slate-600'}`}>
-                  Every vehicle displayed in our catalogue is currently available in Nigeria, with local availability confirmed.
+                  {isOverseas
+                    ? "This vehicle is located in Canada & USA and will be containerized and shipped to Nigeria upon the owner's request once a deposit is made. Full title verification and pre-shipping inspection guaranteed."
+                    : "Every vehicle displayed in our catalogue is currently available in Nigeria, with local availability confirmed."}
                 </p>
               </div>
             </div>
@@ -220,30 +470,38 @@ export default function VehicleDetailPage() {
 
               <div className="flex items-center gap-2 text-xs font-mono text-slate-600 dark:text-zinc-300 mb-6 font-medium">
                 <MapPin size={14} className="text-[#2B59FF]" />
-                <span>Current Location: {vehicle.location}</span>
+                <span>Current Location: {vehicle.currentLocation || vehicle.location}</span>
               </div>
 
-              {/* Price & Deposit Box */}
-              <div className={`p-6 rounded-3xl border mb-6 ${
-                theme === 'dark' ? 'bg-[#181818] border-zinc-800' : 'bg-white border-slate-200 shadow-md'
-              }`}>
-                <div className="flex justify-between items-baseline mb-3">
-                  <span className="text-xs uppercase font-mono tracking-wider text-slate-500 dark:text-zinc-400 font-medium">Price</span>
-                  <span className="text-2xl sm:text-3xl font-bold font-serif text-[#2B59FF]">{vehicle.price}</span>
+              {/* Price & Deposit Box: Interactive Payment Planner for Canada & USA, Static for Nigeria */}
+              {isOverseas ? (
+                <PaymentPlanner
+                  fullPrice={vehicle.numericPrice}
+                  initialDeposit={vehicle.deposit}
+                  theme={theme}
+                />
+              ) : (
+                <div className={`p-6 rounded-3xl border mb-6 ${
+                  theme === 'dark' ? 'bg-[#181818] border-zinc-800' : 'bg-white border-slate-200 shadow-md'
+                }`}>
+                  <div className="flex justify-between items-baseline mb-3">
+                    <span className="text-xs uppercase font-mono tracking-wider text-slate-500 dark:text-zinc-400 font-medium">Price</span>
+                    <span className="text-2xl sm:text-3xl font-bold font-serif text-[#2B59FF]">{vehicle.price}</span>
+                  </div>
+                  <div className="flex justify-between items-center pt-3 border-t border-slate-200/20 dark:border-zinc-800 text-xs">
+                    <span className="text-slate-600 dark:text-zinc-300 font-mono font-medium">Commitment Deposit:</span>
+                    <span className="font-mono font-bold text-emerald-500">{vehicle.deposit}</span>
+                  </div>
+                  <div className="flex justify-between items-center pt-2 text-[11px] text-slate-500 dark:text-zinc-400 font-mono">
+                    <span>Balance terms:</span>
+                    <span>Based on agreement</span>
+                  </div>
                 </div>
-                <div className="flex justify-between items-center pt-3 border-t border-slate-200/20 dark:border-zinc-800 text-xs">
-                  <span className="text-slate-600 dark:text-zinc-300 font-mono font-medium">Commitment Deposit:</span>
-                  <span className="font-mono font-bold text-emerald-500">{vehicle.deposit}</span>
-                </div>
-                <div className="flex justify-between items-center pt-2 text-[11px] text-slate-500 dark:text-zinc-400 font-mono">
-                  <span>Balance terms:</span>
-                  <span>Based on agreement</span>
-                </div>
-              </div>
+              )}
 
               {/* Action Buttons */}
               <div className="flex flex-col gap-3 mb-8">
-                {/* 3f. Enquire on WhatsApp CTA pre-filled with name and VIN */}
+                {/* Enquire on WhatsApp CTA pre-filled with vehicle details */}
                 <a
                   href={`https://wa.me/${CONTACT_INFO.whatsappRaw}?text=${whatsappMessage}`}
                   target="_blank"
@@ -254,7 +512,7 @@ export default function VehicleDetailPage() {
                   Enquire on WhatsApp
                 </a>
 
-                {/* 3f. Request Sourcing Similar to This CTA */}
+                {/* Request Sourcing Similar to This CTA */}
                 <button
                   type="button"
                   onClick={() => setSourcingModalOpen(true)}
@@ -276,15 +534,21 @@ export default function VehicleDetailPage() {
             }`}>
               <div className="flex items-center gap-2">
                 <CheckCircle size={15} className="text-emerald-500 shrink-0" />
-                <span>Vehicle available locally in Nigeria</span>
+                <span>
+                  {isOverseas ? 'Vehicle located in Canada & USA — ready for export' : 'Vehicle available locally in Nigeria'}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle size={15} className="text-emerald-500 shrink-0" />
-                <span>Port cleared at Apapa / Tin Can Island</span>
+                <span>
+                  {isOverseas ? "Shipped directly to Nigeria upon owner's deposit confirmation" : 'Port cleared at Apapa / Tin Can Island'}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle size={15} className="text-emerald-500 shrink-0" />
-                <span>Vehicle identification and documentation verification supplied</span>
+                <span>
+                  {isOverseas ? 'Full vehicle identification, title verification and inspection report supplied' : 'Vehicle identification and documentation verification supplied'}
+                </span>
               </div>
             </div>
           </div>
@@ -349,7 +613,7 @@ export default function VehicleDetailPage() {
             </div>
             <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60 sm:col-span-2">
               <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Hub Location</span>
-              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.location}</span>
+              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.currentLocation || vehicle.location}</span>
             </div>
           </div>
         </section>
