@@ -562,7 +562,7 @@ export default function VehicleCatalogue() {
                     {/* Location & Status Badges */}
                     <div className="absolute top-3 left-3 flex flex-col gap-1 items-start">
                       <span className="bg-emerald-600 text-white text-[10px] font-mono px-2.5 py-1 uppercase tracking-wider font-bold rounded-md shadow-md flex items-center gap-1">
-                        <MapPin size={10} /> {vehicle.location === "Canada & USA" ? "Canada & USA" : "Lagos"}
+                        <MapPin size={10} /> {vehicle.location === "Canada & USA" ? "Overseas" : "Lagos"}
                       </span>
                       <span className="bg-black/70 backdrop-blur-md text-white text-[9px] font-mono px-2 py-0.5 rounded uppercase tracking-wider">
                         {vehicle.condition}
