@@ -304,7 +304,7 @@ export default function VehicleCatalogue() {
             <h1 className={`font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.08] mb-4 transition-colors ${
               theme === "dark" ? "text-white" : "text-slate-950"
             }`}>
-              Cars For Sale in Lagos
+              Leeautox Cars For Sale
             </h1>
             
             <p className={`text-sm sm:text-base font-light leading-relaxed max-w-2xl transition-colors ${

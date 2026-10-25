@@ -249,6 +249,38 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     location: "Canada & USA",
     currentLocation: "Montreal, QC (Canada)",
     status: "Available"
+  },
+  {
+    id: "9",
+    name: "2021 Toyota RAV4 XLE",
+    make: "Toyota",
+    model: "RAV4",
+    year: 2021,
+    price: "₦25,000,000",
+    numericPrice: 25000000,
+    image: "https://oyinofnorthamerica.com/wp-content/uploads/2026/10/67534736_Image_1-1024x768.webp",
+    images: [
+      "https://oyinofnorthamerica.com/wp-content/uploads/2026/10/67534736_Image_1-1024x768.webp",
+      "https://oyinofnorthamerica.com/wp-content/uploads/2026/10/67534736_Image_2-1024x768.webp",
+      "https://oyinofnorthamerica.com/wp-content/uploads/2026/10/67534736_Image_3-1024x768.webp",
+      "https://oyinofnorthamerica.com/wp-content/uploads/2026/10/67534736_Image_4-1024x768.webp",
+      "https://oyinofnorthamerica.com/wp-content/uploads/2026/10/67534736_Image_5-1024x768.webp",
+      "https://oyinofnorthamerica.com/wp-content/uploads/2026/10/67534736_Image_6-1024x768.jpg",
+      "https://oyinofnorthamerica.com/wp-content/uploads/2026/10/67534736_Image_7-1024x768.webp",
+      "https://oyinofnorthamerica.com/wp-content/uploads/2026/10/67534736_Image_8-1024x768.webp"
+    ],
+    specs: "AWD • Sunroof • Blind Spot Monitor • Lane Departure • Clean",
+    mileage: "42,000 mi",
+    bodyType: "SUV",
+    transmission: "Automatic",
+    fuelType: "Gasoline",
+    colour: "Magnetic Gray Metallic",
+    condition: "Located in Canada & USA",
+    vin: "2T3R1RFV7MW245164",
+    deposit: "₦12,500,000",
+    location: "Canada & USA",
+    currentLocation: "Edmonton, AB (Canada)",
+    status: "Available"
   }
 ];
 

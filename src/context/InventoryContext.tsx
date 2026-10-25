@@ -20,7 +20,7 @@ interface InventoryContextType {
   cloudSyncError: string | null;
 }
 
-const STORAGE_KEY = 'leeautox_inventory_v4';
+const STORAGE_KEY = 'leeautox_inventory_v5';
 
 const normalizeVehicle = (item: any): VehicleItem => {
   let loc = item.location;
@@ -44,7 +44,13 @@ export function InventoryProvider({ children }: { children: React.ReactNode }) {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed.map(normalizeVehicle);
+          const loaded = parsed.map(normalizeVehicle);
+          for (const item of INITIAL_INVENTORY) {
+            if (!loaded.some((v: VehicleItem) => String(v.id) === String(item.id))) {
+              loaded.push(item);
+            }
+          }
+          return loaded;
         }
       }
     } catch (e) {
@@ -90,6 +96,18 @@ export function InventoryProvider({ children }: { children: React.ReactNode }) {
               id: docSnap.id,
             });
           });
+
+          // Ensure any default vehicles in INITIAL_INVENTORY are preserved and synced
+          for (const item of INITIAL_INVENTORY) {
+            if (!remoteVehicles.some((v) => String(v.id) === String(item.id))) {
+              remoteVehicles.push(item);
+              try {
+                setDoc(doc(db, 'vehicles', String(item.id)), item);
+              } catch (err) {
+                console.warn('Syncing new default item to Firestore failed:', item.id, err);
+              }
+            }
+          }
 
           // Sort by newest
           remoteVehicles.sort((a, b) => Number(b.id) - Number(a.id) || b.year - a.year);
