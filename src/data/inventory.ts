@@ -281,7 +281,40 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     location: "Canada & USA",
     currentLocation: "Edmonton, AB (Canada)",
     status: "Available"
+  },
+  {
+    id: "10",
+    name: "2005 Toyota Corolla",
+    make: "Toyota",
+    model: "Corolla",
+    year: 2005,
+    price: "₦8,500,000",
+    numericPrice: 8500000,
+    image: "https://leeautox.com/cars/IMG-20261026-WA0003.jpg",
+    images: [
+      "https://leeautox.com/cars/IMG-20261026-WA0002.jpg",
+      "https://leeautox.com/cars/IMG-20261026-WA0003.jpg",
+      "https://leeautox.com/cars/IMG-20261026-WA0004.jpg",
+      "https://leeautox.com/cars/IMG-20261026-WA0005.jpg",
+      "https://leeautox.com/cars/IMG-20261026-WA0006.jpg",
+      "https://leeautox.com/cars/IMG-20261026-WA0007.jpg",
+      "https://leeautox.com/cars/IMG-20261026-WA0008.jpg",
+      "https://leeautox.com/cars/IMG-20261026-WA0009.jpg"
+    ],
+    specs: "1.8L 4-Cylinder • Automatic • Power Windows • Cold AC • Clean Title",
+    mileage: "138,500 mi",
+    bodyType: "Sedan",
+    transmission: "Automatic",
+    fuelType: "Gasoline",
+    colour: "Red",
+    condition: "Located Overseas",
+    vin: "2T1BR32E65C489120",
+    deposit: "₦4,000,000",
+    location: "Canada & USA",
+    currentLocation: "Ontario, Canada",
+    status: "Sold"
   }
 ];
 
 export const INVENTORY_VEHICLES = INITIAL_INVENTORY;
+

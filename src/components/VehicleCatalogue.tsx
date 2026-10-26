@@ -6,6 +6,7 @@ import { useInventory } from "../context/InventoryContext";
 import { getVehicleUrl } from "../data/inventory";
 import { useTheme } from "../context/ThemeContext";
 import { CONTACT_INFO } from "../constants";
+import SoldWatermark from "./SoldWatermark";
 
 export default function VehicleCatalogue() {
   const { theme } = useTheme();
@@ -557,6 +558,12 @@ export default function VehicleCatalogue() {
                       src={vehicle.image}
                       alt={vehicle.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (target.src.includes('leeautox.com/cars/')) {
+                          target.src = target.src.replace('https://leeautox.com/cars/', '/cars/');
+                        }
+                      }}
                     />
                     
                     {/* Location & Status Badges */}
@@ -580,6 +587,11 @@ export default function VehicleCatalogue() {
                       }`}>
                         {vehicle.status}
                       </div>
+                    )}
+
+                    {/* Sold Watermark Overlay */}
+                    {vehicle.status?.toLowerCase() === 'sold' && (
+                      <SoldWatermark size="card" />
                     )}
                   </div>
 

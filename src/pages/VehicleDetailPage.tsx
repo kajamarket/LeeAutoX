@@ -21,6 +21,7 @@ import {
   FileText,
   AlertCircle
 } from 'lucide-react';
+import SoldWatermark from '../components/SoldWatermark';
 
 interface PaymentPlannerProps {
   fullPrice: number;
@@ -399,6 +400,12 @@ export default function VehicleDetailPage() {
                 src={currentImage}
                 alt={vehicle.name}
                 className="w-full h-full object-cover transition-opacity duration-300"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (target.src.includes('leeautox.com/cars/')) {
+                    target.src = target.src.replace('https://leeautox.com/cars/', '/cars/');
+                  }
+                }}
               />
               <div className="absolute top-4 left-4 flex gap-2">
                 <span className="px-3 py-1 bg-[#2B59FF] text-white text-xs font-mono font-bold uppercase rounded-md shadow-md">
@@ -417,6 +424,11 @@ export default function VehicleDetailPage() {
               <div className="absolute bottom-4 right-4 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md text-white text-xs font-mono font-bold tracking-wider flex items-center gap-1.5 border border-white/20 shadow-md pointer-events-none z-10">
                 <span>{activeImageIndex + 1}/{galleryImages.length}</span>
               </div>
+
+              {/* Sold Watermark Overlay */}
+              {vehicle.status?.toLowerCase() === 'sold' && (
+                <SoldWatermark size="hero" />
+              )}
             </div>
 
             {/* Thumbnail Strip */}
@@ -433,7 +445,17 @@ export default function VehicleDetailPage() {
                         : 'border-transparent opacity-60 hover:opacity-100'
                     }`}
                   >
-                    <img src={img} alt={`View ${idx + 1}`} className="w-full h-full object-cover" />
+                    <img 
+                      src={img} 
+                      alt={`View ${idx + 1}`} 
+                      className="w-full h-full object-cover" 
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (target.src.includes('leeautox.com/cars/')) {
+                          target.src = target.src.replace('https://leeautox.com/cars/', '/cars/');
+                        }
+                      }}
+                    />
                   </button>
                 ))}
               </div>
@@ -653,10 +675,23 @@ export default function VehicleDetailPage() {
                   }`}
                 >
                   <div className="aspect-[16/10] overflow-hidden relative bg-black">
-                    <img src={rel.image} alt={rel.name} className="w-full h-full object-cover" />
+                    <img 
+                      src={rel.image} 
+                      alt={rel.name} 
+                      className="w-full h-full object-cover" 
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (target.src.includes('leeautox.com/cars/')) {
+                          target.src = target.src.replace('https://leeautox.com/cars/', '/cars/');
+                        }
+                      }}
+                    />
                     <span className="absolute top-3 left-3 bg-[#2B59FF] text-white text-[10px] font-mono px-2 py-0.5 rounded font-bold">
                       {rel.location === "Canada & USA" ? "Located Overseas" : rel.condition}
                     </span>
+                    {rel.status?.toLowerCase() === 'sold' && (
+                      <SoldWatermark size="card" />
+                    )}
                   </div>
                   <div className="p-5 flex-1 flex flex-col justify-between">
                     <div>

@@ -20,7 +20,7 @@ interface InventoryContextType {
   cloudSyncError: string | null;
 }
 
-const STORAGE_KEY = 'leeautox_inventory_v6';
+const STORAGE_KEY = 'leeautox_inventory_v7';
 
 const normalizeVehicle = (item: any): VehicleItem => {
   let loc = item.location;

@@ -6,6 +6,7 @@ import { getVehicleUrl } from '../data/inventory';
 import { useTheme } from '../context/ThemeContext';
 import { Search, SlidersHorizontal, ArrowRight, ShieldCheck, Car, CheckCircle2, MessageSquare, RotateCcw } from 'lucide-react';
 import { CONTACT_INFO } from '../constants';
+import SoldWatermark from '../components/SoldWatermark';
 
 export default function InventoryPage() {
   const { theme } = useTheme();
@@ -293,6 +294,12 @@ export default function InventoryPage() {
                       src={vehicle.image}
                       alt={vehicle.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (target.src.includes('leeautox.com/cars/')) {
+                          target.src = target.src.replace('https://leeautox.com/cars/', '/cars/');
+                        }
+                      }}
                     />
                     <div className="absolute top-3 left-3 bg-[#2B59FF] text-white text-[10px] font-mono px-2.5 py-1 uppercase tracking-wider font-bold rounded-md shadow-md">
                       {vehicle.location === "Canada & USA" ? "Located Overseas" : vehicle.condition}
@@ -303,6 +310,11 @@ export default function InventoryPage() {
                       }`}>
                         {vehicle.status}
                       </div>
+                    )}
+
+                    {/* Sold Watermark Overlay */}
+                    {vehicle.status?.toLowerCase() === 'sold' && (
+                      <SoldWatermark size="card" />
                     )}
 
                     {/* Gallery Image Count Indicator */}
