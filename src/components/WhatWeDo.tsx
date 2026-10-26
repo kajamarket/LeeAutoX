@@ -1,20 +1,17 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, ShieldCheck, CreditCard, Ship, MessageSquare } from 'lucide-react';
+import { ShieldCheck, CreditCard, Ship, MessageSquare } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import cargoContainersImg from '../assets/cargo-containers.jpg';
 import carPartsImg from '../assets/images/car_parts_accessories_1792921764930.jpg';
 import TypewriterText from './TypewriterText';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function WhatWeDo() {
   const { theme } = useTheme();
   const sectionRef = useRef<HTMLElement>(null);
-  const pinWrapperRef = useRef<HTMLDivElement>(null);
-  const cardsContainerRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [focusedIndex, setFocusedIndex] = useState<number>(0);
 
   const mainCards = [
     {
@@ -49,6 +46,8 @@ export default function WhatWeDo() {
     },
   ];
 
+  const defaultTilts = [2.5, -2.5, 2.5, -2.5];
+
   const steps = [
     {
       num: '01',
@@ -80,157 +79,53 @@ export default function WhatWeDo() {
     },
   ];
 
-  // GSAP ScrollTrigger Pinned Scroll Animation
+  // GSAP Interaction-driven focus animation (Hover / Click / Keyboard)
   useEffect(() => {
-    const pinTarget = pinWrapperRef.current;
-    if (!pinTarget) return;
+    const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
+    if (cards.length === 0) return;
 
-    // Respect prefers-reduced-motion
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return;
-    }
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const duration = prefersReducedMotion ? 0 : 0.5;
 
-    const mm = gsap.matchMedia();
+    cards.forEach((card, idx) => {
+      const isFocused = idx === focusedIndex;
+      // Focused: full scale 1.0, straight rotation 0, top z-index 50
+      // Unfocused: scale reduced by ~10-15% of original (0.72 for image cards, 0.9 for text card), default tilt, lower z-index
+      const targetScale = isFocused ? 1.0 : (idx === 3 ? 0.9 : 0.72);
+      const targetRotation = isFocused ? 0 : defaultTilts[idx];
+      const targetZ = isFocused ? 50 : 10 + idx;
 
-    // Desktop & Tablet (Horizontal overlapping card stack)
-    mm.add('(min-width: 768px)', () => {
-      const cards = gsap.utils.toArray<HTMLElement>('.wwd-anim-card');
-      if (cards.length < 4) return;
-
-      // Initial state:
-      // Card 1 starts at full focus (scale: 1, rotation: 0)
-      // Cards 2, 3, 4 start offset in a stack to the right, slightly tilted
-      gsap.set(cards[0], { scale: 1, rotation: 0, opacity: 1 });
-      gsap.set(cards[1], { xPercent: 35, scale: 0.82, rotation: -4, opacity: 0.9 });
-      gsap.set(cards[2], { xPercent: 70, scale: 0.78, rotation: 5, opacity: 0.85 });
-      gsap.set(cards[3], { xPercent: 105, scale: 0.75, rotation: -5, opacity: 0.8 });
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: pinTarget,
-          start: 'top top',
-          end: '+=1600',
-          pin: true,
-          scrub: 0.8,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
+      gsap.to(card, {
+        scale: targetScale,
+        rotation: targetRotation,
+        zIndex: targetZ,
+        duration,
+        ease: 'power3.out',
+        force3D: true,
+        overwrite: 'auto',
       });
-
-      // Scroll Phase 1: Card 1 shrinks to 80% (tilts down on right side: +2.5deg) without fading; Card 2 drives into focus (straightens, scale 1.0, full opacity)
-      tl.to(cards[0], {
-        scale: 0.8,
-        rotation: 2.5,
-        duration: 1,
-        ease: 'power2.out',
-      }, 0)
-      .to(cards[1], {
-        xPercent: 0,
-        rotation: 0,
-        scale: 1,
-        opacity: 1,
-        duration: 1,
-        ease: 'power2.out',
-      }, 0);
-
-      // Scroll Phase 2: Card 2 shrinks to 80% (tilts up on right side: -2.5deg) without fading; Card 3 drives into focus
-      tl.to(cards[1], {
-        scale: 0.8,
-        rotation: -2.5,
-        duration: 1,
-        ease: 'power2.out',
-      }, 1)
-      .to(cards[2], {
-        xPercent: 0,
-        rotation: 0,
-        scale: 1,
-        opacity: 1,
-        duration: 1,
-        ease: 'power2.out',
-      }, 1);
-
-      // Scroll Phase 3: Card 3 shrinks to 80% (tilts down on right side: +2.5deg); Card 4 (text card) drives into focus
-      tl.to(cards[2], {
-        scale: 0.8,
-        rotation: 2.5,
-        duration: 1,
-        ease: 'power2.out',
-      }, 2)
-      .to(cards[3], {
-        xPercent: 0,
-        rotation: 0,
-        scale: 1,
-        opacity: 1,
-        duration: 1,
-        ease: 'power2.out',
-      }, 2);
-
-      // Final settle: Card 4 settles into stack with alternating tilt (-2.5deg)
-      tl.to(cards[3], {
-        rotation: -2.5,
-        duration: 0.5,
-        ease: 'power1.out',
-      }, 3);
     });
-
-    // Mobile (< 768px): Responsive card deck scroll
-    mm.add('(max-width: 767px)', () => {
-      const cards = gsap.utils.toArray<HTMLElement>('.wwd-anim-card');
-      if (cards.length < 4) return;
-
-      gsap.set(cards[0], { scale: 1, rotation: 0, opacity: 1 });
-      gsap.set(cards[1], { yPercent: 40, scale: 0.82, rotation: -3, opacity: 0.9 });
-      gsap.set(cards[2], { yPercent: 70, scale: 0.78, rotation: 3, opacity: 0.85 });
-      gsap.set(cards[3], { yPercent: 100, scale: 0.75, rotation: -3, opacity: 0.8 });
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: pinTarget,
-          start: 'top top',
-          end: '+=1200',
-          pin: true,
-          scrub: 0.8,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      tl.to(cards[0], { scale: 0.8, rotation: 2, duration: 1 }, 0)
-        .to(cards[1], { yPercent: 0, scale: 1, rotation: 0, opacity: 1, duration: 1 }, 0)
-        .to(cards[1], { scale: 0.8, rotation: -2, duration: 1 }, 1)
-        .to(cards[2], { yPercent: 0, scale: 1, rotation: 0, opacity: 1, duration: 1 }, 1)
-        .to(cards[2], { scale: 0.8, rotation: 2, duration: 1 }, 2)
-        .to(cards[3], { yPercent: 0, scale: 1, rotation: -2, opacity: 1, duration: 1 }, 2);
-    });
-
-    // Handle resize & cleanup
-    const handleResize = () => {
-      ScrollTrigger.refresh();
-    };
-    window.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
-      mm.revert();
-      ScrollTrigger.getAll().forEach((t) => t.kill());
+      gsap.killTweensOf(cards);
     };
-  }, []);
+  }, [focusedIndex]);
 
   return (
     <section 
       id="what-we-do" 
       ref={sectionRef}
-      className={`relative px-4 sm:px-6 md:px-12 py-10 transition-colors duration-500 overflow-hidden ${
+      className={`relative isolate overflow-hidden px-4 sm:px-6 md:px-12 py-16 sm:py-20 transition-colors duration-500 ${
         theme === 'dark' ? 'bg-[#0a0a0a] text-white' : 'bg-slate-50 text-slate-900'
       }`}
     >
       {/* Background ambient lighting */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[60vw] h-[40vw] bg-[#2B59FF]/5 rounded-full blur-[140px] pointer-events-none" />
 
-      {/* PINNED SECTION WRAPPER: Headings remain fixed behind cards */}
-      <div ref={pinWrapperRef} className="w-full min-h-[92vh] flex flex-col justify-center items-center relative z-10 py-6">
-        {/* Section Header: Fixed Behind Cards */}
-        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 pointer-events-none select-none">
+      {/* STATIC FLOW SECTION WRAPPER: Headings positioned behind cards */}
+      <div className="w-full max-w-7xl mx-auto flex flex-col justify-center items-center relative z-10">
+        {/* Section Header: Positioned Behind Cards */}
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14 pointer-events-none select-none relative z-0">
           <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase text-[#2B59FF] mb-3">
             <span>What we do</span>
           </div>
@@ -246,21 +141,38 @@ export default function WhatWeDo() {
           </h2>
         </div>
 
-        {/* 4 CARDS: 3 Existing Cards + 1 New Smaller Text Card in Horizontal Row (Desktop/Tablet) */}
+        {/* 4 CARDS: 3 Enlarged Image Cards + 1 Untouched Text Card in Horizontal Row (Desktop/Tablet) */}
+        {/* Overflow containment & stacking context preserved */}
         <div
-          ref={cardsContainerRef}
-          className="relative w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center md:items-stretch justify-center -space-y-12 md:space-y-0 md:-space-x-5 lg:-space-x-7 xl:-space-x-8 pb-4"
+          className="relative z-10 w-full flex flex-col md:flex-row items-center md:items-center justify-center -space-y-12 md:space-y-0 md:-space-x-10 lg:-space-x-14 xl:-space-x-16 pb-12 pt-4"
         >
           {/* Card 1: Cars & SUVs */}
           <div
-            className={`wwd-anim-card wwd-card relative rounded-3xl overflow-hidden border transition-all duration-300 shadow-xl flex flex-col justify-between shrink-0 group z-10 ${
+            ref={(el) => { cardRefs.current[0] = el; }}
+            tabIndex={0}
+            role="group"
+            aria-label="Cars & SUVs"
+            aria-current={focusedIndex === 0 ? 'true' : undefined}
+            onMouseEnter={() => setFocusedIndex(0)}
+            onClick={() => setFocusedIndex(0)}
+            onFocus={() => setFocusedIndex(0)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                if ((e.target as HTMLElement) === e.currentTarget) {
+                  e.preventDefault();
+                  setFocusedIndex(0);
+                }
+              }
+            }}
+            className={`wwd-card relative rounded-3xl overflow-hidden border transition-colors duration-300 shadow-2xl flex flex-col justify-between shrink-0 group cursor-pointer will-change-transform outline-none focus-visible:ring-2 focus-visible:ring-[#2B59FF] ${
               theme === 'dark'
-                ? 'bg-zinc-900/85 border-white/10 hover:border-[#2B59FF]/50 shadow-black/40 backdrop-blur-xl'
-                : 'bg-white/90 border-slate-200/90 hover:border-[#2B59FF]/50 shadow-slate-200/60 backdrop-blur-xl'
+                ? 'bg-zinc-900 border-white/10 hover:border-[#2B59FF]/50 shadow-black/50'
+                : 'bg-white border-slate-200 hover:border-[#2B59FF]/50 shadow-slate-300/60'
             }`}
             style={{
-              width: 'clamp(270px, 24vw, 340px)',
-              minHeight: 'clamp(390px, 36vw, 460px)',
+              width: 'clamp(340px, 30vw, 440px)',
+              minHeight: 'clamp(430px, 38vw, 500px)',
+              transformOrigin: 'center center',
             }}
           >
             <div>
@@ -278,7 +190,7 @@ export default function WhatWeDo() {
                 </div>
               </div>
 
-              <div className="p-5">
+              <div className="p-5 sm:p-6">
                 <p className={`text-xs sm:text-sm leading-relaxed font-light ${
                   theme === 'dark' ? 'text-white/75' : 'text-slate-600'
                 }`}>
@@ -287,7 +199,7 @@ export default function WhatWeDo() {
               </div>
             </div>
 
-            <div className={`p-5 pt-0 border-t mt-auto ${
+            <div className={`p-5 sm:p-6 pt-0 border-t mt-auto ${
               theme === 'dark' ? 'border-white/5' : 'border-slate-100'
             }`}>
               <Link
@@ -301,14 +213,31 @@ export default function WhatWeDo() {
 
           {/* Card 2: Car Parts & Accessories */}
           <div
-            className={`wwd-anim-card wwd-card relative rounded-3xl overflow-hidden border transition-all duration-300 shadow-xl flex flex-col justify-between shrink-0 group z-20 ${
+            ref={(el) => { cardRefs.current[1] = el; }}
+            tabIndex={0}
+            role="group"
+            aria-label="Car Parts & Accessories"
+            aria-current={focusedIndex === 1 ? 'true' : undefined}
+            onMouseEnter={() => setFocusedIndex(1)}
+            onClick={() => setFocusedIndex(1)}
+            onFocus={() => setFocusedIndex(1)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                if ((e.target as HTMLElement) === e.currentTarget) {
+                  e.preventDefault();
+                  setFocusedIndex(1);
+                }
+              }
+            }}
+            className={`wwd-card relative rounded-3xl overflow-hidden border transition-colors duration-300 shadow-2xl flex flex-col justify-between shrink-0 group cursor-pointer will-change-transform outline-none focus-visible:ring-2 focus-visible:ring-[#2B59FF] ${
               theme === 'dark'
-                ? 'bg-zinc-900/85 border-white/10 hover:border-[#2B59FF]/50 shadow-black/40 backdrop-blur-xl'
-                : 'bg-white/90 border-slate-200/90 hover:border-[#2B59FF]/50 shadow-slate-200/60 backdrop-blur-xl'
+                ? 'bg-zinc-900 border-white/10 hover:border-[#2B59FF]/50 shadow-black/50'
+                : 'bg-white border-slate-200 hover:border-[#2B59FF]/50 shadow-slate-300/60'
             }`}
             style={{
-              width: 'clamp(270px, 24vw, 340px)',
-              minHeight: 'clamp(390px, 36vw, 460px)',
+              width: 'clamp(340px, 30vw, 440px)',
+              minHeight: 'clamp(430px, 38vw, 500px)',
+              transformOrigin: 'center center',
             }}
           >
             <div>
@@ -326,7 +255,7 @@ export default function WhatWeDo() {
                 </div>
               </div>
 
-              <div className="p-5">
+              <div className="p-5 sm:p-6">
                 <p className={`text-xs sm:text-sm leading-relaxed font-light ${
                   theme === 'dark' ? 'text-white/75' : 'text-slate-600'
                 }`}>
@@ -335,7 +264,7 @@ export default function WhatWeDo() {
               </div>
             </div>
 
-            <div className={`p-5 pt-0 border-t mt-auto ${
+            <div className={`p-5 sm:p-6 pt-0 border-t mt-auto ${
               theme === 'dark' ? 'border-white/5' : 'border-slate-100'
             }`}>
               <a
@@ -351,14 +280,31 @@ export default function WhatWeDo() {
 
           {/* Card 3: Cargo, Bikes & More */}
           <div
-            className={`wwd-anim-card wwd-card relative rounded-3xl overflow-hidden border transition-all duration-300 shadow-xl flex flex-col justify-between shrink-0 group z-30 ${
+            ref={(el) => { cardRefs.current[2] = el; }}
+            tabIndex={0}
+            role="group"
+            aria-label="Cargo, Bikes & More"
+            aria-current={focusedIndex === 2 ? 'true' : undefined}
+            onMouseEnter={() => setFocusedIndex(2)}
+            onClick={() => setFocusedIndex(2)}
+            onFocus={() => setFocusedIndex(2)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                if ((e.target as HTMLElement) === e.currentTarget) {
+                  e.preventDefault();
+                  setFocusedIndex(2);
+                }
+              }
+            }}
+            className={`wwd-card relative rounded-3xl overflow-hidden border transition-colors duration-300 shadow-2xl flex flex-col justify-between shrink-0 group cursor-pointer will-change-transform outline-none focus-visible:ring-2 focus-visible:ring-[#2B59FF] ${
               theme === 'dark'
-                ? 'bg-zinc-900/85 border-white/10 hover:border-[#2B59FF]/50 shadow-black/40 backdrop-blur-xl'
-                : 'bg-white/90 border-slate-200/90 hover:border-[#2B59FF]/50 shadow-slate-200/60 backdrop-blur-xl'
+                ? 'bg-zinc-900 border-white/10 hover:border-[#2B59FF]/50 shadow-black/50'
+                : 'bg-white border-slate-200 hover:border-[#2B59FF]/50 shadow-slate-300/60'
             }`}
             style={{
-              width: 'clamp(270px, 24vw, 340px)',
-              minHeight: 'clamp(390px, 36vw, 460px)',
+              width: 'clamp(340px, 30vw, 440px)',
+              minHeight: 'clamp(430px, 38vw, 500px)',
+              transformOrigin: 'center center',
             }}
           >
             <div>
@@ -376,7 +322,7 @@ export default function WhatWeDo() {
                 </div>
               </div>
 
-              <div className="p-5">
+              <div className="p-5 sm:p-6">
                 <p className={`text-xs sm:text-sm leading-relaxed font-light ${
                   theme === 'dark' ? 'text-white/75' : 'text-slate-600'
                 }`}>
@@ -385,7 +331,7 @@ export default function WhatWeDo() {
               </div>
             </div>
 
-            <div className={`p-5 pt-0 border-t mt-auto ${
+            <div className={`p-5 sm:p-6 pt-0 border-t mt-auto ${
               theme === 'dark' ? 'border-white/5' : 'border-slate-100'
             }`}>
               <a
@@ -399,17 +345,34 @@ export default function WhatWeDo() {
             </div>
           </div>
 
-          {/* Card 4: TASK 3 & 4 - NEW SMALLER TEXT CARD (70-75% proportions, serene white space) */}
+          {/* Card 4: UNTOUCHED 4TH (TEXT) CARD */}
           <div
-            className={`wwd-anim-card wwd-card relative rounded-3xl overflow-hidden border transition-all duration-300 shadow-xl flex flex-col justify-start shrink-0 group z-40 ${
+            ref={(el) => { cardRefs.current[3] = el; }}
+            tabIndex={0}
+            role="group"
+            aria-label="LeeAutoX direct sales and custom request notice"
+            aria-current={focusedIndex === 3 ? 'true' : undefined}
+            onMouseEnter={() => setFocusedIndex(3)}
+            onClick={() => setFocusedIndex(3)}
+            onFocus={() => setFocusedIndex(3)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                if ((e.target as HTMLElement) === e.currentTarget) {
+                  e.preventDefault();
+                  setFocusedIndex(3);
+                }
+              }
+            }}
+            className={`wwd-card relative rounded-3xl overflow-hidden border transition-colors duration-300 shadow-2xl flex flex-col justify-start shrink-0 group cursor-pointer will-change-transform outline-none focus-visible:ring-2 focus-visible:ring-[#2B59FF] ${
               theme === 'dark'
-                ? 'bg-zinc-900/90 border-white/10 shadow-black/40 backdrop-blur-xl text-white'
-                : 'bg-white/95 border-slate-200/90 shadow-slate-200/60 backdrop-blur-xl text-slate-800'
+                ? 'bg-zinc-900 border-white/10 hover:border-[#2B59FF]/50 shadow-black/50 text-white'
+                : 'bg-white border-slate-200 hover:border-[#2B59FF]/50 shadow-slate-300/60 text-slate-800'
             }`}
             style={{
               width: 'clamp(215px, 18.5vw, 260px)',
               minHeight: 'clamp(290px, 27vw, 345px)',
               padding: 'clamp(1.2rem, 2.2vw, 2rem)',
+              transformOrigin: 'center center',
             }}
           >
             <div className="w-full text-left">
@@ -433,7 +396,7 @@ export default function WhatWeDo() {
       </div>
 
       {/* HOW IT WORKS SECTION (Immediately Following the Cards) */}
-      <div className="max-w-7xl mx-auto relative z-10 pt-6">
+      <div className="max-w-7xl mx-auto relative z-10 pt-4">
         <div className={`pt-8 border-t transition-colors duration-500 ${theme === 'dark' ? 'border-white/10' : 'border-slate-200'}`}>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-2">
             <h3 className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-[#2B59FF]">
