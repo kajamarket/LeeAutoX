@@ -3,6 +3,7 @@ import { motion, useInView, useReducedMotion } from 'motion/react';
 import { WHY_CHOOSE_LABELS } from '../constants';
 import { useTheme } from '../context/ThemeContext';
 import { CheckCircle2 } from 'lucide-react';
+import TypewriterText from './TypewriterText';
 
 export default function WhyChooseUs() {
   const { theme } = useTheme();
@@ -86,7 +87,11 @@ export default function WhyChooseUs() {
             theme === 'dark' ? 'text-white/70' : 'text-slate-600'
           }`}
         >
-          Every car we ship is inspected, tracked and documented. Here's what customers say. Browse our recent verified delivery timeline.
+          <TypewriterText
+            text="Every car we ship is inspected, tracked and documented. Here's what customers say. Browse our recent verified delivery timeline."
+            speed={18}
+            delay={200}
+          />
         </motion.p>
 
         {/* Counter Label Badge */}

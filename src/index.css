@@ -67,3 +67,13 @@
 .text-balance {
   text-wrap: balance;
 }
+
+@keyframes caret-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-caret-pulse {
+  animation: caret-pulse 0.85s steps(2, start) infinite;
+}
+

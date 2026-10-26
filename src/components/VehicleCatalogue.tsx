@@ -7,6 +7,7 @@ import { getVehicleUrl } from "../data/inventory";
 import { useTheme } from "../context/ThemeContext";
 import { CONTACT_INFO } from "../constants";
 import SoldWatermark from "./SoldWatermark";
+import TypewriterText from "./TypewriterText";
 
 export default function VehicleCatalogue() {
   const { theme } = useTheme();
@@ -311,7 +312,11 @@ export default function VehicleCatalogue() {
             <p className={`text-sm sm:text-base font-light leading-relaxed max-w-2xl transition-colors ${
               theme === "dark" ? "text-white/75" : "text-slate-600"
             }`}>
-              Beyond auction sourcing, we also <strong className={theme === "dark" ? "text-white font-semibold" : "text-slate-900 font-semibold"}>own vehicles in our inventory</strong> — available <strong className={theme === "dark" ? "text-white font-semibold" : "text-slate-900 font-semibold"}>physically in Lagos and across Canada & USA</strong>. Contact us today for direct inspection, local pickup, or fast overseas delivery.
+              <TypewriterText
+                text="Beyond auction sourcing, we also own vehicles in our inventory — available physically in Lagos and across Canada & USA. Contact us today for direct inspection, local pickup, or fast overseas delivery."
+                speed={18}
+                delay={200}
+              />
             </p>
           </div>
 

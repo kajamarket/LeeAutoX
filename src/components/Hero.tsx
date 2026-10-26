@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { Star, ArrowDownRight } from 'lucide-react';
 import { useReviews } from '../context/ReviewsContext';
 import HeroSearchWidget from './HeroSearchWidget';
+import TypewriterText from './TypewriterText';
 
 export default function Hero() {
   const { averageRating, totalCount } = useReviews();
@@ -74,7 +75,11 @@ export default function Hero() {
           transition={{ delay: 0.35, duration: 0.7 }}
           className="text-white/70 font-light text-base md:text-lg max-w-xl leading-relaxed mb-8"
         >
-          We buy from Copart, IAA, all USA/Canadian auctions, dealerships, and ship to Nigeria or Anywhere in West Africa, and clear customs. Pay in installments, track every step, then collect.
+          <TypewriterText
+            text="We buy from Copart, IAA, all USA/Canadian auctions, dealerships, and ship to Nigeria or Anywhere in West Africa, and clear customs. Pay in installments, track every step, then collect."
+            speed={18}
+            delay={350}
+          />
         </motion.p>
 
         {/* CTAs */}
