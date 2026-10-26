@@ -28,9 +28,10 @@ interface PaymentPlannerProps {
   initialDeposit: string;
   theme: string;
   isCanadaUSA?: boolean;
+  isSold?: boolean;
 }
 
-function PaymentPlanner({ fullPrice, initialDeposit, theme, isCanadaUSA = false }: PaymentPlannerProps) {
+function PaymentPlanner({ fullPrice, initialDeposit, theme, isCanadaUSA = false, isSold = false }: PaymentPlannerProps) {
   // Parse initial numeric deposit or default to 30% of fullPrice
   const parsedDefault = useMemo(() => {
     const raw = Number(String(initialDeposit).replace(/[^0-9]/g, ''));
@@ -109,7 +110,7 @@ function PaymentPlanner({ fullPrice, initialDeposit, theme, isCanadaUSA = false 
   }, [balanceAfterDeposit, selectedSplits]);
 
   return (
-    <div className={`p-6 rounded-3xl border mb-6 transition-all ${
+    <div className={`p-6 rounded-3xl border mb-6 transition-all relative overflow-hidden ${
       theme === 'dark' ? 'bg-[#181818] border-zinc-800' : 'bg-white border-slate-200 shadow-md'
     }`}>
       {/* Target 2: Metadata display field for static full price */}
@@ -257,6 +258,23 @@ function PaymentPlanner({ fullPrice, initialDeposit, theme, isCanadaUSA = false 
           </p>
         </div>
       </div>
+
+      {/* Frosted glass overlay for sold vehicles */}
+      {isSold && (
+        <div 
+          className="absolute inset-0 z-20 flex items-center justify-center bg-black/45 dark:bg-black/55 backdrop-blur-[3.5px] rounded-3xl select-none cursor-not-allowed"
+          aria-hidden="true"
+        >
+          <div
+            className="transform rotate-[14deg] font-serif font-black tracking-[0.28em] text-white uppercase px-8 sm:px-10 py-2 sm:py-2.5 bg-black/40 backdrop-blur-[2px] border-y border-white/35 shadow-2xl drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)] text-xl sm:text-2xl"
+            style={{
+              textShadow: '0 2px 10px rgba(0, 0, 0, 0.85)',
+            }}
+          >
+            SOLD
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -273,6 +291,7 @@ export default function VehicleDetailPage() {
   const [sourcingModalOpen, setSourcingModalOpen] = useState(false);
 
   const isOverseas = vehicle?.location === 'Canada & USA';
+  const isSold = vehicle?.status?.toLowerCase() === 'sold';
 
   useEffect(() => {
     if (vehicle) {
@@ -508,6 +527,7 @@ export default function VehicleDetailPage() {
                   initialDeposit={vehicle.deposit}
                   theme={theme}
                   isCanadaUSA={isOverseas}
+                  isSold={isSold}
                 />
               ) : (
                 <div className={`p-6 rounded-3xl border mb-6 ${
