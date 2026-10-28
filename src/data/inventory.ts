@@ -20,6 +20,10 @@ export interface VehicleItem {
   location: "Nigeria" | "Canada & USA" | string;
   currentLocation?: string;
   status: "Available" | "Reserved" | "Sold";
+  '360degree'?: {
+    exterior: string;
+    interior: string;
+  };
 }
 
 export function getVehicleSlug(vehicle: { id: string | number; year: number; make: string; model: string }): string {
@@ -59,7 +63,8 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     deposit: "₦10,400,000",
     location: "Nigeria",
     currentLocation: "Lagos, Nigeria",
-    status: "Available"
+    status: "Available",
+    '360degree': { exterior: '', interior: '' }
   },
   {
     id: "2",
@@ -86,7 +91,8 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     deposit: "₦15,600,000",
     location: "Nigeria",
     currentLocation: "Lagos, Nigeria",
-    status: "Available"
+    status: "Available",
+    '360degree': { exterior: '', interior: '' }
   },
   {
     id: "3",
@@ -112,7 +118,8 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     deposit: "₦8,600,000",
     location: "Nigeria",
     currentLocation: "Lagos, Nigeria",
-    status: "Available"
+    status: "Available",
+    '360degree': { exterior: '', interior: '' }
   },
   {
     id: "4",
@@ -140,7 +147,8 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     deposit: "₦7,000,000",
     location: "Nigeria",
     currentLocation: "Lagos, Nigeria",
-    status: "Available"
+    status: "Available",
+    '360degree': { exterior: '', interior: '' }
   },
   {
     id: "5",
@@ -167,7 +175,8 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     deposit: "₦6,000,000",
     location: "Canada & USA",
     currentLocation: "Scarborough, ON (Canada)",
-    status: "Available"
+    status: "Available",
+    '360degree': { exterior: '', interior: '' }
   },
   {
     id: "6",
@@ -194,7 +203,8 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     deposit: "₦10,000,000",
     location: "Nigeria",
     currentLocation: "Lagos, Nigeria",
-    status: "Available"
+    status: "Available",
+    '360degree': { exterior: '', interior: '' }
   },
   {
     id: "7",
@@ -222,7 +232,8 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     deposit: "₦8,500,000",
     location: "Canada & USA",
     currentLocation: "Toronto, ON (Canada)",
-    status: "Available"
+    status: "Available",
+    '360degree': { exterior: '', interior: '' }
   },
   {
     id: "8",
@@ -248,7 +259,8 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     deposit: "₦12,000,000",
     location: "Canada & USA",
     currentLocation: "Montreal, QC (Canada)",
-    status: "Available"
+    status: "Available",
+    '360degree': { exterior: '', interior: '' }
   },
   {
     id: "9",
@@ -280,7 +292,8 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     deposit: "₦12,500,000",
     location: "Canada & USA",
     currentLocation: "Edmonton, AB (Canada)",
-    status: "Available"
+    status: "Available",
+    '360degree': { exterior: '', interior: '' }
   },
   {
     id: "10",
@@ -312,7 +325,11 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     deposit: "₦4,000,000",
     location: "Canada & USA",
     currentLocation: "Ontario, Canada",
-    status: "Sold"
+    status: "Sold",
+    '360degree': {
+      exterior: '<iframe src="https://tour.panoee.com/corolla-2005-exterior-360" width="100%" height="100%" frameborder="0" allowfullscreen allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>',
+      interior: '<iframe src="https://tour.panoee.com/corolla-2005-interior-360" width="100%" height="100%" frameborder="0" allowfullscreen allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>'
+    }
   }
 ];
 

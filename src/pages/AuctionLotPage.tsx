@@ -4,8 +4,9 @@ import {
   ArrowLeft, Copy, Check, Clock, MapPin, Gavel, 
   ExternalLink, Key, Zap, AlertTriangle, Eye, X, 
   ChevronLeft, ChevronRight, Car, MessageCircle, 
-  ShieldCheck, Gauge, ShieldAlert, Sparkles, Compass
+  ShieldCheck, Gauge, ShieldAlert, Sparkles, Compass, Download
 } from 'lucide-react';
+import { downloadImage } from '../utils/downloadImage';
 import { useTheme } from '../context/ThemeContext';
 import { VehicleLotItem } from '../types/auction';
 import { 
@@ -614,12 +615,31 @@ export default function AuctionLotPage() {
                 {lot.platform.toUpperCase()} Lot #{lot.lot_number} · Photo {selectedPhotoIndex + 1} of {photos.length}
               </p>
             </div>
-            <button
-              onClick={() => setIsLightboxOpen(false)}
-              className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white font-mono text-xs cursor-pointer"
-            >
-              Close [ESC]
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const currentUrl = photos[selectedPhotoIndex];
+                  const filename = `${lot.year || ''}-${lot.make || ''}-${lot.model || ''}-lot-${lot.lot_number}-${selectedPhotoIndex + 1}.jpg`
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-');
+                  downloadImage(currentUrl, filename);
+                }}
+                aria-label="Download image"
+                className="px-3.5 py-2 bg-white/10 hover:bg-white/20 active:scale-95 rounded-xl text-white font-mono text-xs cursor-pointer flex items-center gap-1.5 transition-all"
+                title="Download current photo"
+              >
+                <Download size={14} />
+                <span>Download</span>
+              </button>
+              <button
+                onClick={() => setIsLightboxOpen(false)}
+                className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white font-mono text-xs cursor-pointer"
+              >
+                Close [ESC]
+              </button>
+            </div>
           </div>
 
           <div 

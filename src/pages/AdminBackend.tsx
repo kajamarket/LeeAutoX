@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useInventory } from '../context/InventoryContext';
 import { useAuth } from '../context/AuthContext';
 import { VehicleItem, getVehicleUrl } from '../data/inventory';
+import { has360Content } from '../utils/panoee';
 import { 
   Lock, 
   Unlock, 
@@ -85,7 +86,9 @@ export default function AdminBackend() {
     currentLocation: 'Lagos, Nigeria',
     status: 'Available' as 'Available' | 'Reserved' | 'Sold',
     image: '',
-    imagesText: ''
+    imagesText: '',
+    degree360Exterior: '',
+    degree360Interior: ''
   });
 
   // Notification Toast
@@ -185,7 +188,9 @@ export default function AdminBackend() {
       currentLocation: 'Ontario, Canada',
       status: 'Available',
       image: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=1000',
-      imagesText: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=1000\nhttps://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&q=80&w=1000'
+      imagesText: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=1000\nhttps://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&q=80&w=1000',
+      degree360Exterior: '',
+      degree360Interior: ''
     });
     setIsModalOpen(true);
   };
@@ -212,7 +217,9 @@ export default function AdminBackend() {
       currentLocation: v.currentLocation || (v.location === 'Canada & USA' ? 'Ontario, Canada' : 'Lagos, Nigeria'),
       status: v.status,
       image: v.image,
-      imagesText: v.images ? v.images.join('\n') : v.image
+      imagesText: v.images ? v.images.join('\n') : v.image,
+      degree360Exterior: v['360degree']?.exterior || '',
+      degree360Interior: v['360degree']?.interior || ''
     });
     setIsModalOpen(true);
   };
@@ -270,7 +277,11 @@ export default function AdminBackend() {
       currentLocation: formData.currentLocation || (formData.location === 'Canada & USA' ? 'Ontario, Canada' : 'Lagos, Nigeria'),
       status: formData.status,
       image: primaryImage,
-      images: imagesList
+      images: imagesList,
+      '360degree': {
+        exterior: formData.degree360Exterior.trim(),
+        interior: formData.degree360Interior.trim()
+      }
     };
 
     if (editingId) {
@@ -672,7 +683,14 @@ export default function AdminBackend() {
                           />
                           <div>
                             <span className="font-bold text-white text-sm block">{v.name}</span>
-                            <span className="text-[11px] text-zinc-400 font-mono">{v.bodyType} • {v.condition}</span>
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                              <span className="text-[11px] text-zinc-400 font-mono">{v.bodyType} • {v.condition}</span>
+                              {has360Content(v['360degree']) && (
+                                <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-[#2B59FF]/20 text-[#2B59FF] border border-[#2B59FF]/30">
+                                  360°
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </td>
@@ -987,6 +1005,42 @@ export default function AdminBackend() {
                     onChange={(e) => setFormData({ ...formData, imagesText: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl bg-black border border-zinc-700 text-xs font-mono focus:outline-none focus:border-[#2B59FF]"
                   />
+                </div>
+
+                <div className="sm:col-span-2 p-4 rounded-2xl bg-black/40 border border-zinc-800 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono font-bold text-[#2B59FF] uppercase tracking-wider">
+                      360° Virtual Tour (Panoee)
+                    </span>
+                    <span className="text-[10px] text-zinc-400 font-mono">Optional</span>
+                  </div>
+                  <p className="text-[11px] text-zinc-400 font-mono leading-relaxed">
+                    Paste full Panoee iframe embed codes or URLs (e.g. https://tour.panoee.com/...). Leave blank if vehicle has no 360° tour. Only panoee.com domains are rendered.
+                  </p>
+                  <div>
+                    <label className="text-xs font-mono text-zinc-400 block mb-1">
+                      Exterior 360° Embed Code or URL
+                    </label>
+                    <textarea
+                      rows={2}
+                      placeholder='<iframe src="https://tour.panoee.com/..."></iframe> or direct URL'
+                      value={formData.degree360Exterior}
+                      onChange={(e) => setFormData({ ...formData, degree360Exterior: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black border border-zinc-700 text-xs font-mono focus:outline-none focus:border-[#2B59FF]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-mono text-zinc-400 block mb-1">
+                      Interior 360° Embed Code or URL
+                    </label>
+                    <textarea
+                      rows={2}
+                      placeholder='<iframe src="https://tour.panoee.com/..."></iframe> or direct URL'
+                      value={formData.degree360Interior}
+                      onChange={(e) => setFormData({ ...formData, degree360Interior: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-black border border-zinc-700 text-xs font-mono focus:outline-none focus:border-[#2B59FF]"
+                    />
+                  </div>
                 </div>
               </div>
 

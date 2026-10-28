@@ -34,7 +34,15 @@ const normalizeVehicle = (item: any): VehicleItem => {
     if (!currLoc) currLoc = item.currentLocation || "Ontario, Canada";
     if (cond === "Located in Canada & USA" || !cond) cond = "Located Overseas";
   }
-  return { ...item, location: loc, currentLocation: currLoc, condition: cond || item.condition };
+  const initItem = INITIAL_INVENTORY.find((i) => String(i.id) === String(item.id));
+  const deg360 = item['360degree'] || initItem?.['360degree'];
+  return { 
+    ...item, 
+    location: loc, 
+    currentLocation: currLoc, 
+    condition: cond || item.condition,
+    '360degree': deg360
+  };
 };
 
 const InventoryContext = createContext<InventoryContextType | undefined>(undefined);

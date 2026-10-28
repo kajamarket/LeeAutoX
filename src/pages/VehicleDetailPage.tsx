@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, Link, useNavigate, Navigate } from 'react-router-dom';
 import { useInventory } from '../context/InventoryContext';
 import { getVehicleSlug, getVehicleUrl } from '../data/inventory';
@@ -19,9 +19,18 @@ import {
   Fuel, 
   Car,
   FileText,
-  AlertCircle
+  AlertCircle,
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  X,
+  Compass,
+  Image as ImageIcon
 } from 'lucide-react';
 import SoldWatermark from '../components/SoldWatermark';
+import Icon360 from '../components/Icon360';
+import { extractPanoeeUrl } from '../utils/panoee';
+import { downloadImage } from '../utils/downloadImage';
 
 interface PaymentPlannerProps {
   fullPrice: number;
@@ -286,12 +295,172 @@ export default function VehicleDetailPage() {
   const { vehicles, getVehicleById } = useInventory();
 
   const vehicle = id ? getVehicleById(id) : undefined;
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [copied, setCopied] = useState(false);
   const [sourcingModalOpen, setSourcingModalOpen] = useState(false);
 
   const isOverseas = vehicle?.location === 'Canada & USA';
   const isSold = vehicle?.status?.toLowerCase() === 'sold';
+
+  // Task 1 & 2: Panoee 360 Virtual Tour URLs
+  const exterior360Url = useMemo(() => extractPanoeeUrl(vehicle?.['360degree']?.exterior), [vehicle]);
+  const interior360Url = useMemo(() => extractPanoeeUrl(vehicle?.['360degree']?.interior), [vehicle]);
+  const has360 = Boolean(exterior360Url || interior360Url);
+
+  const galleryImages = useMemo(() => {
+    if (!vehicle) return [];
+    return vehicle.images && vehicle.images.length > 0 ? vehicle.images : [vehicle.image];
+  }, [vehicle]);
+
+  type SlideItem =
+    | { type: '360-exterior'; url: string; label: string }
+    | { type: '360-interior'; url: string; label: string }
+    | { type: 'photo'; url: string; photoIndex: number; label: string };
+
+  // Unified sequence: Exterior 360 -> Interior 360 -> Photos
+  const slideItems = useMemo<SlideItem[]>(() => {
+    const items: SlideItem[] = [];
+    if (exterior360Url) {
+      items.push({ type: '360-exterior', url: exterior360Url, label: 'Exterior 360' });
+    }
+    if (interior360Url) {
+      items.push({ type: '360-interior', url: interior360Url, label: 'Interior 360' });
+    }
+    galleryImages.forEach((img, idx) => {
+      items.push({ type: 'photo', url: img, photoIndex: idx, label: `Photo ${idx + 1}` });
+    });
+    return items;
+  }, [exterior360Url, interior360Url, galleryImages]);
+
+  // Default to first photo on load for fast critical paint without heavy iframe loading
+  const firstPhotoIndex = useMemo(() => {
+    const idx = slideItems.findIndex((s) => s.type === 'photo');
+    return idx >= 0 ? idx : 0;
+  }, [slideItems]);
+
+  const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
+
+  useEffect(() => {
+    setActiveSlideIndex(firstPhotoIndex);
+  }, [firstPhotoIndex, vehicle?.id]);
+
+  // 360 Viewer lazy-preloading & mounting states
+  const [preloadExterior, setPreloadExterior] = useState(false);
+  const [preloadInterior, setPreloadInterior] = useState(false);
+  const [extLoaded, setExtLoaded] = useState(false);
+  const [intLoaded, setIntLoaded] = useState(false);
+  const [showDragHint, setShowDragHint] = useState(true);
+
+  // Lightbox overlay state (photos only)
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [lightboxPhotoIndex, setLightboxPhotoIndex] = useState(0);
+  const lightboxTriggerRef = useRef<HTMLButtonElement | null>(null);
+
+  // Mobile touch swipe state for prominent card
+  const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
+
+  // Lazy-prepare exterior iframe in background when browser is idle (respecting connection.saveData)
+  useEffect(() => {
+    if (!exterior360Url) return;
+    const connection = (navigator as any).connection;
+    if (connection?.saveData) return;
+
+    if ('requestIdleCallback' in window) {
+      const handle = (window as any).requestIdleCallback(() => {
+        setPreloadExterior(true);
+      }, { timeout: 3000 });
+      return () => (window as any).cancelIdleCallback(handle);
+    } else {
+      const timer = setTimeout(() => {
+        setPreloadExterior(true);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [exterior360Url]);
+
+  // Auto-hide 360 drag hint after 3.5s
+  useEffect(() => {
+    const current = slideItems[activeSlideIndex];
+    if (current && (current.type === '360-exterior' || current.type === '360-interior')) {
+      setShowDragHint(true);
+      const timer = setTimeout(() => {
+        setShowDragHint(false);
+      }, 3500);
+      return () => clearTimeout(timer);
+    }
+  }, [activeSlideIndex, slideItems]);
+
+  // Lock body scroll while lightbox is open and restore focus on close
+  useEffect(() => {
+    if (isLightboxOpen) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        lightboxTriggerRef.current?.focus();
+      };
+    }
+  }, [isLightboxOpen]);
+
+  // Task 4: Cyclical Slider Navigation
+  const goToPrevSlide = () => {
+    if (slideItems.length <= 1) return;
+    setActiveSlideIndex((prev) => (prev > 0 ? prev - 1 : slideItems.length - 1));
+  };
+
+  const goToNextSlide = () => {
+    if (slideItems.length <= 1) return;
+    setActiveSlideIndex((prev) => (prev < slideItems.length - 1 ? prev + 1 : 0));
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isLightboxOpen) {
+        if (e.key === 'Escape') {
+          setIsLightboxOpen(false);
+        } else if (e.key === 'ArrowLeft') {
+          setLightboxPhotoIndex((prev) => (prev > 0 ? prev - 1 : galleryImages.length - 1));
+        } else if (e.key === 'ArrowRight') {
+          setLightboxPhotoIndex((prev) => (prev < galleryImages.length - 1 ? prev + 1 : 0));
+        }
+        return;
+      }
+
+      const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+
+      if (e.key === 'ArrowLeft') {
+        goToPrevSlide();
+      } else if (e.key === 'ArrowRight') {
+        goToNextSlide();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isLightboxOpen, slideItems.length, galleryImages.length]);
+
+  // Touch Swipe on Prominent Card
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null || touchStartYRef.current === null) return;
+    const diffX = touchStartXRef.current - e.changedTouches[0].clientX;
+    const diffY = touchStartYRef.current - e.changedTouches[0].clientY;
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+      if (diffX > 0) {
+        goToNextSlide();
+      } else {
+        goToPrevSlide();
+      }
+    }
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
+  };
 
   useEffect(() => {
     if (vehicle) {
@@ -349,11 +518,9 @@ export default function VehicleDetailPage() {
     );
   }
 
-  const galleryImages = vehicle.images && vehicle.images.length > 0
-    ? vehicle.images
-    : [vehicle.image];
-
-  const currentImage = galleryImages[activeImageIndex] || vehicle.image;
+  const activeSlide = slideItems[activeSlideIndex] || slideItems[0];
+  const activePhotoIndex = activeSlide?.type === 'photo' ? activeSlide.photoIndex : 0;
+  const currentPhotoUrl = galleryImages[activePhotoIndex] || vehicle.image;
 
   const relatedVehicles = vehicles
     .filter(v => String(v.id) !== String(vehicle.id) && (v.bodyType === vehicle.bodyType || v.make === vehicle.make))
@@ -409,16 +576,29 @@ export default function VehicleDetailPage() {
 
         {/* Main Vehicle Overview Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-16">
-          {/* Left Column (7 cols): Photo Gallery */}
+          {/* Left Column (7 cols): Photo Gallery & 360 Viewer */}
           <div className="lg:col-span-7 flex flex-col gap-4">
-            {/* Primary Featured Image Display */}
-            <div className={`aspect-[16/10] w-full rounded-3xl overflow-hidden relative border shadow-lg bg-black ${
-              theme === 'dark' ? 'border-white/10' : 'border-slate-200'
-            }`}>
+            {/* Primary Featured Image & 360 Display Card */}
+            <div
+              className={`aspect-[16/10] w-full rounded-3xl overflow-hidden relative border shadow-lg bg-black ${
+                theme === 'dark' ? 'border-white/10' : 'border-slate-200'
+              }`}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
+              {/* Photo Display Layer */}
               <img
-                src={currentImage}
+                src={currentPhotoUrl}
                 alt={vehicle.name}
-                className="w-full h-full object-cover transition-opacity duration-300"
+                onClick={() => {
+                  if (activeSlide?.type === 'photo') {
+                    setLightboxPhotoIndex(activePhotoIndex);
+                    setIsLightboxOpen(true);
+                  }
+                }}
+                className={`w-full h-full object-cover transition-opacity duration-300 ${
+                  activeSlide?.type === 'photo' ? 'opacity-100 cursor-pointer' : 'opacity-0 pointer-events-none'
+                }`}
                 onError={(e) => {
                   const target = e.currentTarget;
                   if (target.src.includes('leeautox.com/cars/')) {
@@ -426,7 +606,61 @@ export default function VehicleDetailPage() {
                   }
                 }}
               />
-              <div className="absolute top-4 left-4 flex gap-2">
+
+              {/* Task 3: 360 Exterior View Iframe Layer (Mounted & Persistent) */}
+              {exterior360Url && (preloadExterior || activeSlide?.type === '360-exterior') && (
+                <div
+                  className={`absolute inset-0 z-10 w-full h-full bg-black transition-opacity duration-300 ${
+                    activeSlide?.type === '360-exterior' ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                  }`}
+                >
+                  {!extLoaded && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/90 text-white z-10">
+                      <div className="w-8 h-8 rounded-full border-2 border-white/20 border-t-[#2B59FF] animate-spin mb-2" />
+                      <span className="text-xs font-mono text-zinc-400">Loading 360° Exterior Tour...</span>
+                    </div>
+                  )}
+                  <iframe
+                    src={exterior360Url}
+                    title={`${vehicle.name} 360 Exterior Tour`}
+                    loading="lazy"
+                    allowFullScreen
+                    allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"
+                    onLoad={() => setExtLoaded(true)}
+                    className="w-full h-full border-0"
+                    style={{ touchAction: 'pan-y' }}
+                  />
+                </div>
+              )}
+
+              {/* Task 3: 360 Interior View Iframe Layer (Mounted & Persistent) */}
+              {interior360Url && (preloadInterior || activeSlide?.type === '360-interior') && (
+                <div
+                  className={`absolute inset-0 z-10 w-full h-full bg-black transition-opacity duration-300 ${
+                    activeSlide?.type === '360-interior' ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                  }`}
+                >
+                  {!intLoaded && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/90 text-white z-10">
+                      <div className="w-8 h-8 rounded-full border-2 border-white/20 border-t-[#2B59FF] animate-spin mb-2" />
+                      <span className="text-xs font-mono text-zinc-400">Loading 360° Interior Tour...</span>
+                    </div>
+                  )}
+                  <iframe
+                    src={interior360Url}
+                    title={`${vehicle.name} 360 Interior Tour`}
+                    loading="lazy"
+                    allowFullScreen
+                    allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"
+                    onLoad={() => setIntLoaded(true)}
+                    className="w-full h-full border-0"
+                    style={{ touchAction: 'pan-y' }}
+                  />
+                </div>
+              )}
+
+              {/* Top Left Status Tags */}
+              <div className="absolute top-4 left-4 flex gap-2 z-30 pointer-events-none">
                 <span className="px-3 py-1 bg-[#2B59FF] text-white text-xs font-mono font-bold uppercase rounded-md shadow-md">
                   {isOverseas ? "Located Overseas" : vehicle.condition}
                 </span>
@@ -439,10 +673,121 @@ export default function VehicleDetailPage() {
                 )}
               </div>
 
-              {/* Gallery Image Count Badge (Pill at bottom-right) */}
-              <div className="absolute bottom-4 right-4 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md text-white text-xs font-mono font-bold tracking-wider flex items-center gap-1.5 border border-white/20 shadow-md pointer-events-none z-10">
-                <span>{activeImageIndex + 1}/{galleryImages.length}</span>
-              </div>
+              {/* Task 2: 360° Quick-Switch Button / Segmented Toggle */}
+              {has360 && (
+                <div className="absolute top-4 right-4 z-30 flex items-center bg-black/75 backdrop-blur-md rounded-full p-1 border border-white/20 shadow-lg text-white">
+                  {exterior360Url && interior360Url ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPreloadExterior(true);
+                          const extIdx = slideItems.findIndex((s) => s.type === '360-exterior');
+                          if (extIdx >= 0) setActiveSlideIndex(extIdx);
+                        }}
+                        className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                          activeSlide?.type === '360-exterior'
+                            ? 'bg-[#2B59FF] text-white shadow-sm'
+                            : 'hover:bg-white/10 text-white/80'
+                        }`}
+                      >
+                        <Icon360 size={14} />
+                        <span>Exterior</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPreloadInterior(true);
+                          const intIdx = slideItems.findIndex((s) => s.type === '360-interior');
+                          if (intIdx >= 0) setActiveSlideIndex(intIdx);
+                        }}
+                        className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                          activeSlide?.type === '360-interior'
+                            ? 'bg-[#2B59FF] text-white shadow-sm'
+                            : 'hover:bg-white/10 text-white/80'
+                        }`}
+                      >
+                        <Icon360 size={14} />
+                        <span>Interior</span>
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const idx = slideItems.findIndex((s) => s.type.startsWith('360'));
+                        if (idx >= 0) {
+                          if (slideItems[idx].type === '360-exterior') setPreloadExterior(true);
+                          if (slideItems[idx].type === '360-interior') setPreloadInterior(true);
+                          setActiveSlideIndex(idx);
+                        }
+                      }}
+                      className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                        activeSlide?.type.startsWith('360') ? 'bg-[#2B59FF] text-white' : 'hover:bg-white/10 text-white/80'
+                      }`}
+                    >
+                      <Icon360 size={14} />
+                      <span>360° Tour</span>
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {/* Task 3: Subtle One-time Drag Hint */}
+              {showDragHint && (activeSlide?.type === '360-exterior' || activeSlide?.type === '360-interior') && (
+                <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-30 pointer-events-none px-4 py-2 rounded-full bg-black/80 backdrop-blur-md text-white text-xs font-mono flex items-center gap-2 border border-white/20 shadow-lg animate-pulse">
+                  <Compass size={14} className="text-[#2B59FF]" />
+                  <span>Drag to rotate 360°</span>
+                </div>
+              )}
+
+              {/* Task 4: Prev and Next Slider Arrows */}
+              {slideItems.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      goToPrevSlide();
+                    }}
+                    aria-label="Previous slide"
+                    className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center border border-white/20 backdrop-blur-md transition-all cursor-pointer z-30 shadow-lg active:scale-95"
+                  >
+                    <ChevronLeft size={24} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      goToNextSlide();
+                    }}
+                    aria-label="Next slide"
+                    className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center border border-white/20 backdrop-blur-md transition-all cursor-pointer z-30 shadow-lg active:scale-95"
+                  >
+                    <ChevronRight size={24} />
+                  </button>
+                </>
+              )}
+
+              {/* Task 5: Restyled Gallery Image Count Button (Pill at bottom-right) */}
+              <button
+                ref={lightboxTriggerRef}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightboxPhotoIndex(activePhotoIndex);
+                  setIsLightboxOpen(true);
+                }}
+                aria-label="Open photo gallery overlay"
+                className="absolute bottom-4 right-4 px-3.5 py-1.5 rounded-full bg-black/75 hover:bg-black/90 focus-visible:ring-2 focus-visible:ring-[#2B59FF] backdrop-blur-md text-white text-xs font-mono font-bold tracking-wider flex items-center gap-2 border border-white/20 shadow-lg cursor-pointer transition-all z-30"
+              >
+                <ImageIcon size={14} className="text-[#2B59FF]" />
+                <span>
+                  {activeSlide?.type === 'photo'
+                    ? `${activePhotoIndex + 1}/${galleryImages.length}`
+                    : `Photos (${galleryImages.length})`}
+                </span>
+              </button>
 
               {/* Sold Watermark Overlay */}
               {vehicle.status?.toLowerCase() === 'sold' && (
@@ -450,33 +795,72 @@ export default function VehicleDetailPage() {
               )}
             </div>
 
-            {/* Thumbnail Strip */}
-            {galleryImages.length > 1 && (
+            {/* Task 2: Thumbnail Strip (360 entries first, then photos) */}
+            {slideItems.length > 1 && (
               <div className="flex items-center gap-3 overflow-x-auto pb-2 [scrollbar-width:thin]">
-                {galleryImages.map((img, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => setActiveImageIndex(idx)}
-                    className={`relative w-24 h-18 sm:w-28 sm:h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
-                      activeImageIndex === idx
-                        ? 'border-[#2B59FF] ring-2 ring-[#2B59FF]/30 scale-102'
-                        : 'border-transparent opacity-60 hover:opacity-100'
-                    }`}
-                  >
-                    <img 
-                      src={img} 
-                      alt={`View ${idx + 1}`} 
-                      className="w-full h-full object-cover" 
-                      onError={(e) => {
-                        const target = e.currentTarget;
-                        if (target.src.includes('leeautox.com/cars/')) {
-                          target.src = target.src.replace('https://leeautox.com/cars/', '/cars/');
-                        }
-                      }}
-                    />
-                  </button>
-                ))}
+                {slideItems.map((item, idx) => {
+                  const isActive = activeSlideIndex === idx;
+
+                  if (item.type === '360-exterior' || item.type === '360-interior') {
+                    return (
+                      <button
+                        key={item.type}
+                        type="button"
+                        onClick={() => {
+                          if (item.type === '360-exterior') setPreloadExterior(true);
+                          if (item.type === '360-interior') setPreloadInterior(true);
+                          setActiveSlideIndex(idx);
+                        }}
+                        onMouseEnter={() => {
+                          if (item.type === '360-exterior') setPreloadExterior(true);
+                          if (item.type === '360-interior') setPreloadInterior(true);
+                        }}
+                        onFocus={() => {
+                          if (item.type === '360-exterior') setPreloadExterior(true);
+                          if (item.type === '360-interior') setPreloadInterior(true);
+                        }}
+                        className={`relative w-24 h-18 sm:w-28 sm:h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer bg-zinc-900 flex flex-col items-center justify-center p-1 text-white group ${
+                          isActive
+                            ? 'border-[#2B59FF] ring-2 ring-[#2B59FF]/30 scale-102'
+                            : 'border-transparent opacity-75 hover:opacity-100'
+                        }`}
+                      >
+                        <div className="w-8 h-8 rounded-full bg-[#2B59FF]/20 text-[#2B59FF] flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <Icon360 size={18} />
+                        </div>
+                        <span className="text-[10px] font-mono font-bold mt-1 text-white truncate max-w-full">
+                          {item.label}
+                        </span>
+                        <div className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                      </button>
+                    );
+                  }
+
+                  return (
+                    <button
+                      key={`photo-${item.photoIndex}`}
+                      type="button"
+                      onClick={() => setActiveSlideIndex(idx)}
+                      className={`relative w-24 h-18 sm:w-28 sm:h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
+                        isActive
+                          ? 'border-[#2B59FF] ring-2 ring-[#2B59FF]/30 scale-102'
+                          : 'border-transparent opacity-60 hover:opacity-100'
+                      }`}
+                    >
+                      <img
+                        src={item.url}
+                        alt={`View ${item.photoIndex + 1}`}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          if (target.src.includes('leeautox.com/cars/')) {
+                            target.src = target.src.replace('https://leeautox.com/cars/', '/cars/');
+                          }
+                        }}
+                      />
+                    </button>
+                  );
+                })}
               </div>
             )}
 
@@ -511,7 +895,12 @@ export default function VehicleDetailPage() {
                 <span>{vehicle.bodyType}</span>
               </div>
 
-              <h1 className="font-serif text-3xl sm:text-4xl font-bold leading-tight mb-4 text-slate-900 dark:text-white">
+              <h1 
+                className={`font-serif text-3xl sm:text-4xl font-bold leading-tight mb-4 ${
+                  theme === 'dark' ? 'text-white' : 'text-slate-950'
+                }`}
+                style={{ color: theme === 'dark' ? '#ffffff' : '#0a0a0a' }}
+              >
                 {vehicle.name}
               </h1>
 
@@ -767,6 +1156,119 @@ export default function VehicleDetailPage() {
                 Close
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* TASK 5: FULLSCREEN PHOTO GALLERY OVERLAY */}
+      {isLightboxOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Full-screen photo gallery"
+          className="fixed inset-0 z-50 bg-black/95 flex flex-col justify-between p-4 md:p-8 animate-fadeIn"
+          onClick={() => setIsLightboxOpen(false)}
+        >
+          {/* Lightbox Top Bar */}
+          <div className="flex items-center justify-between text-white max-w-6xl mx-auto w-full">
+            <div>
+              <h4 className="font-serif text-lg font-bold">{vehicle.name}</h4>
+              <p className="text-xs font-mono opacity-70">
+                Photo {lightboxPhotoIndex + 1} of {galleryImages.length}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const currentUrl = galleryImages[lightboxPhotoIndex];
+                  const filename = `${vehicle.year}-${vehicle.make}-${vehicle.model}-${lightboxPhotoIndex + 1}.jpg`
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-');
+                  downloadImage(currentUrl, filename);
+                }}
+                aria-label="Download current photo"
+                className="px-3.5 py-2 bg-white/10 hover:bg-white/20 active:scale-95 rounded-xl text-white font-mono text-xs cursor-pointer flex items-center gap-1.5 transition-all"
+                title="Download current photo"
+              >
+                <Download size={14} />
+                <span>Download</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsLightboxOpen(false)}
+                aria-label="Close gallery"
+                className="px-4 py-2 bg-white/10 hover:bg-white/20 active:scale-95 rounded-xl text-white font-mono text-xs cursor-pointer flex items-center gap-1.5 transition-all"
+              >
+                <X size={14} />
+                <span>Close [ESC]</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Center Display Image with Arrows */}
+          <div
+            className="relative flex items-center justify-center flex-1 max-w-5xl mx-auto w-full my-4 select-none"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={galleryImages[lightboxPhotoIndex]}
+              alt={`${vehicle.name} photo ${lightboxPhotoIndex + 1}`}
+              className="max-h-[75vh] max-w-full object-contain rounded-lg shadow-2xl"
+            />
+
+            {galleryImages.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLightboxPhotoIndex((prev) => (prev > 0 ? prev - 1 : galleryImages.length - 1));
+                  }}
+                  aria-label="Previous photo"
+                  className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-all cursor-pointer shadow-lg backdrop-blur-md active:scale-95"
+                >
+                  <ChevronLeft size={24} />
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLightboxPhotoIndex((prev) => (prev < galleryImages.length - 1 ? prev + 1 : 0));
+                  }}
+                  aria-label="Next photo"
+                  className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-all cursor-pointer shadow-lg backdrop-blur-md active:scale-95"
+                >
+                  <ChevronRight size={24} />
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Bottom Thumbnail Strip for Lightbox */}
+          <div
+            className="flex items-center justify-center gap-2 overflow-x-auto py-2 max-w-5xl mx-auto w-full [scrollbar-width:thin]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {galleryImages.map((src, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightboxPhotoIndex(idx);
+                }}
+                className={`relative w-16 h-12 shrink-0 rounded-md overflow-hidden border-2 transition-all cursor-pointer ${
+                  idx === lightboxPhotoIndex
+                    ? 'border-[#2B59FF] scale-105'
+                    : 'border-transparent opacity-60 hover:opacity-100'
+                }`}
+              >
+                <img src={src} alt="" className="w-full h-full object-cover" />
+              </button>
+            ))}
           </div>
         </div>
       )}
