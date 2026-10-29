@@ -177,7 +177,7 @@ export default function VeyraHeroCar() {
 
   return (
     <div
-      className={`veyra-scope transition-all duration-300 ${appearance ? 'pb-32 sm:pb-36' : 'pb-6'}`}
+      className={`veyra-scope transition-all duration-300 ${appearance ? 'pb-32 sm:pb-36' : 'pb-0'}`}
       role="region"
       aria-label="Interactive concept car visualizer"
     >
