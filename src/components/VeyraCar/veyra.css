@@ -1,0 +1,419 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500&display=swap');
+
+.veyra-scope {
+  --sky: #708fa2;
+  --acid: #edff39;
+  --ink: #fff;
+  --muted: #e1eaf0;
+  --panel: #35586e;
+  --line: #ffffff30;
+  --on-acid: #10190c;
+  --radius-panel: 12px;
+  --radius-control: 7px;
+  --ease: cubic-bezier(0.22, 0.7, 0.25, 1);
+  --ui-fast: 180ms;
+  --ui-enter: 240ms;
+
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  position: relative;
+  width: 100%;
+}
+
+.veyra-scope * {
+  box-sizing: border-box;
+}
+
+.veyra-scope button {
+  font-family: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.veyra-stage {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Image Plane strictly adheres to 1672:941 aspect ratio */
+.veyra-scope .image-plane {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1672 / 941;
+  isolation: isolate;
+}
+
+/* Seamless borderless black stage */
+.veyra-scope .media-envelope {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
+  outline: none;
+  pointer-events: none;
+  user-select: none;
+  background-color: transparent;
+}
+
+.veyra-scope .exterior-envelope {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.veyra-scope .car-visual {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.veyra-scope .car-image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  inset: 0;
+  pointer-events: none;
+  user-select: none;
+  display: block;
+}
+
+.veyra-scope .appearance-visual {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.24s ease;
+  pointer-events: none;
+}
+
+.veyra-scope .appearance-visual.shown {
+  opacity: 1;
+}
+
+.veyra-scope .appearance-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+/* Hotspots: 48px touch target with 28px electric-green disc */
+.veyra-scope .hotspot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 0;
+  background: none;
+  padding: 0;
+  border-radius: 50%;
+  transition: opacity var(--ui-fast);
+}
+
+.veyra-scope .hotspot:focus-visible {
+  outline: 2px solid var(--acid);
+  outline-offset: 4px;
+}
+
+.veyra-scope .hotspot-ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: var(--on-acid);
+  background: var(--acid);
+  box-shadow: 0 0 0 5px rgba(237, 255, 57, 0.12);
+  transition: transform var(--ui-fast), box-shadow var(--ui-fast);
+}
+
+.veyra-scope .hotspot-ring::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border: 1px solid rgba(237, 255, 57, 0.45);
+  border-radius: 50%;
+  animation: veyra-breath 5s ease-in-out infinite;
+}
+
+@keyframes veyra-breath {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(1.08);
+  }
+}
+
+.veyra-scope .hotspot.active .hotspot-ring,
+.veyra-scope .hotspot:hover:not(:disabled) .hotspot-ring {
+  transform: scale(1.08);
+  box-shadow: 0 0 0 6px rgba(237, 255, 57, 0.25);
+}
+
+.veyra-scope .hotspot:disabled {
+  opacity: 0.28;
+  cursor: default;
+  pointer-events: none;
+}
+
+.veyra-scope .hotspot:disabled .hotspot-ring::after {
+  animation: none;
+  opacity: 0;
+}
+
+/* Tooltip label */
+.veyra-scope .hotspot-label {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translate(-50%, 4px);
+  opacity: 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  white-space: nowrap;
+  background: var(--acid);
+  color: var(--on-acid);
+  border-radius: var(--radius-control);
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  transition: opacity var(--ui-fast), transform var(--ui-enter) var(--ease);
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.veyra-scope .hotspot.active .hotspot-label,
+.veyra-scope .hotspot:focus-visible .hotspot-label,
+.veyra-scope .hotspot:hover:not(:disabled) .hotspot-label {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* Hotspot positioning and interactive corridor */
+.veyra-scope .appearance-hotspot {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.veyra-scope .appearance-hotspot.expanded {
+  z-index: 30;
+}
+
+.veyra-scope .appearance-hotspot > .hotspot {
+  left: var(--anchor-x);
+  top: var(--anchor-y);
+  pointer-events: auto;
+}
+
+.veyra-scope .appearance-hotspot > .hotspot:disabled {
+  pointer-events: none;
+}
+
+.veyra-scope .appearance-hotspot.expanded .hotspot-label {
+  opacity: 0;
+}
+
+/* Pointer Corridor: connects anchor button to the docked menu below */
+.veyra-scope .menu-bridge {
+  position: absolute;
+  inset: 0 0 -22px;
+  pointer-events: auto;
+  clip-path: polygon(
+    calc(var(--anchor-x) - 24px) calc(var(--anchor-y) - 12px),
+    calc(var(--anchor-x) + 24px) calc(var(--anchor-y) - 12px),
+    calc(50% + 160px) 100%,
+    calc(50% - 160px) 100%
+  );
+}
+
+/* Docked Appearance Menu */
+.veyra-scope .appearance-menu {
+  position: absolute;
+  top: calc(100% + 18px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 312px;
+  padding: 10px 18px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  background: var(--panel);
+  color: var(--ink);
+  box-shadow: 0 12px 32px rgba(16, 25, 12, 0.45);
+  pointer-events: auto;
+  animation: veyra-menu-in var(--ui-enter) var(--ease);
+  z-index: 40;
+}
+
+@keyframes veyra-menu-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 6px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.veyra-scope .appearance-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.3;
+  gap: 12px;
+  min-height: 32px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 6px;
+}
+
+.veyra-scope .appearance-close {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-control);
+  margin: -4px -8px -4px 0;
+  color: var(--muted);
+  transition: background var(--ui-fast), color var(--ui-fast);
+}
+
+.veyra-scope .appearance-close:hover {
+  background: var(--acid);
+  color: var(--on-acid);
+}
+
+.veyra-scope .appearance-options {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.veyra-scope .appearance-option {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  height: 44px;
+  padding: 4px;
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  transition: border-color var(--ui-fast), background var(--ui-fast);
+  color: var(--on-acid);
+}
+
+.veyra-scope .appearance-option:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.veyra-scope .appearance-option.selected {
+  border-color: var(--acid);
+}
+
+.veyra-scope .appearance-option:disabled {
+  opacity: 0.35;
+  cursor: wait;
+}
+
+.veyra-scope .paint-chip {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+.veyra-scope .appearance-menu.wheels .appearance-options {
+  justify-content: space-between;
+}
+
+.veyra-scope .appearance-menu.wheels .appearance-option {
+  width: 78px;
+  height: 62px;
+  border-radius: var(--radius-control);
+}
+
+.veyra-scope .wheel-chip {
+  display: block;
+  width: 66px;
+  height: 52px;
+  border-radius: 4px;
+  background-size: 530% auto;
+  background-position: 48% 79%;
+  background-repeat: no-repeat;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+.veyra-scope .appearance-caption {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ink);
+  text-align: left;
+}
+
+.veyra-scope .appearance-caption small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+@media (max-width: 480px) {
+  .veyra-scope .appearance-menu {
+    width: 288px;
+    padding: 10px 14px 12px;
+  }
+  .veyra-scope .hotspot-ring {
+    width: 26px;
+    height: 26px;
+  }
+  .veyra-scope .hotspot-label {
+    font-size: 12px;
+  }
+  .veyra-scope .appearance-menu.wheels .appearance-option {
+    width: 70px;
+    height: 56px;
+  }
+  .veyra-scope .wheel-chip {
+    width: 58px;
+    height: 46px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .veyra-scope,
+  .veyra-scope *,
+  .veyra-scope *::before,
+  .veyra-scope *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}
