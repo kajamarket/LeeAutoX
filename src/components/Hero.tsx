@@ -10,7 +10,7 @@ export default function Hero() {
   const { averageRating, totalCount } = useReviews();
 
   return (
-    <section className="relative pt-[82px] sm:pt-28 md:pt-32 pb-10 md:pb-12 px-6 md:px-12 bg-black text-white overflow-hidden">
+    <section className="relative pt-[82px] sm:pt-24 md:pt-[104px] pb-10 md:pb-12 px-6 md:px-12 bg-black text-white overflow-hidden">
       {/* Ambient Lighting & Headlights */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-35">
         <div className="absolute top-[20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-gradient-to-br from-[#2B59FF]/20 to-transparent blur-[120px]" />
