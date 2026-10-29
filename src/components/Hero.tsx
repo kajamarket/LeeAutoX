@@ -10,7 +10,7 @@ export default function Hero() {
   const { averageRating, totalCount } = useReviews();
 
   return (
-    <section className="relative pt-[82px] sm:pt-[86px] md:pt-[88px] pb-10 md:pb-12 px-6 md:px-12 bg-black text-white overflow-hidden">
+    <section className="relative pt-[82px] sm:pt-28 md:pt-32 pb-10 md:pb-12 px-6 md:px-12 bg-black text-white overflow-hidden">
       {/* Ambient Lighting & Headlights */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-35">
         <div className="absolute top-[20%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-gradient-to-br from-[#2B59FF]/20 to-transparent blur-[120px]" />
@@ -18,9 +18,9 @@ export default function Hero() {
       </div>
 
       <div className="max-w-7xl mx-auto w-full relative z-10 mb-12">
-        <div className="grid grid-cols-1 md:grid-cols-12 md:gap-x-8 lg:gap-x-12 md:gap-y-0 md:items-center mb-2 md:mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-12 md:gap-x-8 lg:gap-x-12 md:gap-y-0 md:items-center mb-2 md:mb-8 lg:mb-10">
           {/* Item 1: Eyebrow & Dynamic Rating Badge */}
-          <div className="order-1 md:col-span-5 md:col-start-1 md:row-start-1 flex flex-wrap items-center gap-4 mb-[5px] md:mb-2">
+          <div className="order-1 md:col-span-5 md:col-start-1 md:row-start-1 flex flex-wrap items-center gap-4 mb-[5px] md:mb-4 lg:mb-5">
             <motion.p
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -48,14 +48,14 @@ export default function Hero() {
             </motion.a>
           </div>
 
-          {/* Item 2: Headline - Mobile size reduced 30% (34px vs 48px), Desktop/Tablet unchanged (7xl) */}
+          {/* Item 2: Headline - Mobile size preserved, single line on desktop/tablet */}
           <motion.h1
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.8, ease: 'easeOut' }}
-            className="order-2 md:col-span-5 md:col-start-1 md:row-start-2 font-serif text-[34px] leading-[1.1] sm:text-5xl md:text-7xl md:leading-[0.95] font-black tracking-tight text-white text-balance mb-[5px] md:mb-2"
+            className="order-2 md:col-span-6 lg:col-span-5 md:col-start-1 md:row-start-2 font-serif text-[34px] leading-[1.1] sm:text-5xl md:text-7xl md:leading-[0.95] font-black tracking-tight text-white text-balance sm:text-wrap mb-[5px] md:mb-4 lg:mb-5"
           >
-            Buy in Canada & USA.<br />
+            <span className="inline-block sm:whitespace-nowrap">Buy in Canada & USA.</span><br />
             <span className="italic font-normal">Collect anywhere in Nigeria.</span>
           </motion.h1>
 
@@ -78,7 +78,7 @@ export default function Hero() {
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.35, duration: 0.7 }}
-            className="order-4 md:col-span-5 md:col-start-1 md:row-start-3 text-white/70 font-light text-base md:text-lg leading-[1.35] mb-[7px] md:mb-2.5"
+            className="order-4 md:col-span-5 md:col-start-1 md:row-start-3 text-white/70 font-light text-base md:text-lg leading-[1.35] md:leading-relaxed mb-[7px] md:mb-6 lg:mb-8"
           >
             <TypewriterText
               text="We buy from Copart, IAA, all USA/Canadian auctions, dealerships, and ship to Nigeria or Anywhere in West Africa, and clear customs. Pay in installments, track every step, then collect."
@@ -125,7 +125,7 @@ export default function Hero() {
           transition={{ delay: 0.55, duration: 0.8 }}
           className="w-full relative scroll-mt-24"
         >
-          <div className="flex items-center justify-between mb-1.5 px-1">
+          <div className="flex items-center justify-between mb-1.5 md:mb-3 px-1">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-[#2B59FF] animate-pulse" />
               <h3 className="font-serif text-lg font-bold text-white tracking-wide">
