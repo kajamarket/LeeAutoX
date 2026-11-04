@@ -919,7 +919,7 @@ export default function VehicleDetailPage() {
                   isSold={isSold}
                 />
               ) : (
-                <div className={`p-6 rounded-3xl border mb-6 ${
+                <div className={`p-6 rounded-3xl border mb-6 relative overflow-hidden transition-all ${
                   theme === 'dark' ? 'bg-[#181818] border-zinc-800' : 'bg-white border-slate-200 shadow-md'
                 }`}>
                   <div className="flex justify-between items-baseline mb-3">
@@ -934,6 +934,23 @@ export default function VehicleDetailPage() {
                     <span>Balance terms:</span>
                     <span>Based on agreement</span>
                   </div>
+
+                  {/* Frosted glass overlay for sold vehicles */}
+                  {isSold && (
+                    <div 
+                      className="absolute inset-0 z-20 flex items-center justify-center bg-black/45 dark:bg-black/55 backdrop-blur-[3.5px] rounded-3xl select-none cursor-not-allowed"
+                      aria-hidden="true"
+                    >
+                      <div
+                        className="transform rotate-[14deg] font-serif font-black tracking-[0.28em] text-white uppercase px-8 sm:px-10 py-2 sm:py-2.5 bg-black/40 backdrop-blur-[2px] border-y border-white/35 shadow-2xl drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)] text-xl sm:text-2xl"
+                        style={{
+                          textShadow: '0 2px 10px rgba(0, 0, 0, 0.85)',
+                        }}
+                      >
+                        SOLD
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
