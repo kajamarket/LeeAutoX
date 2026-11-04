@@ -147,7 +147,7 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     deposit: "₦7,000,000",
     location: "Nigeria",
     currentLocation: "Lagos, Nigeria",
-    status: "Available",
+    status: "Sold",
     '360degree': { exterior: '', interior: '' }
   },
   {
