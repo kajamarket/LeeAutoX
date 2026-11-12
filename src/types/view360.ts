@@ -79,11 +79,23 @@ export interface NormalizedView360 {
     folder: string;
     filename: string;
     amount: number;
-    demo: boolean;
-    autoplay: boolean;
-    speed: number;
-    dragSpeed: number;
-    zoomMax: number;
+    demo?: boolean;
+    autoplay?: boolean;
+    speed?: number;
+    dragSpeed?: number;
+    zoomMax?: number;
+    draggable?: boolean;
+    swipeable?: boolean;
+    keys?: boolean;
+    autoplayBehavior?: string;
+    autoplayReverse?: boolean;
+    fullscreen?: boolean;
+    zoomControls?: boolean;
+    pinchZoom?: boolean;
+    elementId?: string;
+    className?: string;
+    attributes?: Record<string, string>;
+    rawSnippet?: string;
   };
   interior?: {
     panoeeUrl: string;

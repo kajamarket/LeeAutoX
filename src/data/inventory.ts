@@ -27,6 +27,7 @@ export interface VehicleItem {
     interior: string;
   };
   view360?: View360Config;
+  exterior360?: string;
 }
 
 export function getVehicleSlug(vehicle: { id: string | number; year: number; make: string; model: string }): string {
@@ -316,7 +317,7 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     id: "12",
     name: "2018 Hyundai Elantra",
     make: "Hyundai",
-    model: "Sonata",
+    model: "Elantra",
     year: 2018,
     price: "₦12,000,000",
     numericPrice: 12000000,
@@ -343,7 +344,21 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     location: "Nigeria",
     currentLocation: "Lagos, Nigeria",
     status: "Available",
-    '360degree': { exterior: '', interior: '' }
+    '360degree': {
+      exterior: '',
+      interior: '<iframe src="https://tour.panoee.com/corolla-2005-interior-360" width="100%" height="100%" frameborder="0" allowfullscreen allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>'
+    },
+    exterior360: '<div class="cloudimage-360" id="exterior-360-12" data-folder="https://scaleflex.cloudimg.io/v7/demo/earbuds/" data-filename-x="{index}.jpg" data-amount-x="233" data-speed="100" data-draggable="true" data-swipeable="true" data-drag-speed="100" data-keys="true" data-autoplay="true" data-autoplay-behavior="spin-x" data-autoplay-reverse="true" data-fullscreen="true" data-zoom-max="5" data-zoom-controls="true" data-pinch-zoom="true"></div>',
+    view360: {
+      exterior: {
+        folder: "https://scaleflex.cloudimg.io/v7/demo/earbuds/",
+        filename: "{index}.jpg",
+        amount: 233
+      },
+      interior: {
+        embed: '<iframe src="https://tour.panoee.com/corolla-2005-interior-360" width="100%" height="100%" frameborder="0" allowfullscreen allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>'
+      }
+    }
   },
   {
     id: "10",
@@ -380,11 +395,12 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
       exterior: '<iframe src="https://tour.panoee.com/corolla-2005-exterior-360" width="100%" height="100%" frameborder="0" allowfullscreen allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>',
       interior: '<iframe src="https://tour.panoee.com/corolla-2005-interior-360" width="100%" height="100%" frameborder="0" allowfullscreen allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>'
     },
+    exterior360: '<div class="cloudimage-360" id="exterior-360-10" data-folder="https://scaleflex.cloudimg.io/v7/demo/earbuds/" data-filename-x="{index}.jpg" data-amount-x="233" data-speed="100" data-draggable="true" data-swipeable="true" data-drag-speed="100" data-keys="true" data-autoplay="true" data-autoplay-behavior="spin-x" data-autoplay-reverse="true" data-fullscreen="true" data-zoom-max="5" data-zoom-controls="true" data-pinch-zoom="true"></div>',
     view360: {
       exterior: {
-        folder: "https://scaleflex.airstore.io/demo/360-car/",
-        filename: "iris-{index}.jpeg",
-        amount: 36
+        folder: "https://scaleflex.cloudimg.io/v7/demo/earbuds/",
+        filename: "{index}.jpg",
+        amount: 233
       },
       interior: {
         embed: '<iframe src="https://tour.panoee.com/corolla-2005-interior-360" width="100%" height="100%" frameborder="0" allowfullscreen allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>'

@@ -213,7 +213,9 @@ async function main() {
     { id: "5", name: "2020 Toyota RAV4 XLE AWD", make: "Toyota", model: "RAV4", year: 2020 },
     { id: "6", name: "2022 Toyota Land Cruiser VXR", make: "Toyota", model: "Land Cruiser", year: 2022 },
     { id: "7", name: "2020 Ford F-150 Lariat 4x4", make: "Ford", model: "F-150", year: 2020 },
-    { id: "8", name: "2021 Mercedes-Benz GLC 300 4MATIC", make: "Mercedes-Benz", model: "GLC 300", year: 2021 }
+    { id: "8", name: "2021 Mercedes-Benz GLC 300 4MATIC", make: "Mercedes-Benz", model: "GLC 300", year: 2021 },
+    { id: "10", name: "2005 Toyota Corolla", make: "Toyota", model: "Corolla", year: 2005 },
+    { id: "12", name: "2018 Hyundai Elantra", make: "Hyundai", model: "Elantra", year: 2018 }
   ];
 
   for (const v of inventoryVehicles) {

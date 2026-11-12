@@ -36,12 +36,16 @@ const normalizeVehicle = (item: any): VehicleItem => {
   }
   const initItem = INITIAL_INVENTORY.find((i) => String(i.id) === String(item.id));
   const deg360 = item['360degree'] || initItem?.['360degree'];
+  const ext360 = item.exterior360 || initItem?.exterior360;
+  const view360 = item.view360 || initItem?.view360;
   return { 
     ...item, 
     location: loc, 
     currentLocation: currLoc, 
     condition: cond || item.condition,
-    '360degree': deg360
+    '360degree': deg360,
+    exterior360: ext360,
+    view360: view360
   };
 };
 
