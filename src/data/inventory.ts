@@ -1,3 +1,5 @@
+import { View360Config } from '../types/view360';
+
 export interface VehicleItem {
   id: string | number;
   name: string;
@@ -24,6 +26,7 @@ export interface VehicleItem {
     exterior: string;
     interior: string;
   };
+  view360?: View360Config;
 }
 
 export function getVehicleSlug(vehicle: { id: string | number; year: number; make: string; model: string }): string {
@@ -376,6 +379,16 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     '360degree': {
       exterior: '<iframe src="https://tour.panoee.com/corolla-2005-exterior-360" width="100%" height="100%" frameborder="0" allowfullscreen allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>',
       interior: '<iframe src="https://tour.panoee.com/corolla-2005-interior-360" width="100%" height="100%" frameborder="0" allowfullscreen allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>'
+    },
+    view360: {
+      exterior: {
+        folder: "https://scaleflex.airstore.io/demo/360-car/",
+        filename: "iris-{index}.jpeg",
+        amount: 36
+      },
+      interior: {
+        embed: '<iframe src="https://tour.panoee.com/corolla-2005-interior-360" width="100%" height="100%" frameborder="0" allowfullscreen allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>'
+      }
     }
   }
 ];

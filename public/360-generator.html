@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeeAutoX — 360° View Snippet Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Geist+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f17;
+      --card-bg: #131b28;
+      --card-border: #1f2d42;
+      --accent: #2B59FF;
+      --accent-hover: #1e47e0;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --input-bg: #090d14;
+      --input-border: #23334d;
+      --success: #10b981;
+      --warning: #f59e0b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+    }
+    .container {
+      width: 100%;
+      max-width: 800px;
+    }
+    header {
+      margin-bottom: 28px;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(43, 89, 255, 0.12);
+      border: 1px solid rgba(43, 89, 255, 0.3);
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    @media (max-width: 600px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+    .col-span-2 { grid-column: span 2; }
+    @media (max-width: 600px) {
+      .col-span-2 { grid-column: span 1; }
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'Geist Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      color: var(--text);
+      font-family: 'Geist Mono', monospace;
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(43, 89, 255, 0.25);
+    }
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text);
+    }
+    .checkbox-row input {
+      accent-color: var(--accent);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+    .hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .output-section {
+      margin-top: 24px;
+    }
+    .output-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .status-pill {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--success);
+    }
+    pre {
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      padding: 16px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: #93c5fd;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .btn-copy {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .btn-copy:hover {
+      background: var(--accent-hover);
+    }
+    .btn-copy.copied {
+      background: var(--success);
+    }
+    .instructions {
+      background: rgba(43, 89, 255, 0.06);
+      border: 1px solid rgba(43, 89, 255, 0.2);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 24px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+    .instructions strong {
+      color: var(--text);
+    }
+    .instructions ol {
+      margin-left: 20px;
+      margin-top: 8px;
+    }
+    .instructions li {
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge">Workflow Tool</div>
+      <h1>LeeAutoX 360° Snippet Generator</h1>
+      <p class="subtitle">Fill out the fields below to instantly generate the exact <code>view360</code> code block to paste into <code>src/data/inventory.ts</code>.</p>
+    </header>
+
+    <div class="card">
+      <div class="form-grid">
+        <div>
+          <label for="carId">Car ID (Unique Identifier)</label>
+          <input type="text" id="carId" placeholder="e.g. 10 or 14" value="10">
+          <div class="hint">Used to construct the default folder path.</div>
+        </div>
+
+        <div>
+          <label for="frameCount">Number of Exterior Frames</label>
+          <input type="number" id="frameCount" min="1" max="120" value="36">
+          <div class="hint">Standard is 36 frames (10° increments) or 24.</div>
+        </div>
+
+        <div>
+          <label for="fileExt">Frame File Extension</label>
+          <select id="fileExt">
+            <option value="jpg" selected>jpg (.jpg)</option>
+            <option value="jpeg">jpeg (.jpeg)</option>
+            <option value="webp">webp (.webp)</option>
+            <option value="png">png (.png)</option>
+          </select>
+          <div class="hint">Frames should be named 1.jpg, 2.jpg... 36.jpg</div>
+        </div>
+
+        <div>
+          <label for="customFilename">Custom Filename Pattern (Optional)</label>
+          <input type="text" id="customFilename" placeholder="Leave blank for {index}.jpg">
+          <div class="hint">Use <code>{index}</code> placeholder, e.g. <code>iris-{index}.jpeg</code></div>
+        </div>
+
+        <div class="col-span-2">
+          <label for="folderPath">Exterior Folder Path or URL</label>
+          <input type="text" id="folderPath" value="/cars/10/exterior/">
+          <div class="hint">Local path e.g. <code>/cars/10/exterior/</code> or CDN URL. Auto-updates when Car ID changes.</div>
+        </div>
+
+        <div class="col-span-2">
+          <label for="panoeeUrl">Panoee Interior URL or Embed Code (Optional)</label>
+          <input type="text" id="panoeeUrl" placeholder="https://tour.panoee.com/... or full <iframe> code" value="https://tour.panoee.com/corolla-2005-interior-360">
+          <div class="hint">Accepts either direct Panoee link or full &lt;iframe&gt; embed code. Leave blank if none.</div>
+        </div>
+
+        <div class="col-span-2">
+          <label class="checkbox-row">
+            <input type="checkbox" id="isDemo">
+            <span>Mark as Demo Preview (Displays "Demo 360° Preview" indicator)</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="output-section">
+        <div class="output-header">
+          <div>
+            <label style="margin-bottom:0;">Generated Snippet to Paste</label>
+            <span class="status-pill" id="statusPill">Exterior + Interior</span>
+          </div>
+          <button type="button" class="btn-copy" id="copyBtn" onclick="copySnippet()">
+            <span>Copy Snippet</span>
+          </button>
+        </div>
+        <pre><code id="snippetCode"></code></pre>
+      </div>
+
+      <div class="instructions">
+        <strong>How to use this in your workflow:</strong>
+        <ol>
+          <li>Put your exterior images in <code>/public/cars/&lt;carId&gt;/exterior/</code> (named <code>1.jpg</code> to <code>36.jpg</code>).</li>
+          <li>Enter the Car ID and optional Panoee interior link above.</li>
+          <li>Click <strong>Copy Snippet</strong>.</li>
+          <li>Open <code>src/data/inventory.ts</code>, locate that car's object, and paste the snippet directly before the closing brace <code>}</code>.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const carIdInput = document.getElementById('carId');
+    const frameCountInput = document.getElementById('frameCount');
+    const fileExtInput = document.getElementById('fileExt');
+    const customFilenameInput = document.getElementById('customFilename');
+    const folderPathInput = document.getElementById('folderPath');
+    const panoeeUrlInput = document.getElementById('panoeeUrl');
+    const isDemoInput = document.getElementById('isDemo');
+    const snippetCode = document.getElementById('snippetCode');
+    const statusPill = document.getElementById('statusPill');
+    const copyBtn = document.getElementById('copyBtn');
+
+    let isFolderManuallyEdited = false;
+
+    carIdInput.addEventListener('input', () => {
+      if (!isFolderManuallyEdited) {
+        folderPathInput.value = `/cars/${carIdInput.value.trim() || '<carId>'}/exterior/`;
+      }
+      generate();
+    });
+
+    folderPathInput.addEventListener('input', () => {
+      isFolderManuallyEdited = true;
+      generate();
+    });
+
+    [frameCountInput, fileExtInput, customFilenameInput, panoeeUrlInput, isDemoInput].forEach(el => {
+      el.addEventListener('input', generate);
+      el.addEventListener('change', generate);
+    });
+
+    function cleanPanoeeUrl(raw) {
+      if (!raw) return '';
+      const trimmed = raw.trim();
+      const match = trimmed.match(/src=["']([^"']+)["']/i);
+      return match ? match[1] : trimmed;
+    }
+
+    function generate() {
+      const carId = carIdInput.value.trim();
+      const frames = parseInt(frameCountInput.value, 10) || 36;
+      const ext = fileExtInput.value.trim();
+      const customFilename = customFilenameInput.value.trim();
+      let folder = folderPathInput.value.trim();
+      if (folder && !folder.endsWith('/')) folder += '/';
+
+      const rawPanoee = cleanPanoeeUrl(panoeeUrlInput.value);
+      const isDemo = isDemoInput.checked;
+
+      const hasExterior = Boolean(folder && folder !== '/cars//exterior/');
+      const hasInterior = Boolean(rawPanoee && rawPanoee.length > 0);
+
+      if (hasExterior && hasInterior) {
+        statusPill.textContent = "Exterior + Interior (Full Player)";
+        statusPill.style.color = "#10b981";
+      } else if (hasExterior) {
+        statusPill.textContent = "Exterior Only (Spin Player)";
+        statusPill.style.color = "#3b82f6";
+      } else if (hasInterior) {
+        statusPill.textContent = "Interior Only (Panoee Virtual Tour)";
+        statusPill.style.color = "#8b5cf6";
+      } else {
+        statusPill.textContent = "Empty";
+        statusPill.style.color = "#94a3b8";
+      }
+
+      let lines = [];
+      lines.push('    view360: {');
+
+      if (hasExterior) {
+        lines.push('      exterior: {');
+        lines.push(`        folder: "${folder}",`);
+        if (customFilename) {
+          lines.push(`        filename: "${customFilename}",`);
+        } else if (ext !== 'jpg') {
+          lines.push(`        ext: "${ext}",`);
+        }
+        lines.push(`        amount: ${frames}${isDemo ? ',' : ''}`);
+        if (isDemo) {
+          lines.push('        demo: true');
+        }
+        lines.push(`      }${hasInterior ? ',' : ''}`);
+      }
+
+      if (hasInterior) {
+        lines.push('      interior: {');
+        const panoeeInput = panoeeUrlInput.value.trim();
+        if (panoeeInput.includes('<iframe') || panoeeInput.includes('src=')) {
+          lines.push(`        embed: '${panoeeInput}'`);
+        } else {
+          lines.push(`        embed: '<iframe src="${rawPanoee}" width="100%" height="100%" frameborder="0" allowfullscreen allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>'`);
+        }
+        lines.push('      }');
+      }
+
+      lines.push('    }');
+
+      snippetCode.textContent = lines.join('\n');
+    }
+
+    function copySnippet() {
+      navigator.clipboard.writeText(snippetCode.textContent).then(() => {
+        copyBtn.textContent = 'Copied to Clipboard!';
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.textContent = 'Copy Snippet';
+          copyBtn.classList.remove('copied');
+        }, 2500);
+      });
+    }
+
+    generate();
+  </script>
+</body>
+</html>

@@ -29,6 +29,8 @@ import {
 } from 'lucide-react';
 import SoldWatermark from '../components/SoldWatermark';
 import Icon360 from '../components/Icon360';
+import VehicleViewer from '../components/VehicleViewer';
+import { normalizeView360 } from '../utils/view360';
 import { extractPanoeeUrl } from '../utils/panoee';
 import { downloadImage } from '../utils/downloadImage';
 
@@ -301,10 +303,11 @@ export default function VehicleDetailPage() {
   const isOverseas = vehicle?.location === 'Canada & USA';
   const isSold = vehicle?.status?.toLowerCase() === 'sold';
 
-  // Task 1 & 2: Panoee 360 Virtual Tour URLs
-  const exterior360Url = useMemo(() => extractPanoeeUrl(vehicle?.['360degree']?.exterior), [vehicle]);
-  const interior360Url = useMemo(() => extractPanoeeUrl(vehicle?.['360degree']?.interior), [vehicle]);
-  const has360 = Boolean(exterior360Url || interior360Url);
+  // Unified 360 View: Validated and normalized
+  const normalized360 = useMemo(() => normalizeView360(vehicle), [vehicle]);
+  const hasExterior = Boolean(normalized360?.exterior);
+  const hasInterior = Boolean(normalized360?.interior);
+  const has360 = Boolean(hasExterior || hasInterior);
 
   const galleryImages = useMemo(() => {
     if (!vehicle) return [];
@@ -312,43 +315,44 @@ export default function VehicleDetailPage() {
   }, [vehicle]);
 
   type SlideItem =
-    | { type: '360-exterior'; url: string; label: string }
-    | { type: '360-interior'; url: string; label: string }
+    | { type: '360-exterior'; label: string }
+    | { type: '360-interior'; label: string }
     | { type: 'photo'; url: string; photoIndex: number; label: string };
 
-  // Unified sequence: Exterior 360 -> Interior 360 -> Photos
+  // Previous prominent sequence: Exterior 360 -> Interior 360 -> Photos
   const slideItems = useMemo<SlideItem[]>(() => {
     const items: SlideItem[] = [];
-    if (exterior360Url) {
-      items.push({ type: '360-exterior', url: exterior360Url, label: 'Exterior 360' });
+    if (hasExterior) {
+      items.push({ type: '360-exterior', label: 'Exterior 360' });
     }
-    if (interior360Url) {
-      items.push({ type: '360-interior', url: interior360Url, label: 'Interior 360' });
+    if (hasInterior) {
+      items.push({ type: '360-interior', label: 'Interior 360' });
     }
     galleryImages.forEach((img, idx) => {
       items.push({ type: 'photo', url: img, photoIndex: idx, label: `Photo ${idx + 1}` });
     });
     return items;
-  }, [exterior360Url, interior360Url, galleryImages]);
+  }, [hasExterior, hasInterior, galleryImages]);
 
-  // Default to first photo on load for fast critical paint without heavy iframe loading
-  const firstPhotoIndex = useMemo(() => {
-    const idx = slideItems.findIndex((s) => s.type === 'photo');
-    return idx >= 0 ? idx : 0;
-  }, [slideItems]);
+  // Initial slide: Show exterior 360 if available, else interior, else first photo
+  const initialSlideIndex = useMemo(() => {
+    if (hasExterior) {
+      const extIdx = slideItems.findIndex((s) => s.type === '360-exterior');
+      if (extIdx >= 0) return extIdx;
+    }
+    if (hasInterior) {
+      const intIdx = slideItems.findIndex((s) => s.type === '360-interior');
+      if (intIdx >= 0) return intIdx;
+    }
+    const photoIdx = slideItems.findIndex((s) => s.type === 'photo');
+    return photoIdx >= 0 ? photoIdx : 0;
+  }, [slideItems, hasExterior, hasInterior]);
 
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
 
   useEffect(() => {
-    setActiveSlideIndex(firstPhotoIndex);
-  }, [firstPhotoIndex, vehicle?.id]);
-
-  // 360 Viewer lazy-preloading & mounting states
-  const [preloadExterior, setPreloadExterior] = useState(false);
-  const [preloadInterior, setPreloadInterior] = useState(false);
-  const [extLoaded, setExtLoaded] = useState(false);
-  const [intLoaded, setIntLoaded] = useState(false);
-  const [showDragHint, setShowDragHint] = useState(true);
+    setActiveSlideIndex(initialSlideIndex);
+  }, [initialSlideIndex, vehicle?.id]);
 
   // Lightbox overlay state (photos only)
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -358,37 +362,6 @@ export default function VehicleDetailPage() {
   // Mobile touch swipe state for prominent card
   const touchStartXRef = useRef<number | null>(null);
   const touchStartYRef = useRef<number | null>(null);
-
-  // Lazy-prepare exterior iframe in background when browser is idle (respecting connection.saveData)
-  useEffect(() => {
-    if (!exterior360Url) return;
-    const connection = (navigator as any).connection;
-    if (connection?.saveData) return;
-
-    if ('requestIdleCallback' in window) {
-      const handle = (window as any).requestIdleCallback(() => {
-        setPreloadExterior(true);
-      }, { timeout: 3000 });
-      return () => (window as any).cancelIdleCallback(handle);
-    } else {
-      const timer = setTimeout(() => {
-        setPreloadExterior(true);
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [exterior360Url]);
-
-  // Auto-hide 360 drag hint after 3.5s
-  useEffect(() => {
-    const current = slideItems[activeSlideIndex];
-    if (current && (current.type === '360-exterior' || current.type === '360-interior')) {
-      setShowDragHint(true);
-      const timer = setTimeout(() => {
-        setShowDragHint(false);
-      }, 3500);
-      return () => clearTimeout(timer);
-    }
-  }, [activeSlideIndex, slideItems]);
 
   // Lock body scroll while lightbox is open and restore focus on close
   useEffect(() => {
@@ -607,54 +580,34 @@ export default function VehicleDetailPage() {
                 }}
               />
 
-              {/* Task 3: 360 Exterior View Iframe Layer (Mounted & Persistent) */}
-              {exterior360Url && (preloadExterior || activeSlide?.type === '360-exterior') && (
+              {/* Exterior 360 Spin Layer */}
+              {hasExterior && (
                 <div
-                  className={`absolute inset-0 z-10 w-full h-full bg-black transition-opacity duration-300 ${
+                  className={`absolute inset-0 z-10 w-full h-full transition-opacity duration-300 ${
                     activeSlide?.type === '360-exterior' ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
                   }`}
                 >
-                  {!extLoaded && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/90 text-white z-10">
-                      <div className="w-8 h-8 rounded-full border-2 border-white/20 border-t-[#2B59FF] animate-spin mb-2" />
-                      <span className="text-xs font-mono text-zinc-400">Loading 360° Exterior Tour...</span>
-                    </div>
-                  )}
-                  <iframe
-                    src={exterior360Url}
-                    title={`${vehicle.name} 360 Exterior Tour`}
-                    loading="lazy"
-                    allowFullScreen
-                    allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"
-                    onLoad={() => setExtLoaded(true)}
-                    className="w-full h-full border-0"
-                    style={{ touchAction: 'pan-y' }}
+                  <VehicleViewer
+                    view360={normalized360}
+                    vehicleName={vehicle.name}
+                    theme={theme}
+                    activeView="exterior"
                   />
                 </div>
               )}
 
-              {/* Task 3: 360 Interior View Iframe Layer (Mounted & Persistent) */}
-              {interior360Url && (preloadInterior || activeSlide?.type === '360-interior') && (
+              {/* Interior 360 Panorama Layer */}
+              {hasInterior && (
                 <div
-                  className={`absolute inset-0 z-10 w-full h-full bg-black transition-opacity duration-300 ${
+                  className={`absolute inset-0 z-10 w-full h-full transition-opacity duration-300 ${
                     activeSlide?.type === '360-interior' ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
                   }`}
                 >
-                  {!intLoaded && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/90 text-white z-10">
-                      <div className="w-8 h-8 rounded-full border-2 border-white/20 border-t-[#2B59FF] animate-spin mb-2" />
-                      <span className="text-xs font-mono text-zinc-400">Loading 360° Interior Tour...</span>
-                    </div>
-                  )}
-                  <iframe
-                    src={interior360Url}
-                    title={`${vehicle.name} 360 Interior Tour`}
-                    loading="lazy"
-                    allowFullScreen
-                    allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"
-                    onLoad={() => setIntLoaded(true)}
-                    className="w-full h-full border-0"
-                    style={{ touchAction: 'pan-y' }}
+                  <VehicleViewer
+                    view360={normalized360}
+                    vehicleName={vehicle.name}
+                    theme={theme}
+                    activeView="interior"
                   />
                 </div>
               )}
@@ -673,15 +626,14 @@ export default function VehicleDetailPage() {
                 )}
               </div>
 
-              {/* Task 2: 360° Quick-Switch Button / Segmented Toggle */}
+              {/* Task 2: 360° Segmented Quick-Switch Toggle (Always prominent when 360 exists) */}
               {has360 && (
                 <div className="absolute top-4 right-4 z-30 flex items-center bg-black/75 backdrop-blur-md rounded-full p-1 border border-white/20 shadow-lg text-white">
-                  {exterior360Url && interior360Url ? (
+                  {hasExterior && hasInterior ? (
                     <>
                       <button
                         type="button"
                         onClick={() => {
-                          setPreloadExterior(true);
                           const extIdx = slideItems.findIndex((s) => s.type === '360-exterior');
                           if (extIdx >= 0) setActiveSlideIndex(extIdx);
                         }}
@@ -697,7 +649,6 @@ export default function VehicleDetailPage() {
                       <button
                         type="button"
                         onClick={() => {
-                          setPreloadInterior(true);
                           const intIdx = slideItems.findIndex((s) => s.type === '360-interior');
                           if (intIdx >= 0) setActiveSlideIndex(intIdx);
                         }}
@@ -711,38 +662,40 @@ export default function VehicleDetailPage() {
                         <span>Interior</span>
                       </button>
                     </>
+                  ) : hasExterior ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const extIdx = slideItems.findIndex((s) => s.type === '360-exterior');
+                        if (extIdx >= 0) setActiveSlideIndex(extIdx);
+                      }}
+                      className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                        activeSlide?.type === '360-exterior' ? 'bg-[#2B59FF] text-white' : 'hover:bg-white/10 text-white/80'
+                      }`}
+                    >
+                      <Icon360 size={14} />
+                      <span>360° Exterior</span>
+                    </button>
                   ) : (
                     <button
                       type="button"
                       onClick={() => {
-                        const idx = slideItems.findIndex((s) => s.type.startsWith('360'));
-                        if (idx >= 0) {
-                          if (slideItems[idx].type === '360-exterior') setPreloadExterior(true);
-                          if (slideItems[idx].type === '360-interior') setPreloadInterior(true);
-                          setActiveSlideIndex(idx);
-                        }
+                        const intIdx = slideItems.findIndex((s) => s.type === '360-interior');
+                        if (intIdx >= 0) setActiveSlideIndex(intIdx);
                       }}
                       className={`px-3 py-1 rounded-full text-[11px] font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-                        activeSlide?.type.startsWith('360') ? 'bg-[#2B59FF] text-white' : 'hover:bg-white/10 text-white/80'
+                        activeSlide?.type === '360-interior' ? 'bg-[#2B59FF] text-white' : 'hover:bg-white/10 text-white/80'
                       }`}
                     >
                       <Icon360 size={14} />
-                      <span>360° Tour</span>
+                      <span>360° Interior</span>
                     </button>
                   )}
                 </div>
               )}
 
-              {/* Task 3: Subtle One-time Drag Hint */}
-              {showDragHint && (activeSlide?.type === '360-exterior' || activeSlide?.type === '360-interior') && (
-                <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-30 pointer-events-none px-4 py-2 rounded-full bg-black/80 backdrop-blur-md text-white text-xs font-mono flex items-center gap-2 border border-white/20 shadow-lg animate-pulse">
-                  <Compass size={14} className="text-[#2B59FF]" />
-                  <span>Drag to rotate 360°</span>
-                </div>
-              )}
-
-              {/* Task 4: Prev and Next Slider Arrows */}
-              {slideItems.length > 1 && (
+              {/* Task 4: Prev and Next Slider Arrows (photos only) */}
+              {slideItems.length > 1 && activeSlide?.type === 'photo' && (
                 <>
                   <button
                     type="button"
@@ -806,19 +759,8 @@ export default function VehicleDetailPage() {
                       <button
                         key={item.type}
                         type="button"
-                        onClick={() => {
-                          if (item.type === '360-exterior') setPreloadExterior(true);
-                          if (item.type === '360-interior') setPreloadInterior(true);
-                          setActiveSlideIndex(idx);
-                        }}
-                        onMouseEnter={() => {
-                          if (item.type === '360-exterior') setPreloadExterior(true);
-                          if (item.type === '360-interior') setPreloadInterior(true);
-                        }}
-                        onFocus={() => {
-                          if (item.type === '360-exterior') setPreloadExterior(true);
-                          if (item.type === '360-interior') setPreloadInterior(true);
-                        }}
+                        onClick={() => setActiveSlideIndex(idx)}
+                        aria-label={`View ${item.label}`}
                         className={`relative w-24 h-18 sm:w-28 sm:h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer bg-zinc-900 flex flex-col items-center justify-center p-1 text-white group ${
                           isActive
                             ? 'border-[#2B59FF] ring-2 ring-[#2B59FF]/30 scale-102'
