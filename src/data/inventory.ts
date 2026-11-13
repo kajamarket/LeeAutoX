@@ -348,8 +348,7 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
       exterior: '',
       interior: '<iframe src="https://tour.panoee.com/corolla-2005-interior-360" width="100%" height="100%" frameborder="0" allowfullscreen allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>'
     },
-    exterior360: '<div class="cloudimage-360" id="ext360-hyundai-sonata-2016" data-folder="https://images.leeautox.com/public/cars/hyundai-sonata-2016/exterior/" data-filename-x="{index}.jpg" data-amount-x="36" data-speed="150" data-draggable="true" data-swipeable="true" data-drag-speed="450" data-keys="true" data-fullscreen="true" data-zoom-max="5" data-zoom-controls="true" data-pinch-zoom="true"></div>',
-    view360: {
+    exterior360: '<div class="cloudimage-360" id="ext360-hyundai-sonata-2016" data-folder="https://images.leeautox.com/public/cars/hyundai-sonata-2016/exterior/" data-filename-x="{index}.jpg" data-amount-x="36" data-speed="100" data-draggable="true" data-swipeable="true" data-drag-speed="100" data-keys="true" data-autoplay-behavior="spin-x" data-play-once="true" data-fullscreen="true" data-zoom-max="5" data-zoom-controls="true" data-pinch-zoom="true"></div>',    view360: {
       exterior: {
         folder: "https://images.leeautox.com/public/cars/hyundai-sonata-2016/exterior/",
         filename: "{index}.jpg",
