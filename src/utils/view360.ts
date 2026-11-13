@@ -1,6 +1,8 @@
 import { View360Config, NormalizedView360 } from '../types/view360';
 import { extractPanoeeUrl } from './panoee';
 
+export const EXTERIOR_BASE_URL = 'https://images.leeautox.com/cars/';
+
 interface LegacyVehicle360 {
   id?: string | number;
   name?: string;
@@ -13,13 +15,25 @@ interface LegacyVehicle360 {
 }
 
 /**
+ * Generates an exact Cloudimage 360 snippet block for a self-hosted car record
+ * at https://images.leeautox.com/cars/<slug>/exterior/{index}.<ext>.
+ */
+export function make360Snippet(slug: string, amount: number, ext = 'jpg'): string {
+  const cleanSlug = String(slug || '').trim().replace(/^\/+|\/+$/g, '');
+  const cleanExt = String(ext || 'jpg').trim().replace(/^\./, '') || 'jpg';
+  const safeAmount = Math.max(1, Math.floor(Number(amount) || 35));
+  const folder = `${EXTERIOR_BASE_URL}${cleanSlug}/exterior/`;
+
+  return `<div class="cloudimage-360" id="ext360-${cleanSlug}" data-folder="${folder}" data-filename-x="{index}.${cleanExt}" data-amount-x="${safeAmount}" data-speed="100" data-draggable="true" data-swipeable="true" data-drag-speed="100" data-keys="true" data-autoplay="true" data-autoplay-behavior="spin-x" data-fullscreen="true" data-zoom-max="5" data-zoom-controls="true" data-pinch-zoom="true"></div>`;
+}
+
+/**
  * Safely parses the raw exterior 360 HTML snippet according to Cloudimage 360 View specs:
  * - Uses DOMParser (client-side only; never during server rendering).
  * - Enforces that the snippet contains only a single <div> element.
- * - Enforces whitelist of allowed attributes (class, id, data-*).
+ * - Enforces whitelist of allowed attributes: only class, id, and data-*.
  * - Enforces data-folder must start with 'https://'.
  * - Validates autoplay behavior (defaults 'spin-x' for single-axis sequences).
- * - Returns sanitized attributes and parsed config; logs warnings on invalid data without throwing.
  */
 export function parseExterior360Snippet(
   snippet: unknown,
@@ -49,81 +63,37 @@ export function parseExterior360Snippet(
 
     const sourceEl = children[0] as HTMLDivElement;
 
-    // Allowed attributes strictly based on @cloudimage/360-view documentation
-    const allowedAttrNames = new Set([
-      'class',
-      'id',
-      'data-folder',
-      'data-api-version',
-      'data-filename-x',
-      'data-filename-y',
-      'data-filename-grid',
-      'data-filename',
-      'data-image-list-x',
-      'data-image-list-y',
-      'data-image-list-grid',
-      'data-index-zero-base',
-      'data-amount-x',
-      'data-amount-y',
-      'data-amount',
-      'data-draggable',
-      'data-swipeable',
-      'data-keys',
-      'data-keys-reverse',
-      'data-bottom-circle-offset',
-      'data-autoplay',
-      'data-autoplay-behavior',
-      'data-play-once',
-      'data-speed',
-      'data-autoplay-reverse',
-      'data-fullscreen',
-      'data-zoom-max',
-      'data-zoom-step',
-      'data-zoom-controls',
-      'data-zoom-controls-position',
-      'data-scroll-hint',
-      'data-drag-speed',
-      'data-drag-reverse',
-      'data-stop-at-edges',
-      'data-stop-at-edges-x',
-      'data-stop-at-edges-y',
-      'data-inertia',
-      'data-pinch-zoom',
-      'data-hints',
-      'data-theme',
-      'data-aspect-ratio',
-      'data-lazyload',
-    ]);
-
     const sanitizedAttrs: Record<string, string> = {};
     for (let i = 0; i < sourceEl.attributes.length; i++) {
       const attr = sourceEl.attributes[i];
       const lower = attr.name.toLowerCase();
-      if (allowedAttrNames.has(lower)) {
+      if (lower === 'class' || lower === 'id' || /^data-[a-z0-9-]+$/.test(lower)) {
         sanitizedAttrs[lower] = attr.value;
       } else {
         console.warn(`[view360] Disallowed attribute "${attr.name}" stripped from 360 snippet.`);
       }
     }
 
-    // Validate data-folder: must be a secure https URL
-    const folder = sanitizedAttrs['data-folder'];
-    if (!folder || !folder.startsWith('https://')) {
+    // Validate data-folder: must be a secure https:// URL
+    const folderRaw = sanitizedAttrs['data-folder'];
+    if (!folderRaw || !folderRaw.startsWith('https://')) {
       console.warn(
         `[view360] Invalid data-folder in 360 snippet for vehicle ${vehicleId || 'unknown'}: data-folder must be a secure https:// URL.`
       );
       return null;
     }
+    const folder = folderRaw.endsWith('/') ? folderRaw : `${folderRaw}/`;
+    sanitizedAttrs['data-folder'] = folder;
 
     // Ensure class includes 'cloudimage-360'
     let className = sanitizedAttrs['class'] || '';
-    if (!className.includes('cloudimage-360')) {
-      className = (className + ' cloudimage-360').trim();
+    if (!className.split(/\s+/).includes('cloudimage-360')) {
+      className = `${className} cloudimage-360`.trim();
     }
     sanitizedAttrs['class'] = className;
 
     // Ensure unique ID per instance
-    const elementId = sanitizedAttrs['id'] || `cloudimage-360-${vehicleId || 'viewer'}`;
+    const elementId = sanitizedAttrs['id'] || `ext360-${vehicleId || 'viewer'}`;
     sanitizedAttrs['id'] = elementId;
 
     // Resolve autoplay behavior: single axis uses 'spin-x' unless grid or multi-axis is configured
@@ -138,7 +108,7 @@ export function parseExterior360Snippet(
     }
 
     const filenameX = sanitizedAttrs['data-filename-x'] || sanitizedAttrs['data-filename'] || '{index}.jpg';
-    const amountX = parseInt(sanitizedAttrs['data-amount-x'] || sanitizedAttrs['data-amount'] || '36', 10) || 36;
+    const amountX = parseInt(sanitizedAttrs['data-amount-x'] || sanitizedAttrs['data-amount'] || '35', 10) || 35;
     const speed = parseInt(sanitizedAttrs['data-speed'] || '100', 10) || 100;
     const dragSpeed = parseInt(sanitizedAttrs['data-drag-speed'] || '100', 10) || 100;
     const zoomMax = parseFloat(sanitizedAttrs['data-zoom-max'] || '5') || 5;
@@ -154,7 +124,7 @@ export function parseExterior360Snippet(
       zoomMax,
       draggable: sanitizedAttrs['data-draggable'] !== 'false',
       swipeable: sanitizedAttrs['data-swipeable'] !== 'false',
-      keys: sanitizedAttrs['data-keys'] === 'true',
+      keys: sanitizedAttrs['data-keys'] === 'true' || sanitizedAttrs['data-keys'] === '',
       autoplayBehavior,
       autoplayReverse: sanitizedAttrs['data-autoplay-reverse'] === 'true',
       fullscreen: sanitizedAttrs['data-fullscreen'] === 'true' || sanitizedAttrs['data-fullscreen'] === '',
@@ -194,34 +164,57 @@ export function normalizeView360(vehicle?: LegacyVehicle360 | null): NormalizedV
     }
   }
 
-  // 2. Check structured view360.exterior field if not already set from snippet
+  // 2. Check structured view360.exterior field (supports folder override or { slug, amount, ext? })
   if (!extConfig && vehicle.view360?.exterior) {
     const rawExt = vehicle.view360.exterior;
-    if (rawExt && typeof rawExt.folder === 'string' && rawExt.folder.trim().length > 0) {
-      let folder = rawExt.folder.trim();
+    let folder = '';
+
+    if (typeof rawExt.folder === 'string' && rawExt.folder.trim().length > 0) {
+      folder = rawExt.folder.trim();
       if (!folder.endsWith('/')) {
         folder += '/';
       }
+    } else if (typeof rawExt.slug === 'string' && rawExt.slug.trim().length > 0) {
+      const cleanSlug = rawExt.slug.trim().replace(/^\/+|\/+$/g, '');
+      folder = `${EXTERIOR_BASE_URL}${cleanSlug}/exterior/`;
+    }
 
-      const amount = Number(rawExt.amount || rawExt.amountX) || 36;
-      if (amount <= 0) {
-        console.warn(`[view360] Invalid exterior frame amount: ${amount} for vehicle ${vehicle.id || vehicle.name || 'unknown'}`);
+    if (folder) {
+      if (!folder.startsWith('https://')) {
+        console.warn(
+          `[view360] Invalid exterior folder for vehicle ${vehicle.id || vehicle.name || 'unknown'}: must use https://`
+        );
       } else {
-        const ext = rawExt.ext ? rawExt.ext.replace(/^\./, '') : 'jpg';
-        const filename = rawExt.filename && rawExt.filename.trim().length > 0
-          ? rawExt.filename.trim()
-          : `{index}.${ext}`;
+        const amount = Number(rawExt.amount || rawExt.amountX) || 35;
+        if (amount <= 0) {
+          console.warn(`[view360] Invalid exterior frame amount: ${amount} for vehicle ${vehicle.id || vehicle.name || 'unknown'}`);
+        } else {
+          const ext = (rawExt.ext ? rawExt.ext.replace(/^\./, '') : 'jpg') || 'jpg';
+          const filename = rawExt.filename && rawExt.filename.trim().length > 0
+            ? rawExt.filename.trim()
+            : `{index}.${ext}`;
 
-        extConfig = {
-          folder,
-          filename,
-          amount,
-          demo: Boolean(rawExt.demo),
-          autoplay: Boolean(rawExt.autoplay),
-          speed: typeof rawExt.speed === 'number' && rawExt.speed > 0 ? rawExt.speed : 80,
-          dragSpeed: typeof rawExt.dragSpeed === 'number' && rawExt.dragSpeed > 0 ? rawExt.dragSpeed : 60,
-          zoomMax: typeof rawExt.zoomMax === 'number' && rawExt.zoomMax > 0 ? rawExt.zoomMax : 3,
-        };
+          extConfig = {
+            folder,
+            filename,
+            amount,
+            demo: Boolean(rawExt.demo),
+            autoplay: rawExt.autoplay ?? true,
+            speed: typeof rawExt.speed === 'number' && rawExt.speed > 0 ? rawExt.speed : 100,
+            dragSpeed: typeof rawExt.dragSpeed === 'number' && rawExt.dragSpeed > 0 ? rawExt.dragSpeed : 100,
+            zoomMax: typeof rawExt.zoomMax === 'number' && rawExt.zoomMax > 0 ? rawExt.zoomMax : 5,
+            draggable: rawExt.draggable ?? true,
+            swipeable: rawExt.swipeable ?? true,
+            keys: rawExt.keys ?? true,
+            autoplayBehavior: rawExt.autoplayBehavior || 'spin-x',
+            autoplayReverse: rawExt.autoplayReverse ?? false,
+            fullscreen: rawExt.fullscreen ?? true,
+            zoomControls: rawExt.zoomControls ?? true,
+            pinchZoom: rawExt.pinchZoom ?? true,
+            elementId: `ext360-${vehicle.id ?? rawExt.slug ?? 'viewer'}`,
+            className: 'cloudimage-360',
+          };
+        }
       }
     }
   }

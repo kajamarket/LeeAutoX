@@ -77,3 +77,42 @@
   animation: caret-pulse 0.85s steps(2, start) infinite;
 }
 
+/* Keep Cloudimage built-in controls clickable without overlapping top-right mode toggle or clipping in 16/10 card */
+.cloudimage-360-icons-container {
+  height: auto;
+  pointer-events: none;
+}
+
+.cloudimage-360-icons-container .cloudimage-360-button {
+  pointer-events: auto;
+}
+
+[data-has-mode-toggle="true"] .cloudimage-360:not(.cloudimage-360--fullscreen) .cloudimage-360-icons-container {
+  top: 60px;
+  right: 16px;
+}
+
+.cloudimage-360:not(.cloudimage-360--fullscreen) .cloudimage-360-inner-box {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cloudimage-360,
+.cloudimage-360-inner-box,
+.cloudimage-360 canvas {
+  touch-action: none;
+}
+
+.cloudimage-360-button,
+.cloudimage-360-zoom-btn {
+  touch-action: manipulation;
+}
+
+.cloudimage-360:not(.cloudimage-360--fullscreen) canvas {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}

@@ -6,13 +6,19 @@
 export interface View360Exterior {
   /**
    * Path to the folder containing image frames.
-   * e.g. "/cars/10/exterior/" or external URL "https://scaleflex.airstore.io/demo/360-car/"
+   * e.g. "https://scaleflex.cloudimg.io/v7/demo/earbuds/"
+   * Optional when `slug` is provided (defaults to `${EXTERIOR_BASE_URL}${slug}/exterior/`).
    */
-  folder: string;
+  folder?: string;
 
   /**
-   * Filename pattern for sequence frames. Defaults to "{index}.jpg" or "{index}.{ext}".
-   * e.g. "iris-{index}.jpeg" or "{index}.png"
+   * Vehicle slug for self-hosted frames under EXTERIOR_BASE_URL.
+   * Builds folder = `https://images.leeautox.com/cars/${slug}/exterior/`.
+   */
+  slug?: string;
+
+  /**
+   * Filename pattern for sequence frames. Defaults to "{index}.{ext}" (e.g. "{index}.jpg").
    */
   filename?: string;
 
@@ -27,34 +33,74 @@ export interface View360Exterior {
   amountX?: number;
 
   /**
-   * Image file extension (e.g. "jpg", "jpeg", "webp", "png"). Used when filename pattern is omitted.
+   * Image file extension (e.g. "jpg", "jpeg", "webp", "png"). Defaults to "jpg".
    */
   ext?: string;
 
   /**
-   * If true, displays a prominent "Demo 360° Preview" indicator on the viewer.
+   * If true, marks viewer as demo preview.
    */
   demo?: boolean;
 
   /**
-   * Optional override for autoplay on initial load. Defaults to false.
+   * Enable automatic rotation after load. Defaults to true for exterior 360 config.
    */
   autoplay?: boolean;
 
   /**
-   * Rotation speed in ms per frame (lower = faster). Defaults to 80.
+   * Autoplay pattern: 'spin-x', 'spin-y', 'spin-xy', 'spin-yx'. Defaults to 'spin-x'.
+   */
+  autoplayBehavior?: string;
+
+  /**
+   * Reverse autoplay direction. Defaults to false.
+   */
+  autoplayReverse?: boolean;
+
+  /**
+   * Rotation speed in ms per frame (lower = faster). Defaults to 100.
    */
   speed?: number;
 
   /**
-   * Drag sensitivity factor. Defaults to 60.
+   * Drag sensitivity factor. Defaults to 100.
    */
   dragSpeed?: number;
 
   /**
-   * Maximum zoom multiplier for dent/scratch inspection. Defaults to 3.
+   * Enable mouse drag rotation. Defaults to true.
+   */
+  draggable?: boolean;
+
+  /**
+   * Enable touch swipe rotation. Defaults to true.
+   */
+  swipeable?: boolean;
+
+  /**
+   * Enable arrow key navigation. Defaults to true.
+   */
+  keys?: boolean;
+
+  /**
+   * Enable built-in fullscreen button. Defaults to true.
+   */
+  fullscreen?: boolean;
+
+  /**
+   * Maximum zoom multiplier for dent/scratch inspection. Defaults to 5.
    */
   zoomMax?: number;
+
+  /**
+   * Show built-in zoom controls. Defaults to true.
+   */
+  zoomControls?: boolean;
+
+  /**
+   * Enable pinch-to-zoom on touch devices. Defaults to true.
+   */
+  pinchZoom?: boolean;
 }
 
 export interface View360Interior {

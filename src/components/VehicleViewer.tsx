@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { CI360Viewer, CI360ViewerRef, AutoplayBehavior } from '@cloudimage/360-view/react';
 import '@cloudimage/360-view/css';
 import { Compass, Rotate3d } from 'lucide-react';
 import { NormalizedView360 } from '../types/view360';
@@ -11,7 +12,11 @@ interface VehicleViewerProps {
   activeView?: 'exterior' | 'interior';
   onViewChange?: (view: 'exterior' | 'interior') => void;
   showToggle?: boolean;
+  isActive?: boolean;
+  onLoadError?: () => void;
 }
+
+const VALID_AUTOPLAY_BEHAVIORS: AutoplayBehavior[] = ['spin-x', 'spin-y', 'spin-xy', 'spin-yx'];
 
 export const VehicleViewer: React.FC<VehicleViewerProps> = ({
   view360,
@@ -21,23 +26,84 @@ export const VehicleViewer: React.FC<VehicleViewerProps> = ({
   activeView,
   onViewChange,
   showToggle = false,
+  isActive = true,
+  onLoadError,
 }) => {
-  // 1. Missing-data rule: If neither view exists or data is invalid, render nothing!
+  // Missing-data rule: if neither view exists or data is invalid, render nothing
   if (!view360 || (!view360.exterior && !view360.interior)) {
     return null;
   }
 
   const { exterior, interior } = view360;
-  const hasExterior = Boolean(exterior);
   const hasInterior = Boolean(interior?.panoeeUrl);
+
+  const [exteriorFailed, setExteriorFailed] = useState(false);
+  const hasExterior = Boolean(exterior) && !exteriorFailed;
   const hasBoth = hasExterior && hasInterior;
 
-  // Active view tab: controlled by activeView prop if provided, else internal state
   const [internalTab, setInternalTab] = useState<'exterior' | 'interior'>(
     activeView || (hasExterior ? 'exterior' : 'interior')
   );
-
   const activeTab = activeView || internalTab;
+
+  // Lazy loading state for interior (Panoee untouched)
+  const [interiorMounted, setInteriorMounted] = useState<boolean>(isActive && (!hasExterior || activeTab === 'interior'));
+  const [interiorLoaded, setInteriorLoaded] = useState<boolean>(false);
+
+  // Speed fix: Initialize exterior viewer only when scrolled into view
+  const rootContainerRef = useRef<HTMLDivElement | null>(null);
+  const [isInViewport, setIsInViewport] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return typeof IntersectionObserver === 'undefined';
+  });
+
+  // Track reduced-motion preference so autoplay never runs if user prefers reduced motion
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean>(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return false;
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  });
+
+  const viewerRef = useRef<CI360ViewerRef | null>(null);
+  const hasLoadedRef = useRef(false);
+  const keysAttachedRef = useRef(false);
+
+  // Reset failure/load state when exterior source changes
+  useEffect(() => {
+    setExteriorFailed(false);
+    hasLoadedRef.current = false;
+    keysAttachedRef.current = false;
+  }, [exterior?.folder, exterior?.elementId]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || isInViewport) return;
+    const el = rootContainerRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setIsInViewport(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setIsInViewport(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '150px', threshold: 0.01 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [isInViewport, exterior?.folder]);
 
   const handleTabSwitch = useCallback((tab: 'exterior' | 'interior') => {
     setInternalTab(tab);
@@ -47,164 +113,169 @@ export const VehicleViewer: React.FC<VehicleViewerProps> = ({
     }
   }, [onViewChange]);
 
-  // Lazy loading state for interior
-  const [interiorMounted, setInteriorMounted] = useState<boolean>(!hasExterior || activeTab === 'interior');
-  const [interiorLoaded, setInteriorLoaded] = useState<boolean>(false);
-
   useEffect(() => {
-    if (activeTab === 'interior') {
+    if (activeTab === 'interior' && isActive) {
       setInteriorMounted(true);
     }
-  }, [activeTab]);
+  }, [activeTab, isActive]);
 
-  // When car changes or unmounts, sync tab state
+  const prevPanoeeUrlRef = useRef<string | undefined>(interior?.panoeeUrl);
+
   useEffect(() => {
+    if (prevPanoeeUrlRef.current !== interior?.panoeeUrl) {
+      prevPanoeeUrlRef.current = interior?.panoeeUrl;
+      setInteriorLoaded(false);
+      setInteriorMounted(isActive && (!hasExterior || activeView === 'interior'));
+    }
+
     if (activeView) {
       setInternalTab(activeView);
+      if (activeView === 'interior' && isActive) {
+        setInteriorMounted(true);
+      }
     } else if (hasExterior) {
       setInternalTab('exterior');
-      setInteriorMounted(false);
-      setInteriorLoaded(false);
     } else {
       setInternalTab('interior');
-      setInteriorMounted(true);
+      if (isActive) {
+        setInteriorMounted(true);
+      }
     }
-  }, [activeView, exterior?.folder, interior?.panoeeUrl, hasExterior]);
+  }, [activeView, isActive, exterior?.folder, interior?.panoeeUrl, hasExterior]);
 
-  // Dedicated container ref for safe DOM mounting of the Cloudimage 360 element
-  const exteriorMountRef = useRef<HTMLDivElement | null>(null);
-  const ciInstanceRef = useRef<any>(null);
-
-  // Mount, initialise, re-initialise on car change, and safely destroy on unmount
+  // Sync active/keyboard state when user switches between 360 view and photos
   useEffect(() => {
-    // Constraint: Never run during server-side rendering
-    if (typeof window === 'undefined') return;
+    const instance = viewerRef.current?.getViewer() as any;
+    if (!instance) return;
 
-    // Only initialise exterior viewer if current active tab is exterior
-    if (activeTab !== 'exterior') return;
-
-    const mountEl = exteriorMountRef.current;
-    if (!mountEl || !exterior) return;
-
-    // STEP 3: Render SAFELY:
-    // Build the element with createElement and setAttribute.
-    // NEVER use innerHTML, v-html or dangerouslySetInnerHTML with raw snippet string.
-    const div = document.createElement('div');
-    div.className = exterior.className || 'cloudimage-360';
-    div.id = exterior.elementId || `cloudimage-360-${vehicleName.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
-    div.style.width = '100%';
-    div.style.height = '100%';
-
-    if (exterior.attributes && Object.keys(exterior.attributes).length > 0) {
-      for (const [key, value] of Object.entries(exterior.attributes)) {
-        div.setAttribute(key, String(value));
+    const shouldBeActive = isActive && activeTab === 'exterior' && hasLoadedRef.current;
+    if (!shouldBeActive) {
+      viewerRef.current?.stop();
+      if (keysAttachedRef.current && typeof instance.removeKeyboardEvents === 'function') {
+        instance.removeKeyboardEvents();
+        keysAttachedRef.current = false;
       }
     } else {
-      // Structured fallback
-      div.setAttribute('data-folder', exterior.folder);
-      div.setAttribute('data-filename-x', exterior.filename);
-      div.setAttribute('data-amount-x', String(exterior.amount));
-      div.setAttribute('data-speed', String(exterior.speed || 100));
-      div.setAttribute('data-drag-speed', String(exterior.dragSpeed || 100));
-      div.setAttribute('data-draggable', String(exterior.draggable ?? true));
-      div.setAttribute('data-swipeable', String(exterior.swipeable ?? true));
-      div.setAttribute('data-keys', String(exterior.keys ?? true));
-      div.setAttribute('data-autoplay', String(exterior.autoplay ?? true));
-      div.setAttribute('data-autoplay-behavior', exterior.autoplayBehavior || 'spin-x');
-      div.setAttribute('data-autoplay-reverse', String(exterior.autoplayReverse ?? true));
-      div.setAttribute('data-fullscreen', String(exterior.fullscreen ?? true));
-      div.setAttribute('data-zoom-max', String(exterior.zoomMax || 5));
-      div.setAttribute('data-zoom-controls', String(exterior.zoomControls ?? true));
-      div.setAttribute('data-pinch-zoom', String(exterior.pinchZoom ?? true));
+      if (exterior?.keys && !keysAttachedRef.current && typeof instance.addKeyboardEvents === 'function') {
+        instance.addKeyboardEvents();
+        keysAttachedRef.current = true;
+      }
+    }
+  }, [isActive, activeTab, exterior?.keys]);
+
+  const handleExteriorLoad = useCallback((data: { viewerId: string; imagesX: number; imagesY: number }) => {
+    if (data.imagesX <= 0 && data.imagesY <= 0) {
+      console.warn(`[VehicleViewer] All exterior 360 frames failed to load for ${vehicleName}. Hiding viewer.`);
+      setExteriorFailed(true);
+      onLoadError?.();
+      return;
     }
 
-    // Set theme class on the element if provided
-    if (theme === 'dark') {
-      div.classList.add('ci360-theme-dark');
-    } else {
-      div.classList.remove('ci360-theme-dark');
+    hasLoadedRef.current = true;
+    const instance = viewerRef.current?.getViewer() as any;
+    if (!instance) return;
+
+    keysAttachedRef.current = Boolean(exterior?.keys);
+    if ((!isActive || activeTab !== 'exterior') && keysAttachedRef.current && typeof instance.removeKeyboardEvents === 'function') {
+      instance.removeKeyboardEvents();
+      keysAttachedRef.current = false;
     }
 
-    // Clear previous children and mount the safely constructed element
-    mountEl.innerHTML = '';
-    mountEl.appendChild(div);
+    // Ensure built-in controls (zoom & fullscreen) are visible after load
+    if (typeof instance.showAllIcons === 'function') {
+      instance.showAllIcons();
+    }
 
-    let isDisposed = false;
+    // Autoplay strictly after onLoad and never with prefers-reduced-motion
+    if (exterior?.autoplay && !prefersReducedMotion && isActive && activeTab === 'exterior') {
+      instance.autoplay = true;
+      viewerRef.current?.play();
+    }
+  }, [vehicleName, onLoadError, exterior?.autoplay, exterior?.keys, prefersReducedMotion, isActive, activeTab]);
 
-    // Dynamic import to avoid running during server rendering or module evaluation
-    import('@cloudimage/360-view')
-      .then((mod) => {
-        if (isDisposed) return;
-        const CI360Class = mod.default || (mod as any).CI360;
-        const ci = typeof CI360Class === 'function' ? new CI360Class() : (window as any).CI360;
+  const handleExteriorError = useCallback((errData: { errorCount: number; totalImages: number; error?: { message: string; url?: string } }) => {
+    if (errData.totalImages > 0 && errData.errorCount >= errData.totalImages) {
+      console.warn(
+        `[VehicleViewer] Failed to load exterior 360 frames (${errData.errorCount}/${errData.totalImages}) for ${vehicleName}:`,
+        errData.error?.message || 'Network or CORS error'
+      );
+      setExteriorFailed(true);
+      onLoadError?.();
+    }
+  }, [vehicleName, onLoadError]);
 
-        if (ci && typeof ci.init === 'function') {
-          ciInstanceRef.current = ci.init(div);
-        } else if (typeof (window as any).CI360?.init === 'function') {
-          ciInstanceRef.current = (window as any).CI360.init(div);
-        } else if (typeof (window as any).CI360?.initAll === 'function') {
-          (window as any).CI360.initAll();
-        }
-      })
-      .catch((err) => {
-        console.warn('[VehicleViewer] Failed to initialize CI360 viewer:', err);
-      });
+  if (!hasExterior && !hasInterior) {
+    return null;
+  }
 
-    // Cleanup on unmount or when car changes: destroy instance to prevent duplicate viewers
-    return () => {
-      isDisposed = true;
-      if (ciInstanceRef.current) {
-        try {
-          if (typeof ciInstanceRef.current.destroy === 'function') {
-            ciInstanceRef.current.destroy();
-          }
-        } catch {
-          // Ignore destruction exceptions
-        }
-        ciInstanceRef.current = null;
-      }
-      if (typeof (window as any).CI360?.destroy === 'function') {
-        try {
-          (window as any).CI360.destroy(div.id);
-        } catch {
-          // Ignore destruction exceptions
-        }
-      }
-      if (mountEl.contains(div)) {
-        mountEl.removeChild(div);
-      }
-    };
-  }, [
-    activeTab,
-    exterior?.folder,
-    exterior?.filename,
-    exterior?.amount,
-    exterior?.elementId,
-    vehicleName,
-    theme,
-  ]);
+  const safeAutoplayBehavior: AutoplayBehavior = VALID_AUTOPLAY_BEHAVIORS.includes(
+    exterior?.autoplayBehavior as AutoplayBehavior
+  )
+    ? (exterior?.autoplayBehavior as AutoplayBehavior)
+    : 'spin-x';
+
+  const viewerClassName = [
+    exterior?.className || 'cloudimage-360',
+    'w-full h-full',
+    theme === 'dark' ? 'ci360-theme-dark' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <div
+      ref={rootContainerRef}
       tabIndex={0}
       className={`relative w-full h-full bg-black select-none overflow-hidden outline-none flex items-center justify-center ${className}`}
       aria-label={`${vehicleName} 360 viewer`}
     >
       {/* 2. EXTERIOR 360 VIEW LAYER */}
       {hasExterior && exterior && activeTab === 'exterior' && (
-        <div className="absolute inset-0 w-full h-full z-10 pointer-events-auto">
-          {/* Reserved aspect-ratio container for Cloudimage 360 View */}
-          <div
-            ref={exteriorMountRef}
-            className="w-full h-full relative flex items-center justify-center"
-            style={{ minHeight: '100%', width: '100%' }}
-          />
+        <div
+          className={`absolute inset-0 w-full h-full flex items-center justify-center ${
+            isActive ? 'z-10 pointer-events-auto visible' : 'z-0 pointer-events-none invisible'
+          }`}
+        >
+          {typeof window !== 'undefined' && isInViewport && (
+            <CI360Viewer
+              key={`${exterior.elementId || vehicleName}-${exterior.folder}-${exterior.amount}`}
+              ref={viewerRef}
+              id={exterior.elementId || `ext360-${vehicleName.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
+              className={viewerClassName}
+              style={{ width: '100%', height: '100%' }}
+              folder={exterior.folder}
+              filenameX={exterior.filename}
+              amountX={exterior.amount}
+              speed={exterior.speed ?? 100}
+              draggable={exterior.draggable ?? true}
+              swipeable={exterior.swipeable ?? true}
+              dragSpeed={exterior.dragSpeed ?? 100}
+              keys={exterior.keys ?? true}
+              autoplay={false}
+              autoplayBehavior={safeAutoplayBehavior}
+              autoplayReverse={exterior.autoplayReverse ?? false}
+              fullscreen={exterior.fullscreen ?? true}
+              zoomMax={exterior.zoomMax ?? 5}
+              zoomControls={exterior.zoomControls ?? true}
+              zoomControlsPosition="bottom-left"
+              pinchZoom={exterior.pinchZoom ?? true}
+              lazyload={false}
+              aspectRatio="16/10"
+              theme={theme === 'dark' ? 'dark' : 'light'}
+              onLoad={handleExteriorLoad}
+              onError={handleExteriorError}
+            />
+          )}
         </div>
       )}
 
       {/* 3. INTERIOR 360 VIEW LAYER (Panoee Virtual Tour Iframe - Untouched) */}
       {hasInterior && interior && activeTab === 'interior' && interiorMounted && (
-        <div className="absolute inset-0 w-full h-full bg-black z-10 pointer-events-auto">
+        <div
+          className={`absolute inset-0 w-full h-full bg-black ${
+            isActive ? 'z-10 pointer-events-auto visible' : 'z-0 pointer-events-none invisible'
+          }`}
+        >
           {!interiorLoaded && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/90 text-white">
               <div className="w-9 h-9 rounded-full border-2 border-white/20 border-t-[#2B59FF] animate-spin mb-2.5" />
@@ -219,7 +290,7 @@ export const VehicleViewer: React.FC<VehicleViewerProps> = ({
             allow="fullscreen; accelerometer; gyroscope; magnetometer; xr-spatial-tracking"
             onLoad={() => setInteriorLoaded(true)}
             className="w-full h-full border-0"
-            style={{ touchAction: 'pan-y' }}
+            style={{ touchAction: 'pan-y', pointerEvents: isActive ? 'auto' : 'none' }}
           />
         </div>
       )}

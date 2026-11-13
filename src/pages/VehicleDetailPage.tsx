@@ -304,8 +304,13 @@ export default function VehicleDetailPage() {
   const isSold = vehicle?.status?.toLowerCase() === 'sold';
 
   // Unified 360 View: Validated and normalized
+  const [exteriorFailed, setExteriorFailed] = useState(false);
+  useEffect(() => {
+    setExteriorFailed(false);
+  }, [vehicle?.id]);
+
   const normalized360 = useMemo(() => normalizeView360(vehicle), [vehicle]);
-  const hasExterior = Boolean(normalized360?.exterior);
+  const hasExterior = Boolean(normalized360?.exterior) && !exteriorFailed;
   const hasInterior = Boolean(normalized360?.interior);
   const has360 = Boolean(hasExterior || hasInterior);
 
@@ -386,7 +391,9 @@ export default function VehicleDetailPage() {
     setActiveSlideIndex((prev) => (prev < slideItems.length - 1 ? prev + 1 : 0));
   };
 
-  // Keyboard navigation
+  const activeSlideType = slideItems[activeSlideIndex]?.type;
+
+  // Keyboard navigation (photos & lightbox only so 360 viewer handles its own arrow keys)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isLightboxOpen) {
@@ -400,6 +407,8 @@ export default function VehicleDetailPage() {
         return;
       }
 
+      if (activeSlideType !== 'photo') return;
+
       const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
       if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
 
@@ -412,15 +421,21 @@ export default function VehicleDetailPage() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isLightboxOpen, slideItems.length, galleryImages.length]);
+  }, [isLightboxOpen, activeSlideType, slideItems.length, galleryImages.length]);
 
-  // Touch Swipe on Prominent Card
+  // Touch Swipe on Prominent Card (photos only so 360 drag/pinch works uninterrupted)
   const handleTouchStart = (e: React.TouchEvent) => {
+    if (activeSlideType !== 'photo') {
+      touchStartXRef.current = null;
+      touchStartYRef.current = null;
+      return;
+    }
     touchStartXRef.current = e.touches[0].clientX;
     touchStartYRef.current = e.touches[0].clientY;
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
+    if (activeSlideType !== 'photo') return;
     if (touchStartXRef.current === null || touchStartYRef.current === null) return;
     const diffX = touchStartXRef.current - e.changedTouches[0].clientX;
     const diffY = touchStartYRef.current - e.changedTouches[0].clientY;
@@ -553,6 +568,7 @@ export default function VehicleDetailPage() {
           <div className="lg:col-span-7 flex flex-col gap-4">
             {/* Primary Featured Image & 360 Display Card */}
             <div
+              data-has-mode-toggle={has360 ? 'true' : 'false'}
               className={`aspect-[16/10] w-full rounded-3xl overflow-hidden relative border shadow-lg bg-black ${
                 theme === 'dark' ? 'border-white/10' : 'border-slate-200'
               }`}
@@ -569,8 +585,10 @@ export default function VehicleDetailPage() {
                     setIsLightboxOpen(true);
                   }
                 }}
-                className={`w-full h-full object-cover transition-opacity duration-300 ${
-                  activeSlide?.type === 'photo' ? 'opacity-100 cursor-pointer' : 'opacity-0 pointer-events-none'
+                className={`relative w-full h-full object-cover transition-opacity duration-300 ${
+                  activeSlide?.type === 'photo'
+                    ? 'z-10 opacity-100 cursor-pointer visible'
+                    : 'z-0 opacity-0 pointer-events-none invisible'
                 }`}
                 onError={(e) => {
                   const target = e.currentTarget;
@@ -583,15 +601,20 @@ export default function VehicleDetailPage() {
               {/* Exterior 360 Spin Layer */}
               {hasExterior && (
                 <div
-                  className={`absolute inset-0 z-10 w-full h-full transition-opacity duration-300 ${
-                    activeSlide?.type === '360-exterior' ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                  className={`absolute inset-0 w-full h-full transition-opacity duration-300 ${
+                    activeSlide?.type === '360-exterior'
+                      ? 'z-10 opacity-100 pointer-events-auto visible'
+                      : 'z-0 opacity-0 pointer-events-none invisible'
                   }`}
                 >
                   <VehicleViewer
+                    key={`ext-${vehicle.id}`}
                     view360={normalized360}
                     vehicleName={vehicle.name}
                     theme={theme}
                     activeView="exterior"
+                    isActive={activeSlide?.type === '360-exterior'}
+                    onLoadError={() => setExteriorFailed(true)}
                   />
                 </div>
               )}
@@ -599,15 +622,19 @@ export default function VehicleDetailPage() {
               {/* Interior 360 Panorama Layer */}
               {hasInterior && (
                 <div
-                  className={`absolute inset-0 z-10 w-full h-full transition-opacity duration-300 ${
-                    activeSlide?.type === '360-interior' ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                  className={`absolute inset-0 w-full h-full transition-opacity duration-300 ${
+                    activeSlide?.type === '360-interior'
+                      ? 'z-10 opacity-100 pointer-events-auto visible'
+                      : 'z-0 opacity-0 pointer-events-none invisible'
                   }`}
                 >
                   <VehicleViewer
+                    key={`int-${vehicle.id}`}
                     view360={normalized360}
                     vehicleName={vehicle.name}
                     theme={theme}
                     activeView="interior"
+                    isActive={activeSlide?.type === '360-interior'}
                   />
                 </div>
               )}

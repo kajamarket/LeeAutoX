@@ -348,12 +348,12 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
       exterior: '',
       interior: '<iframe src="https://tour.panoee.com/corolla-2005-interior-360" width="100%" height="100%" frameborder="0" allowfullscreen allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>'
     },
-    exterior360: '<div class="cloudimage-360" id="exterior-360-12" data-folder="https://scaleflex.cloudimg.io/v7/demo/earbuds/" data-filename-x="{index}.jpg" data-amount-x="233" data-speed="100" data-draggable="true" data-swipeable="true" data-drag-speed="100" data-keys="true" data-autoplay="true" data-autoplay-behavior="spin-x" data-autoplay-reverse="true" data-fullscreen="true" data-zoom-max="5" data-zoom-controls="true" data-pinch-zoom="true"></div>',
+    exterior360: '<div class="cloudimage-360" id="ext360-12" data-folder="https://scaleflex.cloudimg.io/v7/demo/earbuds/" data-filename-x="{index}.jpg" data-amount-x="35" data-speed="100" data-draggable="true" data-swipeable="true" data-drag-speed="100" data-keys="true" data-autoplay="true" data-autoplay-behavior="spin-x" data-fullscreen="true" data-zoom-max="5" data-zoom-controls="true" data-pinch-zoom="true"></div>',
     view360: {
       exterior: {
         folder: "https://scaleflex.cloudimg.io/v7/demo/earbuds/",
         filename: "{index}.jpg",
-        amount: 233
+        amount: 35
       },
       interior: {
         embed: '<iframe src="https://tour.panoee.com/corolla-2005-interior-360" width="100%" height="100%" frameborder="0" allowfullscreen allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>'
@@ -395,12 +395,12 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
       exterior: '<iframe src="https://tour.panoee.com/corolla-2005-exterior-360" width="100%" height="100%" frameborder="0" allowfullscreen allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>',
       interior: '<iframe src="https://tour.panoee.com/corolla-2005-interior-360" width="100%" height="100%" frameborder="0" allowfullscreen allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>'
     },
-    exterior360: '<div class="cloudimage-360" id="exterior-360-10" data-folder="https://scaleflex.cloudimg.io/v7/demo/earbuds/" data-filename-x="{index}.jpg" data-amount-x="233" data-speed="100" data-draggable="true" data-swipeable="true" data-drag-speed="100" data-keys="true" data-autoplay="true" data-autoplay-behavior="spin-x" data-autoplay-reverse="true" data-fullscreen="true" data-zoom-max="5" data-zoom-controls="true" data-pinch-zoom="true"></div>',
+    exterior360: '<div class="cloudimage-360" id="ext360-10" data-folder="https://scaleflex.cloudimg.io/v7/demo/earbuds/" data-filename-x="{index}.jpg" data-amount-x="35" data-speed="100" data-draggable="true" data-swipeable="true" data-drag-speed="100" data-keys="true" data-autoplay="true" data-autoplay-behavior="spin-x" data-fullscreen="true" data-zoom-max="5" data-zoom-controls="true" data-pinch-zoom="true"></div>',
     view360: {
       exterior: {
         folder: "https://scaleflex.cloudimg.io/v7/demo/earbuds/",
         filename: "{index}.jpg",
-        amount: 233
+        amount: 35
       },
       interior: {
         embed: '<iframe src="https://tour.panoee.com/corolla-2005-interior-360" width="100%" height="100%" frameborder="0" allowfullscreen allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>'

@@ -20,7 +20,7 @@ interface InventoryContextType {
   cloudSyncError: string | null;
 }
 
-const STORAGE_KEY = 'leeautox_inventory_v7';
+const STORAGE_KEY = 'leeautox_inventory_v8';
 
 const normalizeVehicle = (item: any): VehicleItem => {
   let loc = item.location;
@@ -36,8 +36,11 @@ const normalizeVehicle = (item: any): VehicleItem => {
   }
   const initItem = INITIAL_INVENTORY.find((i) => String(i.id) === String(item.id));
   const deg360 = item['360degree'] || initItem?.['360degree'];
-  const ext360 = item.exterior360 || initItem?.exterior360;
-  const view360 = item.view360 || initItem?.view360;
+  const isStaleExterior =
+    typeof item.exterior360 === 'string' &&
+    (item.exterior360.includes('id="exterior-360-') || item.exterior360.includes('data-amount-x="233"'));
+  const ext360 = isStaleExterior ? initItem?.exterior360 : (item.exterior360 || initItem?.exterior360);
+  const view360 = isStaleExterior ? initItem?.view360 : (item.view360 || initItem?.view360);
   return { 
     ...item, 
     location: loc, 
