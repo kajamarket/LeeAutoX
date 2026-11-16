@@ -417,9 +417,16 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     year: 2012,
     price: "₦14,000,000",
     numericPrice: 14000000,
-    image: "https://images.leeautox.com/public/cars/IMG-20261104-WA0066.jpg",
+    image: "https://images.leeautox.com/public/cars/IMG-20261116-WA0063.jpg",
     images: [
-      "https://images.leeautox.com/public/cars/IMG-20261104-WA0066.jpg"
+      "https://images.leeautox.com/public/cars/IMG-20261116-WA0043.jpg",
+      "https://images.leeautox.com/public/cars/IMG-20261116-WA0044.jpg",
+      "https://images.leeautox.com/public/cars/IMG-20261116-WA0045.jpg",
+      "https://images.leeautox.com/public/cars/IMG-20261116-WA0046.jpg",
+      "https://images.leeautox.com/public/cars/IMG-20261116-WA0047.jpg",
+      "https://images.leeautox.com/public/cars/IMG-20261116-WA0048.jpg",
+      "https://images.leeautox.com/public/cars/IMG-20261116-WA0049.jpg",
+      "https://images.leeautox.com/public/cars/IMG-20261116-WA0050.jpg"
     ],
     specs: "Available in Nigeria • Ready for Local Purchase",
     mileage: "",
