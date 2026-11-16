@@ -1184,6 +1184,150 @@ export const RAW_SEO_DATA: Record<string, any> = {
         'url': 'https://leeautox.com'
       }
     }
+  },
+  '/inventory/': {
+    title: 'Verified Cars For Sale & Inventory Catalogue | LeeAutoX',
+    description: 'Browse our active inventory of verified vehicles available in Nigeria and North America ready for local purchase or direct export with full inspection.',
+    keywords: 'cars for sale nigeria, verified tokunbo cars lagos, buy car nigeria, leeautox inventory',
+    canonical: 'https://leeautox.com/inventory/',
+    breadcrumbs: [
+      { name: 'Home', item: 'https://leeautox.com/' },
+      { name: 'Inventory', item: 'https://leeautox.com/inventory/' }
+    ],
+    heading: 'Verified Vehicles Available Now & Ready for Export',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      'name': 'Verified Cars For Sale - LeeAutoX'
+    }
+  },
+  '/cars-for-sale/': {
+    title: 'Verified Cars For Sale & Inventory Catalogue | LeeAutoX',
+    description: 'Browse our active inventory of verified vehicles available in Nigeria and North America ready for local purchase or direct export with full inspection.',
+    keywords: 'cars for sale nigeria, tokunbo cars, leeautox inventory',
+    canonical: 'https://leeautox.com/inventory/',
+    breadcrumbs: [
+      { name: 'Home', item: 'https://leeautox.com/' },
+      { name: 'Inventory', item: 'https://leeautox.com/inventory/' }
+    ],
+    heading: 'Verified Vehicles Available Now & Ready for Export',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      'name': 'Verified Cars For Sale - LeeAutoX'
+    }
+  },
+  '/auction-search/': {
+    title: 'Live Copart & IAAI Auction Search | LeeAutoX',
+    description: 'Search live Copart and IAAI vehicle auction inventory. Filter by make, model, damage, title, and bid directly through LeeAutoX.',
+    keywords: 'copart auction search, iaai lots, buy salvage cars nigeria, live auction tokunbo',
+    canonical: 'https://leeautox.com/auction-search/',
+    breadcrumbs: [
+      { name: 'Home', item: 'https://leeautox.com/' },
+      { name: 'Auction Search', item: 'https://leeautox.com/auction-search/' }
+    ],
+    heading: 'Live North American Vehicle Auction Search',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': 'Live Copart & IAAI Auction Search'
+    }
+  },
+  '/auction-lot/': {
+    title: 'Live Auction Lot Inspection & Bidding | LeeAutoX',
+    description: 'Inspect detailed auction lot specifications, damage reports, odometer, and bid via LeeAutoX proxy desk.',
+    keywords: 'auction lot details, copart bid proxy, iaai inspection',
+    canonical: 'https://leeautox.com/auction-lot/',
+    breadcrumbs: [
+      { name: 'Home', item: 'https://leeautox.com/' },
+      { name: 'Auction Search', item: 'https://leeautox.com/auction-search/' },
+      { name: 'Auction Lot', item: 'https://leeautox.com/auction-lot/' }
+    ],
+    heading: 'Auction Lot Inspection & Proxy Bidding',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': 'Live Auction Lot Inspection'
+    }
+  },
+  '/bkend/': {
+    title: 'LeeAutoX Admin Console | Fleet Management',
+    description: 'Confidential portal for vehicle catalogue and inventory administration.',
+    keywords: 'admin console',
+    canonical: 'https://leeautox.com/bkend/',
+    breadcrumbs: [
+      { name: 'Home', item: 'https://leeautox.com/' },
+      { name: 'Admin Console', item: 'https://leeautox.com/bkend/' }
+    ],
+    heading: 'LeeAutoX Admin Console',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': 'LeeAutoX Admin Console'
+    }
+  },
+  '/blog/copart-bidding-guide/': {
+    title: 'Copart Canada Bidding Strategy & Gate Fee Breakdown | LeeAutoX',
+    description: 'Detailed breakdown of Copart member tiers, preliminary bidding tactics, live auction execution, and avoiding auction yard gate fees.',
+    keywords: 'copart bidding strategy, copart gate fees canada, copart canada auction guide',
+    canonical: 'https://leeautox.com/blog/copart-bidding-guide/',
+    breadcrumbs: [
+      { name: 'Home', item: 'https://leeautox.com/' },
+      { name: 'Blog', item: 'https://leeautox.com/blog/' },
+      { name: 'Copart Bidding Strategy', item: 'https://leeautox.com/blog/copart-bidding-guide/' }
+    ],
+    heading: 'Copart Canada Bidding Strategy & Gate Fee Breakdown',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      'headline': 'Copart Canada Bidding Strategy & Gate Fee Breakdown',
+      'author': {
+        '@type': 'Organization',
+        'name': 'LeeAutoX Auction Specialists'
+      }
+    }
+  },
+  '/blog/vehicle-inspection-checklist/': {
+    title: '150-Point Pre-Purchase Auction Inspection Checklist | LeeAutoX',
+    description: 'The rigorous technical checklist our Canadian inspectors run before placing bids: OBD2 scanner protocols, salt corrosion checks, and title branding.',
+    keywords: 'pre-purchase vehicle inspection, obd2 auction inspection, copart lot checklist',
+    canonical: 'https://leeautox.com/blog/vehicle-inspection-checklist/',
+    breadcrumbs: [
+      { name: 'Home', item: 'https://leeautox.com/' },
+      { name: 'Blog', item: 'https://leeautox.com/blog/' },
+      { name: 'Pre-Purchase Inspection Checklist', item: 'https://leeautox.com/blog/vehicle-inspection-checklist/' }
+    ],
+    heading: '150-Point Pre-Purchase Auction Inspection Checklist',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      'headline': '150-Point Pre-Purchase Auction Inspection Checklist',
+      'author': {
+        '@type': 'Organization',
+        'name': 'LeeAutoX Technical Inspection Team'
+      }
+    }
+  },
+  '/blog/tokunbo-buyers-guide/': {
+    title: "Tokunbo Buyer's Guide: Sourcing Directly from North America | LeeAutoX",
+    description: 'Why direct procurement from Canada and the US beats local dealership markups in Nigeria, with verified mileage and clean accident histories.',
+    keywords: 'tokunbo buyers guide, direct car import nigeria, verified mileage tokunbo',
+    canonical: 'https://leeautox.com/blog/tokunbo-buyers-guide/',
+    breadcrumbs: [
+      { name: 'Home', item: 'https://leeautox.com/' },
+      { name: 'Blog', item: 'https://leeautox.com/blog/' },
+      { name: "Tokunbo Buyer's Guide", item: 'https://leeautox.com/blog/tokunbo-buyers-guide/' }
+    ],
+    heading: "Tokunbo Buyer's Guide: Sourcing Directly from North America",
+    schema: {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      'headline': "Tokunbo Buyer's Guide: Sourcing Directly from North America",
+      'author': {
+        '@type': 'Organization',
+        'name': 'LeeAutoX Procurement Desk'
+      }
+    }
   }
 };
 

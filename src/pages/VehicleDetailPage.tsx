@@ -451,33 +451,104 @@ export default function VehicleDetailPage() {
   };
 
   useEffect(() => {
-    if (vehicle) {
-      const pageTitle = isOverseas
-        ? `${vehicle.year} ${vehicle.make} ${vehicle.model} For Sale | Canada & USA Sourcing | LeeAutoX`
-        : `${vehicle.year} ${vehicle.make} ${vehicle.model} For Sale | Lagos Nigeria Import | LeeAutoX`;
-      const metaDescription = isOverseas
-        ? `Buy verified ${vehicle.year} ${vehicle.make} ${vehicle.model} located in ${vehicle.currentLocation || 'Canada & USA'}. Shipped to Nigeria upon your request once deposit is made.`
-        : `Buy verified ${vehicle.year} ${vehicle.make} ${vehicle.model} on ground in Lagos, Nigeria. Fully customs cleared, 100% duty paid, available for physical inspection and test drive.`;
-      const canonicalUrl = `https://leeautox.com${getVehicleUrl(vehicle)}`;
-
-      document.title = pageTitle;
-
-      let metaDesc = document.querySelector('meta[name="description"]');
-      if (!metaDesc) {
-        metaDesc = document.createElement('meta');
-        metaDesc.setAttribute('name', 'description');
-        document.head.appendChild(metaDesc);
-      }
-      metaDesc.setAttribute('content', metaDescription);
-
-      let canonical = document.querySelector('link[rel="canonical"]');
-      if (!canonical) {
-        canonical = document.createElement('link');
-        canonical.setAttribute('rel', 'canonical');
-        document.head.appendChild(canonical);
-      }
-      canonical.setAttribute('href', canonicalUrl);
+    let metaRobots = document.querySelector('meta[name="robots"]');
+    if (!metaRobots) {
+      metaRobots = document.createElement('meta');
+      metaRobots.setAttribute('name', 'robots');
+      document.head.appendChild(metaRobots);
     }
+
+    if (!vehicle) {
+      metaRobots.setAttribute('content', 'noindex, follow');
+      return;
+    }
+
+    metaRobots.setAttribute('content', 'index, follow');
+
+    const pageTitle = vehicle.seoTitle || (isOverseas
+      ? `${vehicle.year} ${vehicle.make} ${vehicle.model} For Sale | Canada & USA Sourcing | LeeAutoX`
+      : `${vehicle.year} ${vehicle.make} ${vehicle.model} For Sale | Lagos Nigeria Import | LeeAutoX`);
+    const metaDescription = vehicle.seoDescription || (isOverseas
+      ? `Buy verified ${vehicle.year} ${vehicle.make} ${vehicle.model} located in ${vehicle.currentLocation || 'Canada & USA'}. Shipped to Nigeria upon your request once deposit is made.`
+      : `Buy verified ${vehicle.year} ${vehicle.make} ${vehicle.model} on ground in Lagos, Nigeria. Fully customs cleared, 100% duty paid, available for physical inspection and test drive.`);
+    const canonicalUrl = `https://leeautox.com${getVehicleUrl(vehicle)}`;
+
+    document.title = pageTitle;
+
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (!metaDesc) {
+      metaDesc = document.createElement('meta');
+      metaDesc.setAttribute('name', 'description');
+      document.head.appendChild(metaDesc);
+    }
+    metaDesc.setAttribute('content', metaDescription);
+
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute('href', canonicalUrl);
+
+    const uniqueImages = Array.from(new Set([vehicle.image, ...(vehicle.images || [])].filter(Boolean)));
+    const availabilityUrl =
+      vehicle.status === 'Sold'
+        ? 'https://schema.org/OutOfStock'
+        : vehicle.status === 'Reserved'
+        ? 'https://schema.org/LimitedAvailability'
+        : 'https://schema.org/InStock';
+
+    const vehicleSchema: Record<string, any> = {
+      '@type': ['Vehicle', 'Product'],
+      '@id': `${canonicalUrl}#vehicle`,
+      name: vehicle.name,
+      description: metaDescription,
+      url: canonicalUrl,
+      image: uniqueImages,
+      brand: {
+        '@type': 'Brand',
+        name: vehicle.make,
+      },
+      model: vehicle.model,
+      vehicleModelDate: String(vehicle.year),
+      offers: {
+        '@type': 'Offer',
+        price: vehicle.numericPrice,
+        priceCurrency: 'NGN',
+        availability: availabilityUrl,
+        itemCondition: 'https://schema.org/UsedCondition',
+        url: canonicalUrl,
+        seller: {
+          '@id': 'https://leeautox.com/#organization',
+        },
+      },
+    };
+    if (vehicle.bodyType) vehicleSchema.bodyType = vehicle.bodyType;
+    if (vehicle.colour) vehicleSchema.color = vehicle.colour;
+    if (vehicle.transmission) vehicleSchema.vehicleTransmission = vehicle.transmission;
+    if (vehicle.fuelType) vehicleSchema.fuelType = vehicle.fuelType;
+    if (vehicle.vin) vehicleSchema.vehicleIdentificationNumber = vehicle.vin;
+
+    let schemaScript = document.getElementById('seo-schema-jsonld') as HTMLScriptElement | null;
+    if (!schemaScript) {
+      schemaScript = document.createElement('script');
+      schemaScript.id = 'seo-schema-jsonld';
+      schemaScript.type = 'application/ld+json';
+      document.head.appendChild(schemaScript);
+    }
+    schemaScript.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'AutoDealer',
+          '@id': 'https://leeautox.com/#organization',
+          name: 'LeeAutoX',
+          url: 'https://leeautox.com/',
+        },
+        vehicleSchema,
+      ],
+    });
   }, [vehicle, isOverseas]);
 
   if (vehicle && id && id.toLowerCase() !== getVehicleSlug(vehicle).toLowerCase()) {
@@ -496,7 +567,7 @@ export default function VehicleDetailPage() {
             The vehicle you are looking for may have been sold or removed from the active catalogue.
           </p>
           <Link
-            to="/inventory"
+            to="/inventory/"
             className="inline-flex items-center gap-2 px-6 py-3 bg-[#2B59FF] text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-blue-600 transition-colors"
           >
             <ArrowLeft size={16} /> Return to Inventory
@@ -539,7 +610,7 @@ export default function VehicleDetailPage() {
         {/* Breadcrumb & Navigation */}
         <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200/20">
           <Link
-            to="/inventory"
+            to="/inventory/"
             className="group inline-flex items-center gap-2 text-sm font-semibold opacity-70 hover:opacity-100 hover:text-[#2B59FF] transition-all"
           >
             <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
@@ -833,6 +904,17 @@ export default function VehicleDetailPage() {
               </div>
             )}
 
+            {/* Interior 360° Placeholder Notice when vehicle has no interior panorama */}
+            {vehicle.interior360Unavailable && !hasInterior && (
+              <div className={`px-4 py-2.5 rounded-xl border text-xs font-mono ${
+                theme === 'dark'
+                  ? 'bg-white/5 border-white/10 text-zinc-400'
+                  : 'bg-slate-50 border-slate-200 text-slate-500'
+              }`}>
+                Interior 360° View Not Available
+              </div>
+            )}
+
             {/* Verification Guarantee Card */}
             <div className={`p-6 rounded-2xl border flex items-start gap-4 mt-2 ${
               theme === 'dark' ? 'bg-[#181818] border-white/10' : 'bg-white border-slate-200 shadow-xs'
@@ -895,14 +977,18 @@ export default function VehicleDetailPage() {
                     <span className="text-xs uppercase font-mono tracking-wider text-slate-500 dark:text-zinc-400 font-medium">Price</span>
                     <span className="text-2xl sm:text-3xl font-bold font-serif text-[#2B59FF]">{vehicle.price}</span>
                   </div>
-                  <div className="flex justify-between items-center pt-3 border-t border-slate-200/20 dark:border-zinc-800 text-xs">
-                    <span className="text-slate-600 dark:text-zinc-300 font-mono font-medium">Commitment Deposit:</span>
-                    <span className="font-mono font-bold text-emerald-500">{vehicle.deposit}</span>
-                  </div>
-                  <div className="flex justify-between items-center pt-2 text-[11px] text-slate-500 dark:text-zinc-400 font-mono">
-                    <span>Balance terms:</span>
-                    <span>Based on agreement</span>
-                  </div>
+                  {vehicle.deposit && (
+                    <>
+                      <div className="flex justify-between items-center pt-3 border-t border-slate-200/20 dark:border-zinc-800 text-xs">
+                        <span className="text-slate-600 dark:text-zinc-300 font-mono font-medium">Commitment Deposit:</span>
+                        <span className="font-mono font-bold text-emerald-500">{vehicle.deposit}</span>
+                      </div>
+                      <div className="flex justify-between items-center pt-2 text-[11px] text-slate-500 dark:text-zinc-400 font-mono">
+                        <span>Balance terms:</span>
+                        <span>Based on agreement</span>
+                      </div>
+                    </>
+                  )}
 
                   {/* Frosted glass overlay for sold vehicles */}
                   {isSold && (
@@ -1007,26 +1093,36 @@ export default function VehicleDetailPage() {
               <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Model Year</span>
               <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.year}</span>
             </div>
-            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
-              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Mileage / Odometer</span>
-              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.mileage}</span>
-            </div>
-            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
-              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Transmission</span>
-              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.transmission}</span>
-            </div>
-            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
-              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Fuel Type</span>
-              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.fuelType}</span>
-            </div>
-            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
-              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Body Style</span>
-              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.bodyType}</span>
-            </div>
-            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
-              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Exterior Colour</span>
-              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.colour}</span>
-            </div>
+            {vehicle.mileage && (
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
+                <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Mileage / Odometer</span>
+                <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.mileage}</span>
+              </div>
+            )}
+            {vehicle.transmission && (
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
+                <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Transmission</span>
+                <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.transmission}</span>
+              </div>
+            )}
+            {vehicle.fuelType && (
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
+                <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Fuel Type</span>
+                <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.fuelType}</span>
+              </div>
+            )}
+            {vehicle.bodyType && (
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
+                <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Body Style</span>
+                <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.bodyType}</span>
+              </div>
+            )}
+            {vehicle.colour && (
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
+                <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Exterior Colour</span>
+                <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.colour}</span>
+              </div>
+            )}
             {!isOverseas && (
               <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
                 <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Condition Status</span>
@@ -1056,7 +1152,7 @@ export default function VehicleDetailPage() {
                   Similar Vehicles in Stock
                 </h3>
               </div>
-              <Link to="/inventory" className="text-xs font-bold uppercase tracking-wider text-[#2B59FF] hover:underline">
+              <Link to="/inventory/" className="text-xs font-bold uppercase tracking-wider text-[#2B59FF] hover:underline">
                 View All
               </Link>
             </div>

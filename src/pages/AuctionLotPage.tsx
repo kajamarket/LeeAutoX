@@ -47,19 +47,20 @@ export default function AuctionLotPage() {
     let isMounted = true;
     setIsLoading(true);
 
+    let robots = document.querySelector('meta[name="robots"]');
+    if (!robots) {
+      robots = document.createElement('meta');
+      robots.setAttribute('name', 'robots');
+      document.head.appendChild(robots);
+    }
+    robots.setAttribute('content', 'noindex, follow');
+
     getAuctionLotDetails(lotNumber, platform, slug).then((data) => {
       if (isMounted) {
         if (data) {
           setLot(data);
-          // Set dynamic page title & noindex
+          // Set dynamic page title
           document.title = `${data.year} ${data.make} ${data.model} - ${data.platform.toUpperCase()} Lot #${data.lot_number} | LeeAutoX`;
-          let robots = document.querySelector('meta[name="robots"]');
-          if (!robots) {
-            robots = document.createElement('meta');
-            robots.setAttribute('name', 'robots');
-            document.head.appendChild(robots);
-          }
-          robots.setAttribute('content', 'noindex, follow');
 
           // Fetch exactly 4 related vehicles from /related endpoint or fallback
           getRelatedAuctionVehicles(data.slug_vin || data.lot_number, data.make, data.model).then((rel) => {
@@ -74,6 +75,10 @@ export default function AuctionLotPage() {
 
     return () => {
       isMounted = false;
+      const metaRobots = document.querySelector('meta[name="robots"]');
+      if (metaRobots) {
+        metaRobots.setAttribute('content', 'index, follow');
+      }
     };
   }, [lotNumber, platform, slug]);
 
@@ -159,7 +164,7 @@ export default function AuctionLotPage() {
           <ShieldAlert size={48} className="mx-auto text-amber-500 mb-4" />
           <h2 className="text-xl font-bold mb-2">Auction Lot Not Found</h2>
           <p className="text-xs font-mono mb-6 text-slate-500 dark:text-zinc-400">The requested lot has concluded or the identifier is invalid.</p>
-          <Link to="/auction-search" className="px-5 py-2.5 bg-[#2B59FF] text-white text-xs font-bold uppercase rounded-xl">
+          <Link to="/auction-search/" className="px-5 py-2.5 bg-[#2B59FF] text-white text-xs font-bold uppercase rounded-xl">
             Back to Auction Search
           </Link>
         </div>
@@ -199,8 +204,8 @@ export default function AuctionLotPage() {
   const auctionStatus = (lot.auction?.state || lot.auction?.status || 'Open').toUpperCase();
 
   const backUrl = fromSearch 
-    ? `/auction-search?${fromSearch}`
-    : '/auction-search';
+    ? `/auction-search/?${fromSearch}`
+    : '/auction-search/';
 
   return (
     <div className={`min-h-screen transition-colors duration-300 pt-24 sm:pt-28 md:pt-32 pb-20 ${
@@ -581,7 +586,7 @@ export default function AuctionLotPage() {
               </div>
 
               <Link
-                to={`/auction-search?make=${encodeURIComponent(lot.make)}`}
+                to={`/auction-search/?make=${encodeURIComponent(lot.make)}`}
                 className="text-xs font-mono font-bold text-[#2B59FF] hover:underline"
               >
                 View all {lot.make} lots →

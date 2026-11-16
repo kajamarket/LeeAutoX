@@ -108,6 +108,7 @@ export function parseExterior360Snippet(
     }
 
     const filenameX = sanitizedAttrs['data-filename-x'] || sanitizedAttrs['data-filename'] || '{index}.jpg';
+    const indexZeroBase = parseInt(sanitizedAttrs['data-index-zero-base'] || '0', 10) || 0;
     const amountX = parseInt(sanitizedAttrs['data-amount-x'] || sanitizedAttrs['data-amount'] || '35', 10) || 35;
     const speed = parseInt(sanitizedAttrs['data-speed'] || '100', 10) || 100;
     const dragSpeed = parseInt(sanitizedAttrs['data-drag-speed'] || '100', 10) || 100;
@@ -116,6 +117,7 @@ export function parseExterior360Snippet(
     return {
       folder,
       filename: filenameX,
+      indexZeroBase,
       amount: amountX,
       demo: false,
       autoplay: sanitizedAttrs['data-autoplay'] === 'true' || sanitizedAttrs['data-autoplay'] === '',
@@ -127,6 +129,7 @@ export function parseExterior360Snippet(
       keys: sanitizedAttrs['data-keys'] === 'true' || sanitizedAttrs['data-keys'] === '',
       autoplayBehavior,
       autoplayReverse: sanitizedAttrs['data-autoplay-reverse'] === 'true',
+      playOnce: sanitizedAttrs['data-play-once'] === 'true' || sanitizedAttrs['data-play-once'] === '',
       fullscreen: sanitizedAttrs['data-fullscreen'] === 'true' || sanitizedAttrs['data-fullscreen'] === '',
       zoomControls: sanitizedAttrs['data-zoom-controls'] !== 'false',
       pinchZoom: sanitizedAttrs['data-pinch-zoom'] !== 'false',
@@ -197,6 +200,7 @@ export function normalizeView360(vehicle?: LegacyVehicle360 | null): NormalizedV
           extConfig = {
             folder,
             filename,
+            indexZeroBase: typeof rawExt.indexZeroBase === 'number' && rawExt.indexZeroBase > 0 ? rawExt.indexZeroBase : 0,
             amount,
             demo: Boolean(rawExt.demo),
             autoplay: rawExt.autoplay ?? true,
@@ -208,6 +212,7 @@ export function normalizeView360(vehicle?: LegacyVehicle360 | null): NormalizedV
             keys: rawExt.keys ?? true,
             autoplayBehavior: rawExt.autoplayBehavior || 'spin-x',
             autoplayReverse: rawExt.autoplayReverse ?? false,
+            playOnce: Boolean(rawExt.playOnce),
             fullscreen: rawExt.fullscreen ?? true,
             zoomControls: rawExt.zoomControls ?? true,
             pinchZoom: rawExt.pinchZoom ?? true,

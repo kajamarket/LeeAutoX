@@ -3,6 +3,10 @@ import { useLocation } from 'react-router-dom';
 import { SEO_DATA } from '../seoData';
 import { cleanPathname } from '../utils/path';
 import { useReviews } from '../context/ReviewsContext';
+import { getPostBySlug } from '../data/posts';
+
+const NOINDEX_NOFOLLOW_PATHS = new Set(['/bkend/', '/admin/reviews/']);
+const NOINDEX_FOLLOW_PATHS = new Set(['/auction-search/', '/auction-lot/']);
 
 export default function SEOHelmet() {
   const { pathname } = useLocation();
@@ -11,21 +15,66 @@ export default function SEOHelmet() {
   useEffect(() => {
     // Standardize pathname with trailing slashes if not home
     let cleanPath = cleanPathname(pathname);
+    if (cleanPath === '/auction-search.html') cleanPath = '/auction-search/';
+    if (cleanPath === '/auction-lot.html') cleanPath = '/auction-lot/';
     if (cleanPath !== '/' && !cleanPath.endsWith('/')) {
       cleanPath += '/';
     }
 
-    if (pathname.startsWith('/vehicle/') || pathname.startsWith('/car/')) {
+    if (cleanPath.startsWith('/vehicle/') || cleanPath.startsWith('/car/')) {
       // Handled dynamically inside VehicleDetailPage to guarantee specific vehicle year/make/model SEO
       return;
     }
 
-    const data = SEO_DATA[cleanPath] || SEO_DATA['/'];
+    let matchedData = SEO_DATA[cleanPath];
+    let isUnknownRoute = false;
+
+    if (!matchedData && cleanPath.startsWith('/blog/') && cleanPath !== '/blog/') {
+      const slug = cleanPath.replace(/^\/blog\//, '').replace(/\/$/, '');
+      const post = getPostBySlug(slug);
+      if (post) {
+        matchedData = {
+          ...SEO_DATA['/blog/'],
+          title: `${post.title} | LeeAutoX`,
+          description: post.excerpt || SEO_DATA['/blog/'].description,
+          keywords: post.tags?.length ? post.tags.join(', ') : SEO_DATA['/blog/'].keywords,
+          canonical: `https://leeautox.com/blog/${post.slug}/`,
+          defaultImage: post.featuredImage?.url || SEO_DATA['/blog/'].defaultImage,
+          heading: post.title,
+          ogTitle: `${post.title} | LeeAutoX`,
+          ogDescription: post.excerpt || SEO_DATA['/blog/'].description,
+          twitterTitle: `${post.title} | LeeAutoX`,
+          twitterDescription: post.excerpt || SEO_DATA['/blog/'].description,
+        };
+      }
+    }
+
+    if (!matchedData) {
+      matchedData = SEO_DATA['/'];
+      isUnknownRoute = cleanPath !== '/';
+    }
+
+    const data = matchedData;
 
     // 1. Update title
     document.title = data.title;
 
-    // 2. Update meta description
+    // 2. Update meta robots explicitly so noindex never leaks across SPA navigations
+    let robotsContent = 'index, follow';
+    if (NOINDEX_NOFOLLOW_PATHS.has(cleanPath)) {
+      robotsContent = 'noindex, nofollow';
+    } else if (NOINDEX_FOLLOW_PATHS.has(cleanPath) || isUnknownRoute) {
+      robotsContent = 'noindex, follow';
+    }
+    let metaRobots = document.querySelector('meta[name="robots"]');
+    if (!metaRobots) {
+      metaRobots = document.createElement('meta');
+      metaRobots.setAttribute('name', 'robots');
+      document.head.appendChild(metaRobots);
+    }
+    metaRobots.setAttribute('content', robotsContent);
+
+    // 3. Update meta description
     let metaDesc = document.querySelector('meta[name="description"]');
     if (!metaDesc) {
       metaDesc = document.createElement('meta');
@@ -34,7 +83,7 @@ export default function SEOHelmet() {
     }
     metaDesc.setAttribute('content', data.description);
 
-    // 3. Update meta keywords
+    // 4. Update meta keywords
     let metaKeywords = document.querySelector('meta[name="keywords"]');
     if (!metaKeywords) {
       metaKeywords = document.createElement('meta');
@@ -43,7 +92,7 @@ export default function SEOHelmet() {
     }
     metaKeywords.setAttribute('content', data.keywords);
 
-    // 4. Update canonical URL
+    // 5. Update canonical URL
     let linkCanonical = document.querySelector('link[rel="canonical"]');
     if (!linkCanonical) {
       linkCanonical = document.createElement('link');
@@ -52,7 +101,7 @@ export default function SEOHelmet() {
     }
     linkCanonical.setAttribute('href', data.canonical);
 
-    // 5. Inject Schema.org JSON-LD with valid AutoDealer review snippet schema
+    // 6. Inject Schema.org JSON-LD with valid AutoDealer review snippet schema
     let schemaScript = document.getElementById('seo-schema-jsonld') as HTMLScriptElement;
     if (!schemaScript) {
       schemaScript = document.createElement('script');
@@ -154,7 +203,7 @@ export default function SEOHelmet() {
       metaOgUrl.setAttribute('property', 'og:url');
       document.head.appendChild(metaOgUrl);
     }
-    metaOgUrl.setAttribute('content', `https://leeautox.com${cleanPath}`);
+    metaOgUrl.setAttribute('content', data.canonical);
 
     let metaOgType = document.querySelector('meta[property="og:type"]');
     if (!metaOgType) {

@@ -106,7 +106,7 @@ export default function Fleet() {
                               <div className="flex items-center justify-between">
                                 <span className="text-xs font-mono text-[#2B59FF] font-bold">Category: {item.category}</span>
                                 <a
-                                  href="/inventory"
+                                  href="/inventory/"
                                   className="text-xs font-mono uppercase tracking-widest text-[#2B59FF] underline underline-offset-4 hover:opacity-80"
                                 >
                                   View Inventory →

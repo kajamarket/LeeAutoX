@@ -23,6 +23,11 @@ export interface View360Exterior {
   filename?: string;
 
   /**
+   * Zero-padding width for {index} (e.g. 2 formats 1..9 as "01".."09"). Defaults to 0.
+   */
+  indexZeroBase?: number;
+
+  /**
    * Total number of sequence frames (typically 24 to 36 frames). Defaults to 36.
    */
   amount?: number;
@@ -56,6 +61,11 @@ export interface View360Exterior {
    * Reverse autoplay direction. Defaults to false.
    */
   autoplayReverse?: boolean;
+
+  /**
+   * Spin once and stop cleanly. Defaults to false.
+   */
+  playOnce?: boolean;
 
   /**
    * Rotation speed in ms per frame (lower = faster). Defaults to 100.
@@ -124,6 +134,7 @@ export interface NormalizedView360 {
   exterior?: {
     folder: string;
     filename: string;
+    indexZeroBase?: number;
     amount: number;
     demo?: boolean;
     autoplay?: boolean;
@@ -135,6 +146,7 @@ export interface NormalizedView360 {
     keys?: boolean;
     autoplayBehavior?: string;
     autoplayReverse?: boolean;
+    playOnce?: boolean;
     fullscreen?: boolean;
     zoomControls?: boolean;
     pinchZoom?: boolean;

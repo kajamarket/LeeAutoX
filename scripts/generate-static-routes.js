@@ -1,164 +1,79 @@
 import fs from 'fs';
 import path from 'path';
+import { createRequire } from 'module';
+import ts from 'typescript';
 
+const require = createRequire(import.meta.url);
 const DIST_DIR = path.resolve('dist');
+const BASE_URL = 'https://leeautox.com';
 
-const ROUTES_SEO = {
-  '/': {
-    title: 'Car Import from Canada to Nigeria & Ghana | LeeAutoX',
-    desc: 'Source and ship luxury cars, SUVs, and trucks from top Canadian and US auctions directly to Lagos, Nigeria or Accra, Ghana. Installment plans, full port clearance, doorstep delivery.',
-    keywords: 'car sourcing, copart cars, shipping cars to nigeria, import cars from canada, luxury car procurement lagos, tokunbo cars',
-    schema: {
-      '@context': 'https://schema.org',
-      '@type': 'Organization',
-      'name': 'LeeAutoX',
-      'url': 'https://leeautox.com/',
-      'logo': 'https://leeplugshub.com/wp-content/uploads/2026/05/LeeAutoX-lcon-1-scaled.png'
-    }
-  },
-  '/about/': {
-    title: 'Vehicle Exporters in Lagos Nigeria & Ontario Canada | About LeeAutoX',
-    desc: 'LeeAutoX is a registered Canadian corporation (No: 1761065-3) with operations in Lagos, Nigeria. Specialising in vehicle sourcing, containerisation, and customs clearance for West African buyers.',
-    keywords: 'leeautox registered, car exporters canada, buy car from canada to nigeria, professional car procurement, emeka okonkwo car',
-    schema: {
-      '@context': 'https://schema.org',
-      '@type': 'AboutPage',
-      'mainEntity': {
-        '@type': 'Organization',
-        'name': 'LeeAutoX',
-        'registrationNumber': '1761065-3'
-      }
-    }
-  },
-  '/how-it-works/': {
-    title: 'How to Import Cars from Canada to Nigeria | LeeAutoX',
-    desc: 'Step-by-step guide to importing a car from Canada or USA to Nigeria. From auction bidding and VIN inspection to container shipping and Lagos port clearance.',
-    keywords: 'how to import car, copart bidding process, marine containerization process, apapa port clearance',
-    schema: {
-      '@context': 'https://schema.org',
-      '@type': 'HowTo',
-      'name': 'How to Sourced and Import a Car with LeeAutoX'
-    }
-  },
-  '/faq/': {
-    title: 'Car Import FAQ for Nigeria & Ghana Buyers | LeeAutoX',
-    desc: 'Answers to the most common questions about importing vehicles from Canada to Nigeria and Ghana. Shipping times, customs duty, installment plans, and port clearance explained.',
-    keywords: 'car import faq, car shipping cost, customs clear cost nigeria, copart auction safety',
-    schema: {
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage'
-    }
-  },
-  '/contact/': {
-    title: 'Contact LeeAutoX | Lagos & Toronto Office Locations',
-    desc: 'Get in touch with LeeAutoX. Chat directly with our procurement team in Toronto, Canada, or visit our clearance and support lot coordinators in Lagos, Nigeria.',
-    keywords: 'contact leeautox, leeautox phone number, vehicle clearing agency address, buy car in lagos',
-    schema: {
-      '@context': 'https://schema.org',
-      '@type': 'ContactPage'
-    }
-  },
-  '/testimonials/': {
-    title: 'Client Reviews & Delivery Testimonials | LeeAutoX',
-    desc: 'Read verified reviews from car dealers and private buyers across Lagos, Abuja, Port Harcourt, and Accra who sourced and shipped their vehicles through LeeAutoX.',
-    keywords: 'leeautox reviews, car buyer feedback lagos, verified shipping testimonials nigeria'
-  },
-  '/review/': {
-    title: 'Leave a Verified Customer Review | LeeAutoX',
-    desc: 'Share your feedback, vehicle importation experience, star rating, and delivery photos with the LeeAutoX team.',
-    keywords: 'leave review leeautox, submit car rating, client feedback, rate vehicle importer'
-  },
-  '/admin/reviews/': {
-    title: 'Admin Reviews Console | LeeAutoX',
-    desc: 'Administrator dashboard for managing client reviews and Google Business Profile exports.',
-    keywords: 'admin reviews, leeautox admin'
-  },
-  '/lee-auto/': {
-    title: 'Lee Auto Nigeria | Dealer Car Servicing & Inspection in Lagos | LeeAutoX',
-    desc: 'Lee Auto is the dealer-facing vehicle servicing division of LeeAutoX in Lagos, Nigeria. Pre-sale inspections, light mechanical prep, cosmetic detailing, and VIN verification for imported vehicles.',
-    keywords: 'lee auto nigeria, lee auto lagos, lee autos nigeria, car servicing for dealers lagos, vehicle inspection lagos, imported car servicing nigeria'
-  },
-  '/vehicles/': {
-    title: 'Available Car Catalogue & Sourced Fleet | LeeAutoX',
-    desc: 'Browse available SUVs, luxury sedans, and commercial trucks ready for auction bidding and shipping from Canada to Nigeria and Ghana.',
-    keywords: 'car catalog canada, buy suv nigeria, luxury sedan shipping'
-  },
-  '/inventory/': {
-    title: 'Verified Cars For Sale & Inventory Catalogue | LeeAutoX',
-    desc: 'Browse our active inventory of verified vehicles available for export from Canada to Nigeria and West Africa with full inspection and containerization.',
-    keywords: 'cars for sale, inventory, buy cars canada, lagos car sales'
-  },
-  '/cars-for-sale/': {
-    title: 'Cars For Sale from Canada & USA Auctions | LeeAutoX',
-    desc: 'Verified cars for sale in North America ready for direct container shipment to Lagos, Nigeria and West Africa.',
-    keywords: 'cars for sale nigeria, tokunbo cars, copart vehicle sale'
-  },
-  '/auction-search/': {
-    title: 'Live Copart & IAAI Auction Search | LeeAutoX',
-    desc: 'Search live Copart and IAAI vehicle auction inventory. Filter by make, model, damage, title, and bid directly through LeeAutoX.',
-    keywords: 'copart auction search, iaai lots, buy salvage cars nigeria, live auction tokunbo'
-  },
-  '/auction-lot/': {
-    title: 'Live Auction Lot Inspection & Bidding | LeeAutoX',
-    desc: 'Inspect detailed auction lot specifications, damage reports, odometer, and bid via LeeAutoX proxy desk.',
-    keywords: 'auction lot details, copart bid proxy, iaai inspection'
-  },
-  '/bkend/': {
-    title: 'LeeAutoX Admin Console | Fleet Management',
-    desc: 'Confidential portal for vehicle catalogue and inventory administration.',
-    keywords: 'admin console'
-  },
-  '/services/': {
-    title: 'Car Sourcing, Shipping & Port Clearance Services | LeeAutoX',
-    desc: 'End-to-end car import services including Copart auction bidding, container consolidation, ocean freight, and customs port clearance at Apapa and Tin Can.',
-    keywords: 'car shipping services lagos, apapa port clearance agency'
-  },
-  '/guides/': {
-    title: 'Car Import Guides & Customs Duty Manuals | LeeAutoX',
-    desc: 'Comprehensive guides on Nigerian customs duty calculation, vehicle inspection checklists, and Tokunbo car buying guides.',
-    keywords: 'car import guides nigeria, customs duty calculator guide'
-  },
-  '/blog/': {
-    title: 'Automotive Export & Shipping Journal | LeeAutoX',
-    desc: 'Expert insights, Copart auction guides, customs clearing procedures, and container shipping strategies from Canada to West Africa.',
-    keywords: 'car import blog, shipping insights nigeria, copart auction tips',
-    schema: {
-      '@context': 'https://schema.org',
-      '@type': 'Blog',
-      'name': 'LeeAutoX Journal'
-    }
-  },
-  '/blog/how-to-buy-clean-title-salvage-copart/': {
-    title: 'How to Bid & Buy Clean Title or Repairable Cars on Copart | LeeAutoX',
-    desc: 'Master the technicalities of Copart Canada: understanding run-and-drive verification, calculating repair margins, and avoiding uninspected auction pitfalls.',
-    keywords: 'copart canada bidding, buy salvage cars toronto, auction vehicle inspection',
-    schema: {
-      '@context': 'https://schema.org',
-      '@type': 'BlogPosting',
-      'headline': 'How to Bid & Buy Clean Title or Repairable Cars on Copart'
-    }
-  },
-  '/blog/shipping-car-canada-nigeria-complete-guide-2026/': {
-    title: 'Shipping a Car from Canada to Nigeria in 2026 | Complete Guide | LeeAutoX',
-    desc: 'The definitive 2026 guide to shipping a car from Canada to Nigeria. Learn about port-to-port routes, container freight options, documentation, and total shipping costs.',
-    keywords: 'shipping car from canada to nigeria, how long does it take to ship car to nigeria, container shipping cost canada nigeria 2026',
-    schema: {
-      '@context': 'https://schema.org',
-      '@type': 'BlogPosting',
-      'headline': 'Shipping a car from Canada to Nigeria: 2026 guide'
-    }
-  },
-  '/blog/how-to-import-car-for-dealers-nigeria/': {
-    title: 'How Nigerian Car Dealers Can Import Vehicles from Canada | LeeAutoX',
-    desc: 'Wholesale vehicle sourcing guide for Nigerian car dealers and fleet operators. Volume bidding, light prep at Lee Auto, multi-car container loading, and dealer financing.',
-    keywords: 'car dealer import canada nigeria, wholesale car sourcing nigeria, fleet procurement canada africa',
-    schema: {
-      '@context': 'https://schema.org',
-      '@type': 'BlogPosting',
-      'headline': 'How Nigerian Car Dealers Can Import Vehicles from Canada'
-    }
+const NOINDEX_NOFOLLOW_ROUTES = new Set(['/bkend/', '/admin/reviews/']);
+const NOINDEX_FOLLOW_ROUTES = new Set(['/auction-search/', '/auction-lot/']);
+const NON_CANONICAL_ALIAS_ROUTES = new Set([
+  '/cars-for-sale/',
+  '/guides/why-import-vehicles-from-canada/'
+]);
+
+const moduleCache = new Map();
+function loadTsModule(tsFilePath) {
+  const absPath = path.resolve(tsFilePath);
+  if (moduleCache.has(absPath)) {
+    return moduleCache.get(absPath).exports;
   }
-};
+
+  const source = fs.readFileSync(absPath, 'utf8');
+  const { outputText } = ts.transpileModule(source, {
+    compilerOptions: {
+      module: ts.ModuleKind.CommonJS,
+      target: ts.ScriptTarget.ES2020,
+      esModuleInterop: true,
+      resolveJsonModule: true
+    },
+    fileName: absPath
+  });
+
+  const mod = { exports: {} };
+  moduleCache.set(absPath, mod);
+
+  const localRequire = (specifier) => {
+    if (specifier.startsWith('.')) {
+      const baseTarget = path.resolve(path.dirname(absPath), specifier);
+      if (fs.existsSync(baseTarget) && baseTarget.endsWith('.json')) {
+        return JSON.parse(fs.readFileSync(baseTarget, 'utf8'));
+      }
+      if (fs.existsSync(`${baseTarget}.ts`)) {
+        return loadTsModule(`${baseTarget}.ts`);
+      }
+      if (fs.existsSync(`${baseTarget}.json`)) {
+        return JSON.parse(fs.readFileSync(`${baseTarget}.json`, 'utf8'));
+      }
+      if (fs.existsSync(baseTarget)) {
+        return require(baseTarget);
+      }
+      return {};
+    }
+    return require(specifier);
+  };
+
+  const fn = new Function('exports', 'require', 'module', '__filename', '__dirname', outputText);
+  fn(mod.exports, localRequire, mod, absPath, path.dirname(absPath));
+  return mod.exports;
+}
+
+function escapeHtmlAttr(val) {
+  return String(val ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function escapeHtmlText(val) {
+  return String(val ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
 
 async function main() {
   console.log('🚀 Executing post-build Static Page and SEO pre-injection compiler...');
@@ -174,68 +89,118 @@ async function main() {
   }
   const baseHtmlContent = fs.readFileSync(baseHtmlPath, 'utf8');
 
-  // Load any dynamic/WordPress posts from generated posts.json
-  const postsJsonPath = path.resolve('src/generated/posts.json');
-  if (fs.existsSync(postsJsonPath)) {
-    try {
-      const posts = JSON.parse(fs.readFileSync(postsJsonPath, 'utf8'));
-      if (Array.isArray(posts)) {
-        for (const p of posts) {
-          const routePath = `/blog/${p.slug}/`;
-          if (!ROUTES_SEO[routePath]) {
-            ROUTES_SEO[routePath] = {
-              title: `${p.title} | LeeAutoX`,
-              desc: p.excerpt || `Read expert guide on ${p.title} by LeeAutoX.`,
-              keywords: `${p.tags ? p.tags.join(', ') : 'car import, shipping canada nigeria'}`,
-              schema: {
-                '@context': 'https://schema.org',
-                '@type': 'BlogPosting',
-                'headline': p.title,
-                'datePublished': p.date,
-                'author': { '@type': 'Person', 'name': p.author }
-              }
-            };
-            console.log(`  ➕ Dynamically added blog route to SEO catalog: ${routePath}`);
-          }
-        }
-      }
-    } catch (e) {
-      console.warn('⚠️ Could not parse generated posts.json for static routes:', e.message);
+  const { SEO_DATA } = loadTsModule('src/seoData.ts');
+  const { INITIAL_INVENTORY, getVehicleUrl } = loadTsModule('src/data/inventory.ts');
+  const { getAllPosts } = loadTsModule('src/data/posts.ts');
+
+  const ROUTES_SEO = {};
+
+  // 1. Load all curated routes from src/seoData.ts
+  for (const [route, data] of Object.entries(SEO_DATA)) {
+    ROUTES_SEO[route] = {
+      title: data.title,
+      desc: data.description,
+      keywords: data.keywords,
+      canonical: data.canonical || `${BASE_URL}${route}`,
+      image: data.defaultImage || 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/cropped-LeeAutoX-lcon-1-430x260-1.png',
+      schema: data.schema,
+      priority: route === '/' ? '1.0' : route.startsWith('/blog/') ? '0.9' : '0.8'
+    };
+  }
+
+  // 2. Load any additional blog posts from src/data/posts.ts + src/generated/posts.json
+  const allPosts = getAllPosts();
+  for (const p of allPosts) {
+    const routePath = `/blog/${p.slug}/`;
+    if (!ROUTES_SEO[routePath]) {
+      ROUTES_SEO[routePath] = {
+        title: `${p.title} | LeeAutoX`,
+        desc: p.excerpt || `Read expert guide on ${p.title} by LeeAutoX.`,
+        keywords: p.tags?.length ? p.tags.join(', ') : 'car import, shipping canada nigeria',
+        canonical: `${BASE_URL}${routePath}`,
+        image: p.featuredImage?.url || 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/cropped-LeeAutoX-lcon-1-430x260-1.png',
+        schema: {
+          '@context': 'https://schema.org',
+          '@type': 'BlogPosting',
+          'headline': p.title,
+          'datePublished': p.date,
+          'author': { '@type': 'Person', 'name': p.author }
+        },
+        priority: '0.9'
+      };
+      console.log(`  ➕ Added blog route to SEO catalog: ${routePath}`);
     }
   }
 
-  // Register SEO optimized Vehicle Detail routes
-  const inventoryVehicles = [
-    { id: "1", name: "2021 Hyundai Sonata", make: "Hyundai", model: "Sonata", year: 2021 },
-    { id: "2", name: "2021 Hyundai Sonata Ultimate", make: "Hyundai", model: "Sonata Ultimate", year: 2021 },
-    { id: "3", name: "2017 Hyundai Sonata", make: "Hyundai", model: "Sonata", year: 2017 },
-    { id: "4", name: "2017 Toyota Corolla SE", make: "Toyota", model: "Corolla", year: 2017 },
-    { id: "5", name: "2020 Toyota RAV4 XLE AWD", make: "Toyota", model: "RAV4", year: 2020 },
-    { id: "6", name: "2022 Toyota Land Cruiser VXR", make: "Toyota", model: "Land Cruiser", year: 2022 },
-    { id: "7", name: "2020 Ford F-150 Lariat 4x4", make: "Ford", model: "F-150", year: 2020 },
-    { id: "8", name: "2021 Mercedes-Benz GLC 300 4MATIC", make: "Mercedes-Benz", model: "GLC 300", year: 2021 },
-    { id: "10", name: "2005 Toyota Corolla", make: "Toyota", model: "Corolla", year: 2005 },
-    { id: "12", name: "2018 Hyundai Elantra", make: "Hyundai", model: "Elantra", year: 2018 }
-  ];
+  // 3. Register all active vehicles directly from src/data/inventory.ts
+  for (const v of INITIAL_INVENTORY) {
+    const routePath = getVehicleUrl(v);
+    const canonicalUrl = `${BASE_URL}${routePath}`;
+    const isOverseas = v.location === 'Canada & USA';
+    const title = v.seoTitle || (isOverseas
+      ? `${v.year} ${v.make} ${v.model} For Sale | Import from Canada & USA | LeeAutoX`
+      : `${v.year} ${v.make} ${v.model} For Sale | Lagos Nigeria Import | LeeAutoX`);
+    const desc = v.seoDescription || (isOverseas
+      ? `Buy verified ${v.year} ${v.make} ${v.model} located in ${v.currentLocation || 'Canada & USA'}. Shipped to Nigeria upon your request once deposit is made.`
+      : `Buy verified ${v.year} ${v.make} ${v.model} on ground in Lagos, Nigeria. Fully customs cleared, 100% duty paid, available for physical inspection and test drive.`);
 
-  for (const v of inventoryVehicles) {
-    const cleanMake = v.make.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const cleanModel = v.model.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const slug = `${v.id}_${v.year}${cleanMake}${cleanModel}`;
-    const routePath = `/vehicle/${slug}/`;
+    const uniqueImages = Array.from(new Set([v.image, ...(v.images || [])].filter(Boolean)));
+    const availabilityUrl =
+      v.status === 'Sold'
+        ? 'https://schema.org/OutOfStock'
+        : v.status === 'Reserved'
+        ? 'https://schema.org/LimitedAvailability'
+        : 'https://schema.org/InStock';
+
+    const vehicleSchema = {
+      '@type': ['Vehicle', 'Product'],
+      '@id': `${canonicalUrl}#vehicle`,
+      'name': v.name,
+      'description': desc,
+      'url': canonicalUrl,
+      'image': uniqueImages,
+      'brand': {
+        '@type': 'Brand',
+        'name': v.make
+      },
+      'model': v.model,
+      'vehicleModelDate': String(v.year),
+      'offers': {
+        '@type': 'Offer',
+        'price': v.numericPrice,
+        'priceCurrency': 'NGN',
+        'availability': availabilityUrl,
+        'itemCondition': 'https://schema.org/UsedCondition',
+        'url': canonicalUrl,
+        'seller': {
+          '@id': `${BASE_URL}/#organization`
+        }
+      }
+    };
+    if (v.bodyType) vehicleSchema.bodyType = v.bodyType;
+    if (v.colour) vehicleSchema.color = v.colour;
+    if (v.transmission) vehicleSchema.vehicleTransmission = v.transmission;
+    if (v.fuelType) vehicleSchema.fuelType = v.fuelType;
+    if (v.vin) vehicleSchema.vehicleIdentificationNumber = v.vin;
+
     ROUTES_SEO[routePath] = {
-      title: `${v.year} ${v.make} ${v.model} For Sale | Lagos Nigeria Import | LeeAutoX`,
-      desc: `Buy verified ${v.year} ${v.make} ${v.model} on ground in Lagos, Nigeria. Fully customs cleared, 100% duty paid, available for physical inspection and test drive.`,
-      keywords: `${v.make} ${v.model}, ${v.year} ${v.make}, buy car lagos, import cars canada, verified cars nigeria`
+      title,
+      desc,
+      keywords: `${v.make} ${v.model}, ${v.year} ${v.make}, buy car nigeria, verified cars leeautox`,
+      canonical: canonicalUrl,
+      image: v.image,
+      schema: vehicleSchema,
+      isVehicleSchema: true,
+      priority: '0.8'
     };
     console.log(`  ➕ Added SEO vehicle route: ${routePath}`);
   }
 
   const STATIC_ORGANIZATION_SCHEMA = {
     '@type': 'AutoDealer',
-    '@id': 'https://leeautox.com/#organization',
+    '@id': `${BASE_URL}/#organization`,
     'name': 'LeeAutoX',
-    'url': 'https://leeautox.com/',
+    'url': `${BASE_URL}/`,
     'logo': 'https://leeplugshub.com/wp-content/uploads/2026/05/LeeAutoX-lcon-1-scaled.png',
     'image': 'https://leeplugshub.com/wp-content/uploads/2026/05/leeautoxhero.png',
     'telephone': '+1-647-389-6162',
@@ -248,29 +213,52 @@ async function main() {
     }
   };
 
-  function injectMeta(html, route, data) {
-    let modified = html;
-    const titleRegex = /<title>[^<]*<\/title>/i;
-    const customTitle = `<title>${data.title}</title>`;
-    if (titleRegex.test(modified)) {
-      modified = modified.replace(titleRegex, customTitle);
-    } else {
-      modified = modified.replace('</head>', `${customTitle}\n</head>`);
-    }
+  function getRobotsDirective(route) {
+    if (NOINDEX_NOFOLLOW_ROUTES.has(route)) return 'noindex, nofollow';
+    if (NOINDEX_FOLLOW_ROUTES.has(route)) return 'noindex, follow';
+    return 'index, follow';
+  }
 
-    let injections = `  <meta name="description" content="${data.desc}" />\n  <meta name="keywords" content="${data.keywords || 'car sourcing, shipping'}" />\n  <link rel="canonical" href="https://leeautox.com${route}" />\n`;
+  function stripExistingSeoTags(html) {
+    return html
+      .replace(/<title>[^<]*<\/title>\s*/gi, '')
+      .replace(/<meta\s+name=["']description["'][^>]*>\s*/gi, '')
+      .replace(/<meta\s+name=["']keywords["'][^>]*>\s*/gi, '')
+      .replace(/<meta\s+name=["']robots["'][^>]*>\s*/gi, '')
+      .replace(/<link\s+rel=["']canonical["'][^>]*>\s*/gi, '')
+      .replace(/<meta\s+property=["']og:(title|description|url|image)["'][^>]*>\s*/gi, '')
+      .replace(/<meta\s+name=["']twitter:(title|description|image|site)["'][^>]*>\s*/gi, '')
+      .replace(/<script[^>]*id=["']seo-schema-jsonld["'][^>]*>[\s\S]*?<\/script>\s*/gi, '');
+  }
+
+  function injectMeta(html, route, data) {
+    let modified = stripExistingSeoTags(html);
+    const robots = getRobotsDirective(route);
+    const canonical = data.canonical || `${BASE_URL}${route}`;
+    const ogImage = data.image || 'https://leeautox.leeplugshub.com/wp-content/uploads/2026/05/cropped-LeeAutoX-lcon-1-430x260-1.png';
 
     let graphItems = [];
-    if (data.schema && Array.isArray(data.schema['@graph'])) {
-      graphItems = [STATIC_ORGANIZATION_SCHEMA, ...data.schema['@graph'].filter(i => i['@type'] !== 'Organization' && i['@type'] !== 'AutoDealer')];
+    if (data.isVehicleSchema && data.schema) {
+      graphItems = [STATIC_ORGANIZATION_SCHEMA, data.schema];
+    } else if (data.schema && Array.isArray(data.schema['@graph'])) {
+      graphItems = [
+        STATIC_ORGANIZATION_SCHEMA,
+        ...data.schema['@graph'].filter(
+          (i) => i['@type'] !== 'Organization' && i['@type'] !== 'AutoDealer' && i['@type'] !== 'AutomotiveBusiness'
+        )
+      ];
     } else if (data.schema) {
       const { aggregateRating, review, ...cleanSchema } = data.schema;
-      const pageNode = {
-        ...cleanSchema,
-        '@id': `https://leeautox.com${route}#webpage`,
-        'isPartOf': { '@id': 'https://leeautox.com/#organization' }
-      };
-      graphItems = [STATIC_ORGANIZATION_SCHEMA, pageNode];
+      if (cleanSchema['@type'] === 'Organization' || cleanSchema['@type'] === 'AutoDealer' || cleanSchema['@type'] === 'AutomotiveBusiness') {
+        graphItems = [{ ...STATIC_ORGANIZATION_SCHEMA, ...cleanSchema, '@type': 'AutoDealer' }];
+      } else {
+        const pageNode = {
+          ...cleanSchema,
+          '@id': `${BASE_URL}${route}#webpage`,
+          'isPartOf': { '@id': `${BASE_URL}/#organization` }
+        };
+        graphItems = [STATIC_ORGANIZATION_SCHEMA, pageNode];
+      }
     } else {
       graphItems = [STATIC_ORGANIZATION_SCHEMA];
     }
@@ -279,12 +267,28 @@ async function main() {
       '@context': 'https://schema.org',
       '@graph': graphItems
     };
-    injections += `  <script id="seo-schema-jsonld" type="application/ld+json">${JSON.stringify(fullSchema)}</script>\n`;
-    modified = modified.replace('</head>', `${injections}\n</head>`);
+
+    const injections = [
+      `    <title>${escapeHtmlText(data.title)}</title>`,
+      `    <meta name="robots" content="${robots}" />`,
+      `    <meta name="description" content="${escapeHtmlAttr(data.desc)}" />`,
+      `    <meta name="keywords" content="${escapeHtmlAttr(data.keywords || 'car sourcing, shipping')}" />`,
+      `    <link rel="canonical" href="${escapeHtmlAttr(canonical)}" />`,
+      `    <meta property="og:title" content="${escapeHtmlAttr(data.title)}" />`,
+      `    <meta property="og:description" content="${escapeHtmlAttr(data.desc)}" />`,
+      `    <meta property="og:url" content="${escapeHtmlAttr(canonical)}" />`,
+      `    <meta property="og:image" content="${escapeHtmlAttr(ogImage)}" />`,
+      `    <meta name="twitter:title" content="${escapeHtmlAttr(data.title)}" />`,
+      `    <meta name="twitter:description" content="${escapeHtmlAttr(data.desc)}" />`,
+      `    <meta name="twitter:image" content="${escapeHtmlAttr(ogImage)}" />`,
+      `    <meta name="twitter:site" content="@leeautox" />`,
+      `    <script id="seo-schema-jsonld" type="application/ld+json">${JSON.stringify(fullSchema)}</script>`
+    ].join('\n');
+
+    modified = modified.replace('</head>', () => `${injections}\n  </head>`);
     return modified;
   }
 
-  // Record list of pre-existing routes for verification check
   const preExistingRoutes = Object.keys(ROUTES_SEO);
 
   for (const [route, data] of Object.entries(ROUTES_SEO)) {
@@ -295,55 +299,66 @@ async function main() {
     }
     const modifiedHtml = injectMeta(baseHtmlContent, route, data);
     fs.writeFileSync(targetHtmlFile, modifiedHtml, 'utf8');
-    console.log(`  ✅ Generated: ${route}index.html`);
+    console.log(`  ✅ Generated: ${route}index.html (${getRobotsDirective(route)})`);
 
     // Also write flat .html files for /auction-search and /auction-lot
     if (route === '/auction-search/') {
       fs.writeFileSync(path.join(DIST_DIR, 'auction-search.html'), modifiedHtml, 'utf8');
-      console.log('  ✅ Generated: auction-search.html');
+      console.log('  ✅ Generated: auction-search.html (noindex, follow)');
     } else if (route === '/auction-lot/') {
       fs.writeFileSync(path.join(DIST_DIR, 'auction-lot.html'), modifiedHtml, 'utf8');
-      console.log('  ✅ Generated: auction-lot.html');
+      console.log('  ✅ Generated: auction-lot.html (noindex, follow)');
     }
   }
 
-  // Generate sitemap.xml
-  console.log('🗺️ Generating sitemap.xml...');
+  // Generate sitemap.xml containing ONLY indexable, canonical URLs
+  console.log('🗺️ Generating sitemap.xml (indexable canonical URLs only)...');
+  const today = new Date().toISOString().split('T')[0];
   let sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
-  for (const route of Object.keys(ROUTES_SEO)) {
-    sitemapXml += `  <url>\n    <loc>https://leeautox.com${route}</loc>\n    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>${route === '/' ? '1.0' : route.startsWith('/blog/') ? '0.9' : '0.8'}</priority>\n  </url>\n`;
-  }
-  sitemapXml += `</urlset>`;
-  fs.writeFileSync(path.join(DIST_DIR, 'sitemap.xml'), sitemapXml, 'utf8');
-  console.log('  ✅ Generated: sitemap.xml');
+  let sitemapCount = 0;
 
-  // Generate robots.txt
+  for (const [route, data] of Object.entries(ROUTES_SEO)) {
+    const isNoIndex = NOINDEX_NOFOLLOW_ROUTES.has(route) || NOINDEX_FOLLOW_ROUTES.has(route);
+    const isAlias = NON_CANONICAL_ALIAS_ROUTES.has(route) || (data.canonical && data.canonical !== `${BASE_URL}${route}`);
+    if (isNoIndex || isAlias) {
+      console.log(`  ⏭️ Excluded from sitemap.xml (${isNoIndex ? 'noindex' : 'non-canonical alias'}): ${route}`);
+      continue;
+    }
+
+    sitemapXml += `  <url>\n    <loc>${BASE_URL}${route}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>${data.priority || '0.8'}</priority>\n  </url>\n`;
+    sitemapCount++;
+  }
+  sitemapXml += `</urlset>\n`;
+  fs.writeFileSync(path.join(DIST_DIR, 'sitemap.xml'), sitemapXml, 'utf8');
+  console.log(`  ✅ Generated: sitemap.xml (${sitemapCount} canonical indexable URLs)`);
+
+  // Generate robots.txt — keep noindex URLs crawlable so Googlebot reads noindex and drops them cleanly
   console.log('🤖 Generating robots.txt...');
-  const robotsTxt = `User-agent: *\nAllow: /\nSitemap: https://leeautox.com/sitemap.xml\n`;
+  const robotsTxt = `User-agent: *\nAllow: /\nSitemap: ${BASE_URL}/sitemap.xml\n`;
   fs.writeFileSync(path.join(DIST_DIR, 'robots.txt'), robotsTxt, 'utf8');
   console.log('  ✅ Generated: robots.txt');
 
-  // Verification Check (Rule: Verify all pre-existing URLs exist in dist)
+  // Verification Check
   console.log('🔍 Running post-build verification check...');
   let missingCount = 0;
   for (const route of preExistingRoutes) {
     const checkFolder = route === '/' ? DIST_DIR : path.join(DIST_DIR, route);
     const checkFile = path.join(checkFolder, 'index.html');
     if (!fs.existsSync(checkFile)) {
-      console.error(`❌ Verification failed: Pre-existing route missing in dist: ${route}`);
+      console.error(`❌ Verification failed: Route missing in dist: ${route}`);
       missingCount++;
     }
   }
 
   if (missingCount > 0) {
-    console.error(`❌ Build verification failed with ${missingCount} missing pre-existing URLs.`);
+    console.error(`❌ Build verification failed with ${missingCount} missing URLs.`);
     process.exit(1);
   }
 
-  console.log('🎉 Post-build compilation & verification complete! All pre-existing and dynamic routes verified in dist/');
+  console.log(`🎉 Post-build compilation & verification complete! ${preExistingRoutes.length} routes generated, ${sitemapCount} indexable URLs in sitemap.xml.`);
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('❌ Static generator failed:', err);
-    process.exit(1);
+  process.exit(1);
 });

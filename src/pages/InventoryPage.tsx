@@ -406,7 +406,7 @@ export default function InventoryPage() {
                 <MessageSquare size={16} /> Pre-Order on WhatsApp
               </a>
               <Link
-                to="/how-it-works"
+                to="/how-it-works/"
                 className="px-6 py-3.5 bg-white/10 hover:bg-white/20 active:scale-[0.98] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all border border-white/20"
               >
                 Learn How Bidding Works

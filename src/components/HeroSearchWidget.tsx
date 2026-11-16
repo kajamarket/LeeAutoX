@@ -373,7 +373,7 @@ export default function HeroSearchWidget() {
     } catch {}
 
     const queryString = buildFilterQuery(filters);
-    navigate(`/auction-search${queryString ? `?${queryString}` : ''}`);
+    navigate(`/auction-search/${queryString ? `?${queryString}` : ''}`);
   };
 
   const toggleArrayItem = (list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>, item: string) => {

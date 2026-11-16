@@ -23,7 +23,7 @@ export default function LatestArticles() {
             </h2>
           </div>
           <Link
-            to="/blog"
+            to="/blog/"
             className="group inline-flex items-center gap-2 px-6 py-3.5 bg-[#2B59FF] text-white font-bold rounded-xl shadow-lg hover:bg-blue-600 active:scale-[0.98] transition-all shrink-0 text-sm tracking-wide"
           >
             View all articles <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />

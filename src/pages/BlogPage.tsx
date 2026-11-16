@@ -46,7 +46,7 @@ export default function BlogPage() {
         <div className="sticky top-20 z-20 backdrop-blur-md border-b bg-white/95 border-slate-200 shadow-xs">
           <div className="max-w-[760px] mx-auto px-6 md:px-8 py-4 flex items-center justify-between">
             <Link
-              to="/blog"
+              to="/blog/"
               className="group inline-flex items-center gap-2 text-sm font-semibold text-slate-700 hover:text-[#2B59FF] transition-colors"
             >
               <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
@@ -152,7 +152,7 @@ export default function BlogPage() {
             {/* Share & Bottom Back */}
             <div className="mt-10 pt-8 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
               <Link
-                to="/blog"
+                to="/blog/"
                 className="group inline-flex items-center gap-2 text-sm font-bold text-[#2B59FF] hover:underline"
               >
                 <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />

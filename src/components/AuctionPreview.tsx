@@ -232,7 +232,7 @@ export default function AuctionPreview() {
                 Try searching our full auction catalog or refresh to see newly scheduled lane entries.
               </p>
               <Link
-                to="/auction-search"
+                to="/auction-search/"
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#2B59FF] text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-blue-600"
               >
                 Browse Auction Inventory <ArrowRight size={14} />
@@ -253,7 +253,7 @@ export default function AuctionPreview() {
         {/* View All Live Inventory CTA */}
         <div className="mt-8 text-center">
           <Link
-            to="/auction-search"
+            to="/auction-search/"
             className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#2B59FF] text-white text-xs sm:text-sm font-mono font-bold uppercase tracking-wider rounded-xl hover:bg-blue-600 transition-colors shadow-lg shadow-blue-500/20"
           >
             <span>Explore All 50,000+ Auction Lots</span>

@@ -28,6 +28,9 @@ export interface VehicleItem {
   };
   view360?: View360Config;
   exterior360?: string;
+  interior360Unavailable?: boolean;
+  seoTitle?: string;
+  seoDescription?: string;
 }
 
 export function getVehicleSlug(vehicle: { id: string | number; year: number; make: string; model: string }): string {
@@ -37,7 +40,7 @@ export function getVehicleSlug(vehicle: { id: string | number; year: number; mak
 }
 
 export function getVehicleUrl(vehicle: { id: string | number; year: number; make: string; model: string }): string {
-  return `/vehicle/${getVehicleSlug(vehicle)}`;
+  return `/vehicle/${getVehicleSlug(vehicle)}/`;
 }
 
 export const INITIAL_INVENTORY: VehicleItem[] = [
@@ -405,6 +408,56 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
         embed: '<iframe src="https://tour.panoee.com/corolla-2005-interior-360" width="100%" height="100%" frameborder="0" allowfullscreen allow="accelerometer; gyroscope; magnetometer; xr-spatial-tracking"></iframe>'
       }
     }
+  },
+  {
+    id: "13",
+    name: "2012 Mercedes-Benz GLK 350",
+    make: "Mercedes-Benz",
+    model: "GLK 350",
+    year: 2012,
+    price: "₦14,000,000",
+    numericPrice: 14000000,
+    image: "https://images.leeautox.com/public/cars/IMG-20261104-WA0066.jpg",
+    images: [
+      "https://images.leeautox.com/public/cars/IMG-20261104-WA0066.jpg"
+    ],
+    specs: "Available in Nigeria • Ready for Local Purchase",
+    mileage: "",
+    bodyType: "SUV",
+    transmission: "",
+    fuelType: "",
+    colour: "",
+    condition: "Available in Nigeria",
+    vin: "",
+    deposit: "",
+    location: "Nigeria",
+    currentLocation: "Nigeria",
+    status: "Available",
+    '360degree': { exterior: '', interior: '' },
+    exterior360: '<div class="cloudimage-360" id="ext360-glk350" data-folder="https://images.leeautox.com/public/cars/glk350/" data-filename-x="{index}.jpg" data-index-zero-base="2" data-amount-x="36" data-speed="100" data-draggable="true" data-swipeable="true" data-drag-speed="100" data-keys="true" data-autoplay-behavior="spin-x" data-play-once="true" data-fullscreen="true" data-zoom-max="5" data-zoom-controls="true" data-pinch-zoom="true"></div>',
+    view360: {
+      exterior: {
+        folder: "https://images.leeautox.com/public/cars/glk350/",
+        filename: "{index}.jpg",
+        indexZeroBase: 2,
+        amount: 36,
+        speed: 100,
+        draggable: true,
+        swipeable: true,
+        dragSpeed: 100,
+        keys: true,
+        autoplay: false,
+        autoplayBehavior: "spin-x",
+        playOnce: true,
+        fullscreen: true,
+        zoomMax: 5,
+        zoomControls: true,
+        pinchZoom: true
+      }
+    },
+    interior360Unavailable: true,
+    seoTitle: "2012 Mercedes-Benz GLK 350 for Sale in Nigeria | LeeAutoX",
+    seoDescription: "Buy a 2012 Mercedes-Benz GLK 350 in Nigeria for ₦14,000,000. View vehicle photos, explore the 360-degree exterior showcase and contact LeeAutoX."
   }
 ];
 

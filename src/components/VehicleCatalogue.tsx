@@ -659,7 +659,7 @@ export default function VehicleCatalogue() {
         {/* Bottom Full Catalogue CTA */}
         <div className="mt-14 text-center">
           <Link
-            to="/inventory"
+            to="/inventory/"
             className="inline-flex items-center gap-3 px-10 py-4 bg-[#2B59FF] hover:bg-blue-600 active:scale-[0.98] text-white text-sm font-bold uppercase tracking-widest rounded-xl transition-all shadow-[0_0_25px_rgba(43,89,255,0.4)]"
           >
             Shop Available Cars <ArrowRight size={18} />
