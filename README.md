@@ -4,7 +4,7 @@
 
 # Run and deploy your AI Studio app for leeautox
 
-This contains everything you need to run your app locally.
+This contains everything you need to run our app locally.
 
 View your app in AI Studio: https://ai.studio/apps/28da8da6-e940-47ff-bc8a-906472156b5c
 
