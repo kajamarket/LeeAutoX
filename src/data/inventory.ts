@@ -291,16 +291,16 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     year: 2018,
     price: "₦12,000,000",
     numericPrice: 12000000,
-    image: "https://images.leeautox.com/public/cars/IMG-20261104-WA0031.jpg",
+    image: "https://images.leeautox.com/public/cars/elantra/1.jpg",
     images: [
-      "https://images.leeautox.com/public/cars/IMG-20261104-WA0030.jpg",
-      "https://images.leeautox.com/public/cars/IMG-20261104-WA0032.jpg",
-      "https://images.leeautox.com/public/cars/IMG-20261104-WA0033.jpg",
-      "https://images.leeautox.com/public/cars/IMG-20261104-WA0034.jpg",
-      "https://images.leeautox.com/public/cars/IMG-20261104-WA0035.jpg",
-      "https://images.leeautox.com/public/cars/IMG-20261104-WA0036.jpg",
-      "https://images.leeautox.com/public/cars/IMG-20261104-WA0037.jpg",
-      "https://images.leeautox.com/public/cars/IMG-20261104-WA0038.jpg"
+      "https://images.leeautox.com/public/cars/elantra/11.jpg",
+      "https://images.leeautox.com/public/cars/elantra/13.jpg",
+      "https://images.leeautox.com/public/cars/elantra/14.jpg",
+      "https://images.leeautox.com/public/cars/elantra/15.jpg",
+      "https://images.leeautox.com/public/cars/elantra/16.jpg",
+      "https://images.leeautox.com/public/cars/elantra/17.jpg",
+      "https://images.leeautox.com/public/cars/elantra/18.jpg",
+      "https://images.leeautox.com/public/cars/elantra/19.jpg"
     ],
     specs: "2.0L Engine • Ice-Cold A.C • Reverse Camera • Apple Car Play",
     mileage: "61,000 mi",
@@ -320,7 +320,7 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     },
     exterior360: '<div class="cloudimage-360" id="ext360-hyundai-sonata-2016" data-folder="https://images.leeautox.com/public/cars/hyundai-sonata-2016/exterior/" data-filename-x="{index}.jpg" data-amount-x="36" data-speed="100" data-draggable="true" data-swipeable="true" data-drag-speed="100" data-keys="true" data-autoplay-behavior="spin-x" data-play-once="true" data-fullscreen="true" data-zoom-max="5" data-zoom-controls="true" data-pinch-zoom="true"></div>',    view360: {
       exterior: {
-        folder: "https://images.leeautox.com/public/cars/hyundai-sonata-2016/exterior/",
+        folder: "https://images.leeautox.com/public/cars/elantra/",
         filename: "{index}.jpg",
         amount: 36
       },
