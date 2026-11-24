@@ -291,7 +291,7 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
     year: 2018,
     price: "₦12,000,000",
     numericPrice: 12000000,
-    image: "https://images.leeautox.com/public/cars/elantra/1.jpg",
+    image: "https://images.leeautox.com/public/cars/elantra/5.jpg",
     images: [
       "https://images.leeautox.com/public/cars/elantra/11.jpg",
       "https://images.leeautox.com/public/cars/elantra/13.jpg",
@@ -300,7 +300,15 @@ export const INITIAL_INVENTORY: VehicleItem[] = [
       "https://images.leeautox.com/public/cars/elantra/16.jpg",
       "https://images.leeautox.com/public/cars/elantra/17.jpg",
       "https://images.leeautox.com/public/cars/elantra/18.jpg",
-      "https://images.leeautox.com/public/cars/elantra/19.jpg"
+      "https://images.leeautox.com/public/cars/elantra/19.jpg",
+      "https://images.leeautox.com/public/cars/elantra/20.jpg",
+      "https://images.leeautox.com/public/cars/elantra/23.jpg",
+      "https://images.leeautox.com/public/cars/elantra/24.jpg",
+      "https://images.leeautox.com/public/cars/elantra/25.jpg",
+      "https://images.leeautox.com/public/cars/elantra/26.jpg",
+      "https://images.leeautox.com/public/cars/elantra/27.jpg",
+      "https://images.leeautox.com/public/cars/elantra/30.jpg",
+      "https://images.leeautox.com/public/cars/elantra/28.jpg"
     ],
     specs: "2.0L Engine • Ice-Cold A.C • Reverse Camera • Apple Car Play",
     mileage: "61,000 mi",
