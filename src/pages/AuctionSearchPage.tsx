@@ -13,7 +13,6 @@ import {
   getAuctionFilterOptions, 
   buildFilterQuery,
   getAuctionDiagnostics,
-  checkRelayStatus,
   RelayDiagnostics 
 } from '../services/auctionService';
 import { STATIC_FILTER_METADATA } from '../data/auctionFilters';
@@ -129,11 +128,6 @@ export default function AuctionSearchPage() {
       if (isMounted && data) {
         setMetadata(data);
       }
-    });
-
-    // Initial relay health check
-    checkRelayStatus().then(() => {
-      if (isMounted) setDiagnostics(getAuctionDiagnostics());
     });
 
     return () => {
@@ -430,10 +424,26 @@ export default function AuctionSearchPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-8">
         {/* PUBLIC AUCTION CONNECTION STATUS */}
-        <div className="mb-6 p-3.5 px-4 rounded-2xl border flex items-center gap-2.5 text-xs font-mono bg-emerald-50 border-emerald-200 text-emerald-900 dark:bg-emerald-950/30 dark:border-emerald-800/40 dark:text-emerald-300">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-          <span>Connected to live Copart & IAAI auction.</span>
-        </div>
+        {dataSource === 'fallback' ? (
+          <div className="mb-6 p-3.5 px-4 rounded-2xl border flex items-center gap-2.5 text-xs font-mono bg-amber-50 border-amber-200 text-amber-900 dark:bg-amber-950/30 dark:border-amber-800/40 dark:text-amber-300">
+            <AlertCircle size={15} className="text-amber-500 shrink-0" />
+            <span>
+              Live auction feed unavailable (
+              {diagnostics.status ? `HTTP ${diagnostics.status}` : 'Network error'}
+              {diagnostics.error_class && diagnostics.error_class !== 'None' ? ` · ${diagnostics.error_class}` : ''}
+              ) — showing sample auction lots.
+            </span>
+          </div>
+        ) : (
+          <div className="mb-6 p-3.5 px-4 rounded-2xl border flex items-center gap-2.5 text-xs font-mono bg-emerald-50 border-emerald-200 text-emerald-900 dark:bg-emerald-950/30 dark:border-emerald-800/40 dark:text-emerald-300">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+            <span>
+              {isLoading && diagnostics.status === 0
+                ? 'Connecting to live Copart & IAAI auction...'
+                : 'Connected to live Copart & IAAI auction.'}
+            </span>
+          </div>
+        )}
 
         {/* TOP CONTROLS: Mobile Filter Button, View Mode, Result Count */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200 dark:border-white/10">

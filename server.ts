@@ -46,15 +46,103 @@ app.use((req: Request, res: Response, next) => {
 });
 
 // Relay diagnostics / health endpoint (never exposes key)
-app.get('/api/auction-status', (_req: Request, res: Response): void => {
+app.get('/api/auction-status', async (req: Request, res: Response): Promise<void> => {
   const apiKey = process.env.AUCTION_API_KEY || process.env.APIBARA_API_KEY;
+  const keyConfigured = Boolean(apiKey && apiKey.trim().length > 0);
+  const probeEndpoint = '/vehicles?per_page=1';
+  const skipUpstream = req.query.verify === '0';
+
   res.setHeader('Cache-Control', 'no-store');
-  res.json({
-    ok: true,
-    live_relay: true,
-    key_configured: Boolean(apiKey && apiKey.trim().length > 0),
-    timestamp: new Date().toISOString(),
-  });
+
+  if (!keyConfigured) {
+    res.json({
+      ok: false,
+      live_relay: true,
+      key_configured: false,
+      upstream_ok: false,
+      upstream_status: 401,
+      error_class: 'MissingApiKey',
+      error_message: 'AUCTION_API_KEY is not configured on the server.',
+      endpoint: probeEndpoint,
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+
+  if (skipUpstream) {
+    res.json({
+      ok: true,
+      live_relay: true,
+      key_configured: true,
+      upstream_ok: true,
+      upstream_status: 200,
+      error_class: 'None',
+      error_message: '',
+      endpoint: probeEndpoint,
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 6000);
+
+  try {
+    const upstreamRes = await fetch(`${APIBARA_BASE}${probeEndpoint}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'X-API-Key': apiKey!,
+      },
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+
+    const upstreamOk = upstreamRes.ok;
+    let errorClass = 'None';
+    let errorMessage = '';
+
+    if (!upstreamOk) {
+      if (upstreamRes.status === 401 || upstreamRes.status === 403) {
+        errorClass = 'AuthenticationError';
+        errorMessage = `Upstream API rejected key with HTTP ${upstreamRes.status}.`;
+      } else if (upstreamRes.status === 429) {
+        errorClass = 'RateLimitExceeded';
+        errorMessage = 'Upstream API returned HTTP 429 (quota or rate limit reached).';
+      } else {
+        errorClass = `HttpError_${upstreamRes.status}`;
+        errorMessage = `Upstream API returned HTTP ${upstreamRes.status}.`;
+      }
+    }
+
+    res.json({
+      ok: upstreamOk,
+      live_relay: true,
+      key_configured: true,
+      upstream_ok: upstreamOk,
+      upstream_status: upstreamRes.status,
+      error_class: errorClass,
+      error_message: errorMessage,
+      endpoint: probeEndpoint,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error: any) {
+    clearTimeout(timeoutId);
+    const isTimeout = error?.name === 'AbortError';
+    res.json({
+      ok: false,
+      live_relay: true,
+      key_configured: true,
+      upstream_ok: false,
+      upstream_status: isTimeout ? 504 : 502,
+      error_class: isTimeout ? 'TimeoutError' : 'NetworkError',
+      error_message: isTimeout
+        ? 'Upstream API health probe timed out.'
+        : 'Failed to reach upstream Apibara Vehicle Auction API.',
+      endpoint: probeEndpoint,
+      timestamp: new Date().toISOString(),
+    });
+  }
 });
 
 // Proxy endpoint for Apibara Vehicle Auction Data API

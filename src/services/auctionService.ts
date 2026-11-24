@@ -106,37 +106,65 @@ async function fetchWithRetry(url: string, options: RequestInit = {}, retries = 
   throw new Error('Network request failed');
 }
 
-// Test relay connectivity & key status without revealing the secret
-export async function checkRelayStatus(): Promise<{ ok: boolean; key_configured: boolean; relay_url: string; status: number }> {
+// Test relay connectivity & upstream key status without revealing the secret
+export async function checkRelayStatus(verifyUpstream = true): Promise<RelayDiagnostics & { ok: boolean }> {
   const relayUrl = getApiBaseUrl();
-  const testEndpoint = relayUrl.includes('/api/auction') 
-    ? '/api/auction-status' 
+  const baseEndpoint = relayUrl.includes('/api/auction')
+    ? '/api/auction-status'
     : `${relayUrl}/health`;
+  const testEndpoint = verifyUpstream ? baseEndpoint : `${baseEndpoint}?verify=0`;
 
   try {
-    const res = await fetch(testEndpoint, { headers: { Accept: 'application/json' } });
+    const res = await fetch(testEndpoint, {
+      headers: { Accept: 'application/json' },
+      cache: 'no-store',
+    });
+
     if (res.ok) {
       const json = await res.json();
-      return {
-        ok: true,
-        key_configured: Boolean(json.key_configured),
+      const upstreamStatus = typeof json.upstream_status === 'number' ? json.upstream_status : res.status;
+      const keyConfigured = Boolean(json.key_configured);
+      const isOk = typeof json.upstream_ok === 'boolean'
+        ? Boolean(json.ok && json.upstream_ok && keyConfigured)
+        : Boolean(json.ok && keyConfigured);
+
+      currentDiagnostics = {
+        endpoint: json.endpoint || '/vehicles?per_page=1',
+        status: upstreamStatus,
+        key_configured: keyConfigured,
+        timestamp: json.timestamp || new Date().toISOString(),
+        error_class: json.error_class || (isOk ? 'None' : `HttpError_${upstreamStatus}`),
+        error_message: json.error_message || '',
         relay_url: relayUrl,
-        status: res.status,
+        source: isOk ? 'live' : 'fallback',
       };
+
+      return { ...currentDiagnostics, ok: isOk };
     }
-    return {
-      ok: false,
-      key_configured: false,
-      relay_url: relayUrl,
+
+    currentDiagnostics = {
+      endpoint: '/vehicles?per_page=1',
       status: res.status,
-    };
-  } catch {
-    return {
-      ok: false,
-      key_configured: false,
+      key_configured: res.status !== 401,
+      timestamp: new Date().toISOString(),
+      error_class: `HttpError_${res.status}`,
+      error_message: `Relay health endpoint returned HTTP ${res.status}.`,
       relay_url: relayUrl,
-      status: 0,
+      source: 'fallback',
     };
+    return { ...currentDiagnostics, ok: false };
+  } catch (err: any) {
+    currentDiagnostics = {
+      endpoint: '/vehicles?per_page=1',
+      status: 0,
+      key_configured: false,
+      timestamp: new Date().toISOString(),
+      error_class: 'NetworkError',
+      error_message: err?.message || 'Failed to reach relay health endpoint.',
+      relay_url: relayUrl,
+      source: 'fallback',
+    };
+    return { ...currentDiagnostics, ok: false };
   }
 }
 

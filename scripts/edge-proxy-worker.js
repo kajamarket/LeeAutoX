@@ -49,22 +49,115 @@ export default {
 
     // Health / Diagnostics endpoint (never reveals key)
     if (url.pathname === '/health' || url.pathname === '/api/auction-status') {
-      const keyExists = Boolean(env.AUCTION_API_KEY && env.AUCTION_API_KEY.trim().length > 0);
-      return new Response(
-        JSON.stringify({
-          ok: true,
-          live_relay: true,
-          key_configured: keyExists,
-          timestamp: new Date().toISOString(),
-        }),
-        {
+      const apiKey = env.AUCTION_API_KEY;
+      const keyExists = Boolean(apiKey && apiKey.trim().length > 0);
+      const probeEndpoint = '/vehicles?per_page=1';
+      const skipUpstream = url.searchParams.get('verify') === '0';
+      const jsonHeaders = {
+        ...corsHeaders,
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-store',
+      };
+
+      if (!keyExists) {
+        return new Response(
+          JSON.stringify({
+            ok: false,
+            live_relay: true,
+            key_configured: false,
+            upstream_ok: false,
+            upstream_status: 401,
+            error_class: 'MissingApiKey',
+            error_message: 'AUCTION_API_KEY is not configured in Worker secrets.',
+            endpoint: probeEndpoint,
+            timestamp: new Date().toISOString(),
+          }),
+          { headers: jsonHeaders }
+        );
+      }
+
+      if (skipUpstream) {
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            live_relay: true,
+            key_configured: true,
+            upstream_ok: true,
+            upstream_status: 200,
+            error_class: 'None',
+            error_message: '',
+            endpoint: probeEndpoint,
+            timestamp: new Date().toISOString(),
+          }),
+          { headers: jsonHeaders }
+        );
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
+
+      try {
+        const upstreamRes = await fetch(`${APIBARA_BASE}${probeEndpoint}`, {
+          method: 'GET',
           headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-store',
+            'Accept': 'application/json',
+            'X-API-Key': apiKey,
           },
+          signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
+
+        const upstreamOk = upstreamRes.ok;
+        let errorClass = 'None';
+        let errorMessage = '';
+
+        if (!upstreamOk) {
+          if (upstreamRes.status === 401 || upstreamRes.status === 403) {
+            errorClass = 'AuthenticationError';
+            errorMessage = `Upstream API rejected key with HTTP ${upstreamRes.status}.`;
+          } else if (upstreamRes.status === 429) {
+            errorClass = 'RateLimitExceeded';
+            errorMessage = 'Upstream API returned HTTP 429 (quota or rate limit reached).';
+          } else {
+            errorClass = `HttpError_${upstreamRes.status}`;
+            errorMessage = `Upstream API returned HTTP ${upstreamRes.status}.`;
+          }
         }
-      );
+
+        return new Response(
+          JSON.stringify({
+            ok: upstreamOk,
+            live_relay: true,
+            key_configured: true,
+            upstream_ok: upstreamOk,
+            upstream_status: upstreamRes.status,
+            error_class: errorClass,
+            error_message: errorMessage,
+            endpoint: probeEndpoint,
+            timestamp: new Date().toISOString(),
+          }),
+          { headers: jsonHeaders }
+        );
+      } catch (err) {
+        clearTimeout(timeoutId);
+        const isTimeout = err?.name === 'AbortError';
+        return new Response(
+          JSON.stringify({
+            ok: false,
+            live_relay: true,
+            key_configured: true,
+            upstream_ok: false,
+            upstream_status: isTimeout ? 504 : 502,
+            error_class: isTimeout ? 'TimeoutError' : 'NetworkError',
+            error_message: isTimeout
+              ? 'Upstream API health probe timed out.'
+              : 'Failed to reach upstream Apibara Vehicle Auction API.',
+            endpoint: probeEndpoint,
+            timestamp: new Date().toISOString(),
+          }),
+          { headers: jsonHeaders }
+        );
+      }
     }
 
     // Strip prefix: handles /api/auction/* or /*

@@ -107,9 +107,13 @@ export default function AdminBackend() {
   const handleTestRelay = async () => {
     setIsTestingRelay(true);
     try {
-      const res = await checkRelayStatus();
+      const res = await checkRelayStatus(true);
       setDiagnostics(res);
-      showToast(res.ok ? 'Auction Relay ping passed: 200 OK' : 'Auction Relay returned error status');
+      showToast(
+        res.ok
+          ? `Auction Relay upstream check passed: ${res.status} OK`
+          : `Auction Relay issue: ${res.status ? `HTTP ${res.status}` : 'Network error'} (${res.error_class || 'Error'})`
+      );
     } catch {
       showToast('Auction Relay ping request failed');
     } finally {
@@ -557,28 +561,68 @@ export default function AdminBackend() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div className="p-3 rounded-xl bg-black/60 border border-zinc-800">
                   <span className="block text-zinc-400 text-[10px] uppercase tracking-wider mb-0.5">HTTP Status</span>
-                  <span className={`font-bold text-sm ${diagnostics.status === 200 ? 'text-emerald-400' : 'text-amber-400'}`}>
-                    {diagnostics.status ? `${diagnostics.status} OK` : '200 OK'}
+                  <span className={`font-bold text-sm ${
+                    diagnostics.status === 200
+                      ? 'text-emerald-400'
+                      : diagnostics.status === 0 && !diagnostics.error_class
+                      ? 'text-zinc-300'
+                      : 'text-amber-400'
+                  }`}>
+                    {diagnostics.status === 200
+                      ? '200 OK'
+                      : diagnostics.status > 0
+                      ? `HTTP ${diagnostics.status}`
+                      : diagnostics.error_class
+                      ? 'Network Error'
+                      : 'Not Tested'}
                   </span>
                 </div>
                 <div className="p-3 rounded-xl bg-black/60 border border-zinc-800">
                   <span className="block text-zinc-400 text-[10px] uppercase tracking-wider mb-0.5">Error Class</span>
-                  <span className="font-bold text-sm text-white">{diagnostics.error_class || 'None'}</span>
+                  <span className={`font-bold text-sm ${diagnostics.error_class && diagnostics.error_class !== 'None' ? 'text-amber-400' : 'text-white'}`}>
+                    {diagnostics.error_class || 'None'}
+                  </span>
                 </div>
                 <div className="p-3 rounded-xl bg-black/60 border border-zinc-800">
                   <span className="block text-zinc-400 text-[10px] uppercase tracking-wider mb-0.5">Key Configured</span>
-                  <span className="font-bold text-sm text-emerald-400">
-                    {diagnostics.key_configured ? 'Yes (Server Secret)' : 'Configured'}
+                  <span className={`font-bold text-sm ${
+                    diagnostics.status === 0 && !diagnostics.error_class
+                      ? 'text-zinc-300'
+                      : diagnostics.key_configured
+                      ? 'text-emerald-400'
+                      : 'text-amber-400'
+                  }`}>
+                    {diagnostics.status === 0 && !diagnostics.error_class
+                      ? 'Pending Check'
+                      : diagnostics.key_configured
+                      ? 'Yes (Server Secret)'
+                      : 'Missing / Invalid'}
                   </span>
                 </div>
                 <div className="p-3 rounded-xl bg-black/60 border border-zinc-800">
                   <span className="block text-zinc-400 text-[10px] uppercase tracking-wider mb-0.5">Relay Status</span>
-                  <span className="font-bold text-sm text-emerald-400 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    Live Copart & IAAI
-                  </span>
+                  {diagnostics.status === 200 ? (
+                    <span className="font-bold text-sm text-emerald-400 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                      Live Copart & IAAI
+                    </span>
+                  ) : diagnostics.status === 0 && !diagnostics.error_class ? (
+                    <span className="font-bold text-sm text-zinc-300">
+                      Click Ping to Verify
+                    </span>
+                  ) : (
+                    <span className="font-bold text-sm text-amber-400">
+                      Fallback / Degraded
+                    </span>
+                  )}
                 </div>
               </div>
+
+              {diagnostics.error_message && (
+                <div className="p-3 rounded-xl bg-amber-950/30 border border-amber-800/40 text-amber-300 text-xs font-mono">
+                  {diagnostics.error_message}
+                </div>
+              )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 <div className="p-3 rounded-xl bg-black/60 border border-zinc-800">
