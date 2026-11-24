@@ -245,6 +245,7 @@ export const VehicleViewer: React.FC<VehicleViewerProps> = ({
               style={{ width: '100%', height: '100%' }}
               folder={exterior.folder}
               filenameX={exterior.filename}
+              imageListX={exterior.imageListX}
               indexZeroBase={exterior.indexZeroBase ?? 0}
               amountX={exterior.amount}
               speed={exterior.speed ?? 100}

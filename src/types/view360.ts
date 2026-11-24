@@ -18,6 +18,11 @@ export interface View360Exterior {
   slug?: string;
 
   /**
+   * Explicit list of frame URLs for non-contiguous or custom-named X-axis sequences.
+   */
+  imageListX?: string[];
+
+  /**
    * Filename pattern for sequence frames. Defaults to "{index}.{ext}" (e.g. "{index}.jpg").
    */
   filename?: string;
@@ -134,6 +139,7 @@ export interface NormalizedView360 {
   exterior?: {
     folder: string;
     filename: string;
+    imageListX?: string[];
     indexZeroBase?: number;
     amount: number;
     demo?: boolean;

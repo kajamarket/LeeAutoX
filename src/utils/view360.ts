@@ -109,7 +109,27 @@ export function parseExterior360Snippet(
 
     const filenameX = sanitizedAttrs['data-filename-x'] || sanitizedAttrs['data-filename'] || '{index}.jpg';
     const indexZeroBase = parseInt(sanitizedAttrs['data-index-zero-base'] || '0', 10) || 0;
-    const amountX = parseInt(sanitizedAttrs['data-amount-x'] || sanitizedAttrs['data-amount'] || '35', 10) || 35;
+    let imageListX: string[] | undefined = undefined;
+    if (sanitizedAttrs['data-image-list-x']) {
+      try {
+        const parsedList = JSON.parse(sanitizedAttrs['data-image-list-x']);
+        if (Array.isArray(parsedList)) {
+          const validUrls = parsedList
+            .filter((entry): entry is string => typeof entry === 'string' && entry.trim().length > 0)
+            .map((entry) => {
+              const trimmed = entry.trim();
+              return trimmed.startsWith('https://') ? trimmed : `${folder}${trimmed.replace(/^\/+/, '')}`;
+            })
+            .filter((url) => url.startsWith('https://'));
+          if (validUrls.length > 0) {
+            imageListX = validUrls;
+          }
+        }
+      } catch (err) {
+        console.warn(`[view360] Failed to parse data-image-list-x for vehicle ${vehicleId || 'unknown'}:`, err);
+      }
+    }
+    const amountX = imageListX?.length || (parseInt(sanitizedAttrs['data-amount-x'] || sanitizedAttrs['data-amount'] || '35', 10) || 35);
     const speed = parseInt(sanitizedAttrs['data-speed'] || '100', 10) || 100;
     const dragSpeed = parseInt(sanitizedAttrs['data-drag-speed'] || '100', 10) || 100;
     const zoomMax = parseFloat(sanitizedAttrs['data-zoom-max'] || '5') || 5;
@@ -117,6 +137,7 @@ export function parseExterior360Snippet(
     return {
       folder,
       filename: filenameX,
+      imageListX,
       indexZeroBase,
       amount: amountX,
       demo: false,
@@ -182,13 +203,26 @@ export function normalizeView360(vehicle?: LegacyVehicle360 | null): NormalizedV
       folder = `${EXTERIOR_BASE_URL}${cleanSlug}/exterior/`;
     }
 
-    if (folder) {
-      if (!folder.startsWith('https://')) {
+    const rawImageListX = Array.isArray(rawExt.imageListX)
+      ? rawExt.imageListX
+          .filter((entry): entry is string => typeof entry === 'string' && entry.trim().length > 0)
+          .map((entry) => {
+            const trimmed = entry.trim();
+            return trimmed.startsWith('https://') || !folder
+              ? trimmed
+              : `${folder}${trimmed.replace(/^\/+/, '')}`;
+          })
+          .filter((url) => url.startsWith('https://'))
+      : undefined;
+    const imageListX = rawImageListX && rawImageListX.length > 0 ? rawImageListX : undefined;
+
+    if (folder || imageListX) {
+      if (folder && !folder.startsWith('https://')) {
         console.warn(
           `[view360] Invalid exterior folder for vehicle ${vehicle.id || vehicle.name || 'unknown'}: must use https://`
         );
       } else {
-        const amount = Number(rawExt.amount || rawExt.amountX) || 35;
+        const amount = imageListX?.length || Number(rawExt.amount || rawExt.amountX) || 35;
         if (amount <= 0) {
           console.warn(`[view360] Invalid exterior frame amount: ${amount} for vehicle ${vehicle.id || vehicle.name || 'unknown'}`);
         } else {
@@ -200,6 +234,7 @@ export function normalizeView360(vehicle?: LegacyVehicle360 | null): NormalizedV
           extConfig = {
             folder,
             filename,
+            imageListX,
             indexZeroBase: typeof rawExt.indexZeroBase === 'number' && rawExt.indexZeroBase > 0 ? rawExt.indexZeroBase : 0,
             amount,
             demo: Boolean(rawExt.demo),

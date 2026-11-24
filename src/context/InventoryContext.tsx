@@ -42,10 +42,16 @@ const normalizeVehicle = (item: any): VehicleItem => {
   const itemHasDemoEarbuds =
     typeof item.exterior360 === 'string' &&
     item.exterior360.includes('demo/earbuds/');
+  const itemHasOldSonataExterior =
+    typeof item.exterior360 === 'string' &&
+    item.exterior360.includes('hyundai-sonata-2016/exterior/') &&
+    typeof initItem?.exterior360 === 'string' &&
+    !initItem.exterior360.includes('hyundai-sonata-2016/exterior/');
   const isStaleExterior =
     (typeof item.exterior360 === 'string' &&
       (item.exterior360.includes('id="exterior-360-') || item.exterior360.includes('data-amount-x="233"'))) ||
-    (initHasOwnExterior && itemHasDemoEarbuds);
+    (initHasOwnExterior && itemHasDemoEarbuds) ||
+    itemHasOldSonataExterior;
   const ext360 = isStaleExterior ? initItem?.exterior360 : (item.exterior360 || initItem?.exterior360);
   const view360 = isStaleExterior ? initItem?.view360 : (item.view360 || initItem?.view360);
   return { 
