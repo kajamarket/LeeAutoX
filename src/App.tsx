@@ -6,8 +6,10 @@ import ScrollToTop from './components/ScrollToTop';
 import ThemeToggle from './components/ThemeToggle';
 import WhatsAppFloat from './components/WhatsAppFloat';
 import SEOHelmet from './components/SEOHelmet';
+import HomepageIntroGate from './components/intro/HomepageIntroGate';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
+import { SiteSettingsProvider } from './context/SiteSettingsContext';
 import { ReviewsProvider } from './context/ReviewsContext';
 import { InventoryProvider } from './context/InventoryContext';
 
@@ -48,9 +50,11 @@ export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <InventoryProvider>
-          <ReviewsProvider>
-          <Router>
+        <SiteSettingsProvider>
+          <InventoryProvider>
+            <ReviewsProvider>
+            <Router>
+            <HomepageIntroGate />
             <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
               {/* Dynamic Runtime SEO Meta and Schema Manager */}
               <SEOHelmet />
@@ -165,9 +169,10 @@ export default function App() {
               <WhatsAppFloat />
               <ThemeToggle />
             </div>
-          </Router>
-        </ReviewsProvider>
-      </InventoryProvider>
+            </Router>
+          </ReviewsProvider>
+        </InventoryProvider>
+      </SiteSettingsProvider>
     </AuthProvider>
   </ThemeProvider>
 );

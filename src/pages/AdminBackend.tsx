@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useInventory } from '../context/InventoryContext';
 import { useAuth } from '../context/AuthContext';
+import { useSiteSettings } from '../context/SiteSettingsContext';
 import { VehicleItem, getVehicleUrl } from '../data/inventory';
 import { has360Content } from '../utils/panoee';
 import { 
@@ -21,7 +22,8 @@ import {
   Search,
   CheckCircle2,
   AlertCircle,
-  Activity
+  Activity,
+  Sliders
 } from 'lucide-react';
 import { 
   checkRelayStatus, 
@@ -32,6 +34,7 @@ import {
 export default function AdminBackend() {
   const { vehicles, addVehicle, updateVehicle, deleteVehicle, toggleStatus, resetToDefaults, cloudSyncStatus, cloudSyncError } = useInventory();
   const { currentUser, isAdmin, signInWithGoogle, logout: googleLogout } = useAuth();
+  const { preloaderEnabled, settingsLoaded, isSavingSettings, settingsError, updatePreloaderEnabled } = useSiteSettings();
   
   // Security Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
@@ -97,6 +100,32 @@ export default function AdminBackend() {
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3000);
+  };
+
+  // Admin-Only Homepage Preloader Global Toggle State
+  const [preloaderFeedback, setPreloaderFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  const handleTogglePreloader = async () => {
+    if (isSavingSettings || !settingsLoaded) return;
+    const nextEnabled = !(preloaderEnabled ?? true);
+    if (!isAdmin) {
+      const msg = 'Admin Google Sign-In is required to update the global Homepage Preloader setting in the database.';
+      setPreloaderFeedback({ type: 'error', text: msg });
+      showToast(msg);
+      return;
+    }
+
+    setPreloaderFeedback(null);
+    const result = await updatePreloaderEnabled(nextEnabled);
+    if (result.ok) {
+      const msg = `Homepage Preloader ${nextEnabled ? 'Enabled' : 'Disabled'} globally for all visitors.`;
+      setPreloaderFeedback({ type: 'success', text: msg });
+      showToast(msg);
+    } else {
+      const msg = result.error || 'Unable to save Homepage Preloader setting to database.';
+      setPreloaderFeedback({ type: 'error', text: msg });
+      showToast(msg);
+    }
   };
 
   // Admin-Only Apibara Auction Relay Diagnostics
@@ -518,6 +547,103 @@ export default function AdminBackend() {
             </button>
           </div>
         )}
+
+        {/* GLOBAL SITE SETTINGS: HOMEPAGE PRELOADER CONTROL */}
+        <div className="mb-8 p-5 rounded-2xl bg-zinc-900 border border-zinc-800 text-white">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div className="w-9 h-9 rounded-xl bg-[#2B59FF]/20 text-[#2B59FF] border border-[#2B59FF]/30 flex items-center justify-center shrink-0 mt-0.5">
+                <Sliders size={17} />
+              </div>
+              <div>
+                <div className="flex flex-wrap items-center gap-2.5 mb-1">
+                  <h2 className="font-bold text-sm text-white">
+                    Homepage Preloader
+                  </h2>
+                  {!settingsLoaded ? (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-zinc-800 text-zinc-400 border border-zinc-700 uppercase">
+                      Loading...
+                    </span>
+                  ) : preloaderEnabled ? (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-950/60 text-emerald-400 border border-emerald-500/40 uppercase">
+                      Enabled
+                    </span>
+                  ) : (
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-zinc-800 text-zinc-300 border border-zinc-700 uppercase">
+                      Disabled
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-zinc-400 leading-relaxed max-w-2xl">
+                  When enabled, visitors experience the LeeAutoX branded preloader and 3D introduction before entering the homepage. When disabled, the homepage loads normally without either introduction.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 self-start md:self-center shrink-0 pl-12 md:pl-0">
+              <span className={`text-xs font-mono font-semibold ${!preloaderEnabled ? 'text-white' : 'text-zinc-500'}`}>
+                Disabled
+              </span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={Boolean(preloaderEnabled)}
+                aria-label="Homepage Preloader"
+                onClick={handleTogglePreloader}
+                disabled={!settingsLoaded || isSavingSettings}
+                className={`relative inline-flex h-7 w-13 shrink-0 items-center rounded-full border transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ${
+                  preloaderEnabled
+                    ? 'bg-[#2B59FF] border-[#2B59FF]'
+                    : 'bg-zinc-800 border-zinc-700'
+                }`}
+              >
+                <span
+                  className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform ${
+                    preloaderEnabled ? 'translate-x-7' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+              <span className={`text-xs font-mono font-semibold ${preloaderEnabled ? 'text-emerald-400' : 'text-zinc-500'}`}>
+                {isSavingSettings ? 'Saving...' : 'Enabled'}
+              </span>
+            </div>
+          </div>
+
+          {(preloaderFeedback || settingsError || !isAdmin) && (
+            <div className="mt-4 pt-3 border-t border-zinc-800/80 space-y-2">
+              {preloaderFeedback && (
+                <div
+                  className={`p-3 rounded-xl text-xs font-mono flex items-center gap-2 border ${
+                    preloaderFeedback.type === 'success'
+                      ? 'bg-emerald-950/30 border-emerald-500/30 text-emerald-300'
+                      : 'bg-red-950/30 border-red-500/30 text-red-300'
+                  }`}
+                >
+                  {preloaderFeedback.type === 'success' ? (
+                    <CheckCircle2 size={15} className="shrink-0" />
+                  ) : (
+                    <AlertCircle size={15} className="shrink-0" />
+                  )}
+                  <span>{preloaderFeedback.text}</span>
+                </div>
+              )}
+
+              {!preloaderFeedback && settingsError && (
+                <div className="p-3 rounded-xl bg-red-950/30 border border-red-500/30 text-red-300 text-xs font-mono flex items-center gap-2">
+                  <AlertCircle size={15} className="shrink-0" />
+                  <span>{settingsError}</span>
+                </div>
+              )}
+
+              {!isAdmin && (
+                <div className="text-[11px] font-mono text-amber-400 flex items-center gap-1.5">
+                  <ShieldAlert size={13} className="shrink-0" />
+                  <span>Server-validated database writes require Google Admin Sign-In above.</span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* ADMIN-ONLY RELAY DIAGNOSTICS PANEL (Requirement 2) */}
         <div className="mb-8 p-5 rounded-2xl bg-zinc-900 border border-zinc-800 text-white font-mono text-xs">

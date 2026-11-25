@@ -1,0 +1,469 @@
+# LEEAUTOX: TWO-PHASE HOMEPAGE PRELOADER, 3D STARTING-GRID EXPERIENCE AND HOMEPAGE REVEAL
+
+## 1. PROJECT OBJECTIVE
+
+Upgrade the existing LeeAutoX website with a premium, two-phase homepage introduction experience.
+
+The experience consists of:
+
+**PHASE 1: Branded Preloader**
+A full-screen loading experience featuring the existing LeeAutoX visual identity, a numerical progress counter from 1% to exactly 100%, and sophisticated branding.
+
+**PHASE 2: 3D Starting-Grid Experience**
+A photorealistic, AAA-quality 3D automotive starting-grid sequence based on the complete specification supplied in Section 10.
+
+**FINAL TRANSITION: Homepage Reveal**
+Once the 3D sequence displays the word **GO**, the entire 3D experience must fade away smoothly, revealing the normal, existing LeeAutoX homepage underneath.
+
+The preloader and 3D experience are temporary introductory layers. They must never replace, redesign, or permanently alter the actual website.
+
+This is an enhancement to an existing working project. Your priority is to deliver the experience without breaking existing functionality.
+
+---
+
+## 2. CRITICAL: INSPECT THE EXISTING PROJECT FIRST
+
+Before writing or modifying code:
+
+1. Inspect the existing project structure, framework, dependencies, routing, homepage, footer, styling system, assets, and existing animations.
+2. Identify how the homepage is rendered and how users navigate between pages.
+3. Identify reusable assets and components.
+4. Determine the safest way to integrate the preloader and 3D experience into the existing architecture.
+
+**Do not assume the project uses Vite, React, or any particular framework simply because the supplied 3D specification mentions them.**
+
+The existing working project is the source of truth.
+
+### Technology and file-placement discretion
+
+You have full discretion to choose the most appropriate implementation technique, integration architecture, and file locations.
+
+The supplied Phase 2 specification contains a proposed React Three Fiber/Vite implementation and suggested file structure. Treat these as technical guidance, not permission to restructure or replace the existing application.
+
+Specifically:
+
+- Reuse the existing framework and build system wherever practical.
+- If the existing project is compatible with the supplied stack, use it where beneficial.
+- If adopting the supplied stack would require replacing the current framework, build configuration, routing, or major dependencies, choose a safer integration method instead.
+- Place new files wherever they fit naturally within the existing project structure.
+- Do not force the suggested folder structure onto the existing project.
+- Do not replace existing configuration files unnecessarily.
+- Avoid duplicate dependencies and unnecessary packages.
+- Do not introduce a second application or competing routing system.
+- Keep all new components isolated and easy to remove or maintain.
+
+Your objective is to make everything work together cleanly, not to reproduce a particular folder structure.
+
+---
+
+## 3. PHASE 1: BRANDED LEEAUTOX PRELOADER
+
+### A. Background and visual identity
+
+Use the existing website footer as the visual reference for the preloader background.
+
+Reproduce its background appearance, including:
+- Existing background colours and visual treatments.
+- Graffiti elements and decorative graphics.
+- Textures and other background details that contribute to its identity.
+
+Exclude all footer links, navigation items, contact information, and interactive footer content.
+
+The objective is to reuse the footer's visual identity as a full-screen background, not to display the footer itself.
+
+Do not introduce an unrelated background or a completely new visual theme.
+
+### B. LeeAutoX loading identity
+
+Display:
+
+**LEEAUTOX**
+
+Use a sophisticated automotive presentation inspired by the cinematic title treatments and atmosphere associated with GTA VI.
+
+This is a stylistic reference only. Do not reproduce GTA logos, copyrighted artwork, typography, or branding.
+
+Adapt the inspiration to LeeAutoX:
+- Premium automotive aesthetic.
+- Refined typography.
+- Cinematic composition.
+- Subtle motion and transitions.
+- High-end visual presentation.
+
+Avoid clutter, cartoon-like graphics, excessive effects, or an overly playful appearance.
+
+### C. Numerical loading counter
+
+Display a numerical progress counter progressing from 1% to 100%.
+
+Strict requirements:
+- Never exceed 100%.
+- Never display 101%, 110%, or any value above 100%.
+- Keep the numerical counter and visual progress indicator synchronised.
+- Stop at exactly 100%.
+- Transition to Phase 2 only after Phase 1 completes.
+
+Use the existing website's actual loading lifecycle where practical. Do not falsely represent the percentage as actual API or asset-loading progress if it is only an animation.
+
+Avoid unnecessary delays. The experience should feel smooth and responsive.
+
+---
+
+## 4. PHASE 2: 3D STARTING-GRID EXPERIENCE
+
+After Phase 1 reaches exactly 100%, transition into the 3D automotive starting-grid experience specified in Section 10.
+
+The 3D experience must:
+- Load and display the specified default vehicle.
+- Present the daylight motorsports circuit.
+- Perform the cinematic camera choreography.
+- Display the 3, 2, 1, GO countdown.
+- Execute the vehicle launch and associated visual effects.
+- Maintain responsive presentation across desktop, tablet, and mobile.
+
+The complete technical specification for this experience is included unchanged in Section 10.
+
+### Important distinction
+
+The supplied 3D application specification describes a standalone interactive experience with controls such as vehicle selection, custom GLB upload, free orbit inspection, paint swatches, and sound controls.
+
+For this website integration, use your discretion to determine which elements are appropriate to retain during the introductory experience.
+
+Prioritise the cinematic starting-grid sequence and its transition into the actual homepage.
+
+Do not allow optional interactive controls to obstruct the main introduction, interfere with the countdown, or prevent the final homepage reveal.
+
+Do not create a permanent standalone application that replaces the LeeAutoX website.
+
+---
+
+## 5. FINAL TRANSITION: REVEAL THE NORMAL HOMEPAGE
+
+This is a critical part of the experience.
+
+Once the 3D countdown displays **GO** and the vehicle launch sequence has played:
+
+1. Allow the GO moment and vehicle launch animation to register visually.
+2. Smoothly fade out the entire 3D experience, including the vehicle, circuit, HUD, overlays, and controls.
+3. Reveal the normal existing LeeAutoX homepage underneath.
+4. Restore normal homepage interaction and scrolling.
+5. Remove or deactivate the introductory experience so it no longer blocks the website.
+
+### Transition requirements
+
+- The actual existing homepage must be present underneath the introduction experience.
+- Do not rebuild or replace the homepage.
+- Do not use a screenshot, static image, or duplicate version of the homepage.
+- Do not navigate to a different website or route to reveal the homepage.
+- Do not reload the entire website unnecessarily.
+- Do not leave the 3D canvas running in the background after the reveal.
+- Properly release WebGL resources, animation loops, audio resources, event listeners, and temporary assets when the experience ends.
+- Ensure the homepage becomes fully interactive after the transition.
+
+The GO-to-homepage transition should feel like the vehicle has launched and the cinematic introduction has seamlessly given way to the real LeeAutoX website.
+
+The transition must not cause a blank screen, flicker, layout shift, or visible flash of unstyled content.
+
+---
+
+## 6. WHEN THE EXPERIENCE SHOULD APPEAR
+
+The complete preloader and 3D experience must appear only when a visitor newly opens the website homepage as a fresh browser entry.
+
+Examples:
+
+| User action | Show introduction? |
+|---|---|
+| Opens leeautox.com directly | Yes |
+| Opens the homepage through a fresh browser entry | Yes |
+| Navigates from homepage to About | No |
+| Clicks a vehicle listing | No |
+| Opens an individual vehicle page | No |
+| Navigates from another page back to homepage | No |
+| Clicks an internal navigation link | No |
+| Refreshes or revisits the homepage within the same browsing session | No |
+
+### Session-aware implementation
+
+Use the existing routing and navigation architecture.
+
+Implement a lightweight session-aware mechanism, such as `sessionStorage`, if compatible with the project.
+
+Requirements:
+- Trigger the experience only on a fresh homepage entry.
+- Mark the experience as completed once it has finished.
+- Do not replay it during internal navigation.
+- Do not replay it when returning to the homepage within the same session.
+- Allow a genuinely new browsing session to trigger it again.
+- Other pages must load normally without displaying either phase.
+
+Do not introduce unnecessary routing changes or dependencies.
+
+---
+
+## 7. PERFORMANCE, RESPONSIVENESS AND RESOURCE MANAGEMENT
+
+The 3D experience must be visually impressive without unnecessarily burdening the website.
+
+Use your discretion to optimise:
+- 3D model loading and caching.
+- Texture sizes and reuse.
+- WebGL rendering and pixel density.
+- Animation performance.
+- Responsive rendering.
+- Memory management.
+- Audio initialisation.
+- Cleanup after the experience ends.
+
+Prioritise stable performance across desktop, tablet, and mobile devices.
+
+Respect `prefers-reduced-motion`. Where appropriate, provide a simplified version of the introduction while preserving the countdown and homepage reveal.
+
+If WebGL or a 3D asset fails, provide a graceful fallback that allows the visitor to access the normal homepage rather than leaving them stuck on a loading screen.
+
+Do not make the user wait indefinitely for an unavailable asset.
+
+---
+
+## 8. STRICT FUNCTIONALITY AND DESIGN PRESERVATION
+
+This is an existing, working LeeAutoX website.
+
+Do not rebuild it or alter its existing architecture unnecessarily.
+
+Preserve:
+- All existing pages and routes.
+- Existing homepage sections and content.
+- Vehicle listings and individual vehicle pages.
+- Search and filtering.
+- Live Copart and IAAI auction integrations.
+- Existing APIs and data connections.
+- Admin functionality and diagnostics.
+- Navigation and internal links.
+- Existing animations and interactions.
+- Theme switching.
+- Responsive layouts.
+- SEO and existing metadata.
+- All other working website functionality.
+
+Do not redesign the footer. Only reuse its background visuals for the preloader.
+
+Do not modify the homepage content or layout to accommodate the introduction. The preloader and 3D experience must operate as temporary overlays or an equivalent isolated presentation layer.
+
+Avoid unrelated CSS changes, refactoring, and code cleanup.
+
+---
+
+## 9. IMPLEMENTATION SEQUENCE AND VERIFICATION
+
+Work in the following order. Complete and verify each stage before proceeding to the next.
+
+### Stage 1: Project inspection and integration plan
+Inspect the existing project and identify the safest implementation approach. Determine file placement, framework compatibility, asset reuse, and how the experience will interact with existing routing.
+
+Do not modify unrelated files.
+
+### Stage 2: Phase 1 implementation
+Build the branded loading screen using the existing footer background visuals. Implement the LeeAutoX branding, progress counter, and transition at exactly 100%.
+
+Verify that it works independently before continuing.
+
+### Stage 3: Phase 2 implementation
+Integrate the 3D starting-grid experience using the specification in Section 10.
+
+Resolve compatibility issues with the existing project rather than forcing a replacement architecture.
+
+Verify the model, environment, lighting, camera, countdown, animation, and responsive behaviour.
+
+### Stage 4: GO transition
+Implement the vehicle launch, fade-out, and reveal of the actual existing homepage.
+
+Verify that the homepage becomes fully interactive and that the 3D experience is properly cleaned up.
+
+### Stage 5: Session and navigation logic
+Implement and test the fresh-entry-only behaviour.
+
+Verify that internal navigation, returning to the homepage, and refreshing within the same session do not replay the introduction.
+
+### Stage 6: Final integration checks
+Check for:
+- Console errors.
+- Build errors.
+- Broken routes.
+- Missing assets.
+- WebGL failures.
+- Memory leaks.
+- Navigation issues.
+- Mobile layout problems.
+- Existing functionality regressions.
+
+Do not report an item as verified unless it has actually been tested.
+
+---
+
+## 10. COMPLETE PHASE 2 TECHNICAL SPECIFICATION
+
+The following is the supplied specification for the 3D starting-grid experience. Preserve its intended visual and functional requirements. Adapt its implementation only where necessary to ensure safe compatibility with the existing LeeAutoX project.
+
+[BEGIN ORIGINAL PHASE 2 SPECIFICATION]
+
+Build a photorealistic, AAA-quality 3D pre-race starting-grid car spotlight web application ("Grid Ignition — Pre-Race 3D Car Spotlight") inspired by the starting-grid sequence in *Blur* (2010), set on a sunlit, late-afternoon daylight motorsports circuit. The app must render cleanly with zero console errors on first load.
+
+## 1. Tech Stack & Project Configuration
+- **Framework & Build:** Vite (`^8.3.0`), React 18 (`^18.3.1`, `react-dom@^18.3.1`), plain JavaScript/JSX (`.jsx`/`.js`, no TypeScript source files). Configure `tsconfig.json` with `allowJs: true`, `checkJs: false`, `noEmit: true` so `tsc --noEmit` passes on `src`.
+- **3D & Animation Packages (pinned mutually compatible versions):**
+  - `three@0.160.1`
+  - `@react-three/fiber@^8.15.19`
+  - `@react-three/drei@^9.99.7`
+  - `@react-three/postprocessing@^2.16.2` and `postprocessing@^6.34.3`
+  - `gsap@^3.12.5`
+  - `lucide-react@^0.546.0`
+  - Do NOT use React 19 or `@react-three/fiber` v9.
+- **Styling & Fonts:** Plain CSS (`src/styles.css`), no Tailwind. Load Google Fonts `Orbitron` (weights 500, 700, 800, 900) and `Plus Jakarta Sans` (weights 400, 500, 600, 700) in `index.html`.
+- **Static Public Assets (`public/`):**
+  - Default vehicle `.glb`: Download `https://github.com/kajamarket/LeeAutoX/raw/main/public/cars/2021_lexus_lc_500_convertible.glb` into `/public/cars/2021_lexus_lc_500_convertible.glb`.
+  - Daylight park HDRI: Download `rooitou_park_1k.hdr` (Drei `park` preset HDRI) into `/public/env/rooitou_park_1k.hdr` so environment reflections load locally with zero external network dependencies.
+
+## 2. File Structure
+public/
+  cars/2021_lexus_lc_500_convertible.glb
+  env/rooitou_park_1k.hdr
+
+src/
+  main.jsx
+  App.jsx
+  styles.css
+  components/
+    Scene.jsx
+    Environment.jsx
+    CameraRig.jsx
+    AutoFitCar.jsx
+    ProceduralCar.jsx
+    Hud.jsx
+    FreeCarsModal.jsx
+    DropZone.jsx
+  hooks/
+    useCarLoader.js
+  utils/
+    audio.js
+    proceduralTextures.js
+
+- `Scene.jsx`: Canvas, daylight rig, AdaptiveDpr, PerformanceMonitor, EffectComposer, ErrorBoundary.
+- `Environment.jsx`: Daylight sky, HDRI, weathered circuit, scrolling track/dust/wind streaks on GO.
+- `CameraRig.jsx`: Catmull-Rom + GSAP 3-2-1-GO camera choreography, launch FOV punch, OrbitControls, viewport framing.
+- `AutoFitCar.jsx`: GLB clone, bounding-box normalization, material/glass/paint handling, GO launch surge.
+- `ProceduralCar.jsx`: Sculpted Concept Supercar & Luxury Sports Sedan presets with spinning wheels and GO surge.
+- `Hud.jsx`: Countdown overlay, speed lines, progress bar, error toast, bottom dock and mobile sheet.
+- `FreeCarsModal.jsx`: Accessible modal with clickable free `.GLB` repositories and conversion instructions.
+- `DropZone.jsx`: Full-window drag-and-drop `.glb`/`.gltf` overlay.
+- `hooks/useCarLoader.js`: File validation (<= 150 MB), blob URL lifecycle, useGLTF.clear cleanup.
+- `utils/audio.js`: Procedural Web Audio API countdown beeps and multi-harmonic V8/V10 engine rev.
+- `utils/proceduralTextures.js`: Canvas/DataTexture PBR generators for tarmac, curbs, gravel, grass, paint flake, carbon, tire tread.
+
+## 3. Lighting, Post-Processing & Canvas Setup (`Scene.jsx`)
+- `<Canvas>` with `shadows`, `frameloop="always"`, initial camera `{ fov: 50, position: [-2.5, 0.65, 3.8], near: 0.1, far: 260 }`, `gl={{ antialias: false, powerPreference: 'high-performance', toneMapping: THREE.NoToneMapping }}`, and `gl.outputColorSpace = THREE.SRGBColorSpace`.
+- Listen for `webglcontextlost` / `webglcontextrestored` on `gl.domElement` and show a banner if context is lost.
+- Adaptive performance: `<PerformanceMonitor bounds={() => [40, 60]} />` toggling `degraded` state, `<AdaptiveDpr pixelated />`, responsive `dpr` (`[1, 2]` desktop, `[1, 1.85]` tablet, `[1, 1.75]` mobile, `[1, 1.25]` degraded), and `multisampling` (`4` desktop, `0` on mobile or degraded).
+- **Daylight Lighting Rig:**
+  - `<hemisphereLight args={['#b9d8f5', '#4a463f', 0.9]} />`
+  - Warm late-afternoon `<directionalLight color="#fff5e4" intensity={2.8} position={[30, 42, -25]} castShadow shadow-mapSize={[2048, 2048]} />` with orthographic shadow bounds `[-18, 18]` and bias `-0.0003`, `normalBias={0.02}`.
+  - `<ContactShadows position={[0, 0.003, 0]} opacity={0.48} scale={10} blur={2.2} far={4} frames={1} resolution={isMobile ? 256 : 512} />` (re-keyed on car change).
+- **Post-Processing:**
+  - `<EffectComposer enableNormalPass={false} multisampling={multisampling}>`
+  - `<Bloom luminanceThreshold={1.5} luminanceSmoothing={0.25} mipmapBlur intensity={isMobile ? 0.18 : 0.25} />`
+  - `<ToneMapping mode={ToneMappingMode.ACES_FILMIC} />`
+
+## 4. Daylight Motorsports Circuit & Procedural Textures
+- **Atmosphere & Sky:**
+  - `<color attach="background" args={['#cfdbe6']} />`
+  - `<fog attach="fog" args={['#cfdbe6', 45, 180]} />`
+  - `<Sky sunPosition={[60, 28, -40]} turbidity={6} rayleigh={1.2} mieCoefficient={0.005} mieDirectionalG={0.8} />`
+  - `<Environment files="/env/rooitou_park_1k.hdr" environmentIntensity={0.75} />` (preloaded via `useEnvironment.preload`).
+- **Procedural Textures (`src/utils/proceduralTextures.js`):**
+  - `createDaylightAsphaltMaps(maxAniso)`: `1024x1024` seeded canvas textures (`repeat(1, 20)`) generating:
+    1. `albedoMap` (`sRGB`): `#3c4047` aggregate grain, longitudinal rubber tire-wear tracks along the racing line, and weathered tar crack veins.
+    2. `roughnessMap` (`NoColorSpace`): matte aggregate (`#cfcfcf`) with subtly smoother rubber lines.
+    3. `bumpMap` (`NoColorSpace`): grayscale mineral aggregate heightfield.
+  - `createCurbTexture`: `256x256` weathered concrete/paint with dark tire scuff noise.
+  - `createGravelTexture`: `256x256` coarse beige pebble noise (`repeat(8, 60)`).
+  - `createGrassTexture`: `256x256` weathered natural grass terrain (`repeat(42, 42)`).
+  - `createPaintFlakeNormalMap`, `createCarbonFiberMaps` (2x2 twill weave albedo + normal), and `createTireTreadNormalMap` (grooved racing slick/semi-slick tread).
+- **Track Geometry & Circuit Architecture:**
+  - **Ground Layers:** `520x520` grass plane (`y=-0.04`), open cylinder horizon hills ring (`radius 142/165`, `#677c58`), `14m`-wide x `360m`-long dry asphalt straightaway (`roughness={0.68}`, `metalness={0.05}`, `bumpScale={0.025}`), left `5.4m`-wide gravel trap, and `1.1m`-wide green astroturf verge strips (`#3c6632`) outside both curbs.
+  - **Scrolling Track World (`trackWorldRef`):**
+    - **Markings:** 28x2 checkered start/finish stripe at `z = +3.3`, white edge boundary lines at `x = ±6.85`, and 6 staggered painted white starting-grid boxes (pole slot at `[0, 0, 0]`).
+    - **Rumble Curbs:** 200 instanced sawtooth curbs per side (`x = ±7.32`, alternating `#c8232c` red and `#ebe8e0` off-white).
+    - **Safety Barriers & Tire Walls:** Left (`x = -14.1`) and right outer (`x = +17.7`) metallic Armco guardrails with 80 instanced support posts per side, plus 3 clusters of stacked red/black tire walls along the left gravel edge.
+    - **Pit Wall, Catch Fencing & Pit Lane (Right Side):** Concrete pit wall (`x = 8.85`), 70 instanced fence posts, semi-transparent wire-mesh catch fence (`opacity={0.32}`), digital marshal flag board (red during `3-2-1`, green on `GO`), pit-lane asphalt strip (`x = 13.2`), and 6 pit-box garages with cantilevered canopies (`x = 19.2`).
+    - **Tiered Spectator Grandstand (Left Side):** 6 stepped seating tiers (`x = -20.5, z = 18`), angled overhanging roof, support columns, and front safety guardrail.
+    - **Overhead Start/Finish Gantry (`z = +9.5`):** Steel truss spanning `19.2m` with sponsor deck and 5 dual-faced race-start light pods (`toneMapped: false` emissive). Lights illuminate progressively in sync with the countdown: `3` = 2 red pods, `2` = 4 red pods, `1` = all 5 red pods, `GO` = all 5 bright green (`#22e644`), idle = off.
+    - **Perimeter Trees:** 64 instanced trunks and varied-green icosahedron crowns flanking the circuit.
+
+## 5. Vehicles, Default Model & AutoFit Normalization
+- **Default State:** Default vehicle is `'lexus'` (`/cars/2021_lexus_lc_500_convertible.glb`, preloaded via `useGLTF.preload`), and default paint swatch is **Pearl White** (`#eef2f6`).
+- **`AutoFitCar.jsx`:**
+  - Deep-clones `scene.clone(true)` and clones every mesh material; disposes cloned materials on unmount.
+  - Auto-aligns longest horizontal axis to `Z` if `size.x > size.z`, applies user `rotationY` offset, uniformly scales so largest dimension = `4.5` units, centers X/Z at `0`, and snaps `box.min.y` to `0`.
+  - Sets `castShadow`/`receiveShadow = true`, `FrontSide`, max anisotropy on textures, and clamps excessive emissive intensities (`> 2.2` -> `1.9`) for daylight bloom restraint.
+  - Detects glass/lens materials (`/glass|window|windshield/i`), disables multi-pass `transmission = 0`, and converts to calibrated `transparent: true` (`opacity: 0.36` windows, `0.68` lenses) for locked 60 FPS.
+  - Upgrades paint materials (`/paint|body|carpaint|exterior/i`, or fallback to the non-glass material with largest mesh surface area) to `MeshPhysicalMaterial` (`clearcoat: 1`, `clearcoatRoughness: 0.06`, `metalness: 0.55`, `roughness >= 0.16`, `envMapIntensity: 1.05`) and applies selected `paintColor` (or restores `originalColor` when `null` / "Original" is selected).
+- **`ProceduralCar.jsx` (Built-in Fallbacks: `Concept Supercar` and `Luxury Sports Sedan`):**
+  - Multi-part extruded beveled body + fender flanks + hood bulge + interior dark tub + sport bucket seats + carbon steering wheel + tinted glass canopy + carbon roof insert + 4 wheel wells + carbon front splitter, grille, side skirts, side vents (supercar) or chrome trim (sedan), side mirrors, rear diffuser with vertical fins, quad chrome exhausts with warm inner glow, rear wing/lip spoiler, crisp white DRL headlight bars (`+Z`), and ruby red taillight strip (`-Z`).
+  - 4 detailed `WheelAssembly` meshes resting at `y = 0` with grooved tire treads, 5 twin-spoke alloy rims, brake rotors, and colored calipers (red on supercar, gold on sedan).
+- **Custom `.GLB`/`.GLTF` Upload (`useCarLoader.js`, `DropZone.jsx`):**
+  - Full-window drag-and-drop overlay ("Drop your .glb here") + hidden `<input type="file" accept=".glb,.gltf">`.
+  - Validates `.glb`/`.gltf`, non-empty, and `<= 150 MB`. Shows dismissible error toast on failure, advises single-file `.glb` if `.gltf` is dropped, cleans up `useGLTF.clear(oldUrl)` + `URL.revokeObjectURL(oldUrl)`, and falls back to `Concept Supercar` on `CarErrorBoundary` error.
+
+## 6. Cinematic Camera Choreography & "GO" Sense of Speed
+- **Responsive Viewport Framing (`CameraRig.jsx`):**
+  - `computeViewportFraming(size)` dynamically adjusts `distScale`, `baseFov` (`50` landscape; smoothly widens up to `63` in portrait), and `lookY` (`0.72` landscape, `0.56` portrait) so the car stays well-framed on desktop (`>= 1024px`), tablet (`640px–1023px`), and mobile (`< 640px`).
+  - Smooth exponential `THREE.MathUtils.damp` interpolation on camera position and FOV every frame.
+  - Honors `prefers-reduced-motion`: skips sweeps/shake/speed lines/rushing scroll and cuts to a clean static 3/4 view while preserving the countdown steps.
+- **3-Phase GSAP + Catmull-Rom Spline Timeline (waits until `sceneReady && carReady`):**
+  - **"3" (1.0s, `power2.inOut`):** Low front-quarter fender sweep (`[-2.5, 0.65, 3.8]` -> `[-0.25, 0.74, 4.05]` -> `[2.2, 0.92, 2.6]`).
+  - **"2" (1.0s, `power2.inOut`):** Elevated grid & gantry flyover (`[2.2, 0.92, 2.6]` -> `[2.7, 2.5, 1.0]` -> `[0.65, 2.32, -1.5]` -> `[-1.8, 1.8, -2.8]`).
+  - **"1" (0.95s, `power3.inOut`):** Rear-bumper chase lock (`[-1.8, 1.8, -2.8]` -> `[-1.05, 1.56, -3.85]` -> `[0, 1.42, -4.4]`).
+  - **"GO" Rapid Acceleration Sequence:**
+    1. **Camera Launch Punch:** Pulls back to `[0, 1.24, -5.1]` (`0.42s`, `expo.out`), punches FOV `+16°` (`50` -> `66` in `0.38s`), adds subtle high-frequency chassis vibration shake (`0.014` X / `0.01` Y), shifts `lookAt` Z forward (`+0.55`), then settles back to `[0, 1.42, -4.4]` and base FOV after `0.85s`.
+    2. **Car Launch Physics:** Both `AutoFitCar` and `ProceduralCar` surge forward along `+Z` (`0` -> `+0.95`), pitch backward into rear suspension squat (`rotation.x = -0.024` / `-0.028`), vibrate from engine torque, spin all 4 wheels rapidly (`spinRate = 38` on GO), and flare headlights/taillights/exhaust glow.
+    3. **Rushing Track & Particles:** Ground UVs (asphalt, gravel, grass) and the entire `trackWorldRef` (grid boxes, checkered line, overhead gantry, barriers, grandstands, trees) accelerate backward up to `46 m/s`, accompanied by 48 instanced peripheral white `WindSpeedStreaks`, 28 instanced `LaunchTireDust` puffs behind the rear tires, and a CSS radial `.speed-lines-overlay` pulse around the viewport edges.
+- **Free Orbit Inspect:** Toggling `Free Orbit Inspect` hands off cleanly to Drei `<OrbitControls enableDamping dampingFactor={0.045} enablePan={false} minDistance={2.2 * distScale} maxDistance={10.5 * distScale} maxPolarAngle={Math.PI / 2 - 0.05} />`. Toggling it off replays the intro.
+
+## 7. Daylight-Legible HUD & Controls
+- **No Top Position Badge:** Do NOT render any `POS` / position indicator at the top of the screen.
+- **Center Countdown:** Large italic Orbitron numerals (`3`, `2`, `1` in crisp white with dark outline/amber glow; `GO!` in lime-to-yellow gradient `#84cc16` -> `#facc15`) with pop-scale CSS keyframe animation.
+- **Top Status Overlays:** Drei `useProgress` loading bar banner (`Loading Vehicle Assets XX%`) and dismissible error toast (auto-dismisses after 5s).
+- **Bottom Skewed Carbon-Glass Control Dock (`rgba(12, 16, 22, 0.8)` with amber `#f59e0b` accents and `-12deg` skew buttons):**
+  - **Row 1:** `Replay Intro`, `Free Orbit Inspect` (toggle), Vehicle `<select>` (`2021 Lexus LC 500 Convertible`, `Concept Supercar`, `Luxury Sports Sedan`, active custom file name, `Custom .GLB Upload...`), `Load .GLB Car`, `Get Free Cars (.GLB)`, `Sound Off / Sound On` (starts muted).
+  - **Row 2:**
+    - **Paint Swatches:** `Original` reset button (when a `.glb` is active) + 7 circular swatches: **Pearl White** (`#eef2f6`, default), **Obsidian Black** (`#14161c`), **Metallic Red** (`#c8102e`), **Electric Blue** (`#0077ff`), **Acid Lime** (`#84cc16`), **Sunset Orange** (`#f97316`), **Neon Magenta** (`#d946ef`).
+    - **Orientation Fixer (visible for Lexus/custom GLB):** `Rotate 90°`, `Flip front/back`, and helper text `"Car facing the wrong way? Flip it."`
+- **Responsive Mobile & Tablet Layouts:**
+  - Tablet (`640px–1023px`): Compact dock padding and widths.
+  - Mobile (`< 640px`): Collapsible bottom sheet toggled by a `Grid Controls` / `Hide Controls` bar respecting `100dvh` and `env(safe-area-inset-bottom)`.
+- **Free Cars Modal (`FreeCarsModal.jsx`):** Glassmorphism dialog with Escape/Tab focus trapping, 5-step workflow guide, and clickable links to Sketchfab, Khronos glTF Sample Assets, Poly Pizza, BlenderKit, `glb.ee`, and `gltf.report`.
+
+## 8. Procedural Web Audio Engine (`src/utils/audio.js`)
+- Lazy `AudioContext` created on first unmute click (starts muted).
+- `playCountdownBeep(isGo)`: Dual-oscillator `440 Hz` sine/sub tone (`0.18s`) for `3-2-1` and `880 Hz` -> `932 Hz` -> `880 Hz` triangle tone (`0.55s`) on `GO`.
+- `playEngineRev()`: Multi-harmonic V8/V10 rev using 3 oscillators (`sawtooth` fundamental `48 -> 162 -> 108 Hz`, octave `96.5 -> 325 -> 217 Hz`, triangle growl `72 -> 243 -> 162 Hz`) routed through a soft-clip `WaveShaperNode` (`2x` oversample), swept resonant lowpass formant filter (`240 -> 1650 -> 420 Hz`, `Q=3.4`), plus bandpass-filtered white noise intake hiss (`750 -> 2200 Hz`).
+
+[END ORIGINAL PHASE 2 SPECIFICATION]
+
+---
+
+## 11. FINAL NON-NEGOTIABLE INSTRUCTIONS
+
+1. The existing LeeAutoX project takes priority over the proposed standalone application architecture.
+2. Use your discretion to choose the safest technology, integration technique, and file placement.
+3. Do not replace the existing website framework or routing just to satisfy the supplied folder structure.
+4. Implement the experience in stages and verify each stage before proceeding.
+5. Phase 1 must reach exactly 100% before Phase 2 begins.
+6. Phase 2 must display the 3D starting-grid sequence and countdown.
+7. After GO and the vehicle launch, the 3D experience must fade away to reveal the actual existing LeeAutoX homepage.
+8. The experience must run only on a fresh homepage entry, not during internal navigation or subsequent homepage visits in the same session.
+9. Preserve all existing website pages, content, integrations, and functionality.
+10. Use minimal additional resources and avoid unnecessary dependencies.
+11. If any part of the proposed implementation threatens the existing project, choose a safer alternative that preserves the intended visual result.
+
+**The ultimate goal is a premium, cinematic LeeAutoX introduction that feels native to the existing website, performs reliably, and disappears seamlessly to reveal the normal homepage.**

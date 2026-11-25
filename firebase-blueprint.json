@@ -41,6 +41,17 @@
         "createdAt": { "type": "string" }
       },
       "required": ["uid", "email"]
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Global site-wide configuration controlled by authenticated administrators",
+      "type": "object",
+      "properties": {
+        "preloaderEnabled": { "type": "boolean" },
+        "updatedAt": { "type": "string" },
+        "updatedByUid": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["preloaderEnabled", "updatedAt", "updatedByUid"]
     }
   },
   "firestore": {
@@ -55,6 +66,10 @@
     "/admins/{userId}": {
       "schema": { "$ref": "UserProfile" },
       "description": "Designated administrator credentials"
+    },
+    "/settings/{settingId}": {
+      "schema": "SiteSettings",
+      "description": "Authoritative global website configuration such as preloaderEnabled"
     }
   }
 }
