@@ -4,6 +4,7 @@ import { WHY_CHOOSE_LABELS } from '../constants';
 import { useTheme } from '../context/ThemeContext';
 import { CheckCircle2 } from 'lucide-react';
 import TypewriterText from './TypewriterText';
+import LexusLX700hShowcase from './whyChooseShowcase/LexusLX700hShowcase';
 
 export default function WhyChooseUs() {
   const { theme } = useTheme();
@@ -117,31 +118,14 @@ export default function WhyChooseUs() {
           }}
         />
 
-        {/* Car Image with Smooth Scale Reveal - Instant theme swap with zero flash */}
+        {/* 3D Vehicle Showcase Slot - Exact same container dimensions, layered behind text & chips */}
         <motion.div
           initial={shouldReduceMotion ? { opacity: 1 } : { scale: 0.95, opacity: 0 }}
           animate={inView ? { scale: 1, opacity: 1 } : {}}
           transition={{ delay: 0.3, duration: 0.85, ease: 'easeOut' }}
-          className="relative z-10 w-full flex items-center justify-center"
+          className="relative z-0 w-full flex items-center justify-center"
         >
-          <img
-            src="/cars/Silver%20Supercar%20with%20Open%20Scissor%20Doors.png"
-            alt="Silver Supercar with Open Scissor Doors"
-            className={`w-full object-contain drop-shadow-2xl transition-opacity duration-200 ${
-              theme === 'dark' ? 'hidden' : 'block'
-            }`}
-            loading="lazy"
-            decoding="async"
-          />
-          <img
-            src="https://hercules-cdn.com/file_siaP29l0QmGIt1LzZaBx46SG"
-            alt="Silver supercar top view"
-            className={`w-full object-contain drop-shadow-2xl transition-opacity duration-200 ${
-              theme === 'dark' ? 'block' : 'hidden'
-            }`}
-            loading="lazy"
-            decoding="async"
-          />
+          <LexusLX700hShowcase theme={theme} />
         </motion.div>
 
         {/* Floating Chips - Desktop */}
@@ -181,7 +165,7 @@ export default function WhyChooseUs() {
         </div>
 
         {/* Mobile Grid */}
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-3 md:hidden">
+        <div className="relative z-[2] mt-10 grid grid-cols-1 sm:grid-cols-2 gap-3 md:hidden">
           {WHY_CHOOSE_LABELS.map((label, i) => (
             <motion.div
               key={label}

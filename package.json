@@ -14,7 +14,10 @@
   "dependencies": {
     "@cloudimage/360-view": "^4.10.0",
     "@google/genai": "^1.29.0",
+    "@react-three/drei": "^10.0.6",
+    "@react-three/fiber": "^9.1.2",
     "@tailwindcss/vite": "^4.1.14",
+    "@types/three": "^0.175.0",
     "@vitejs/plugin-react": "^5.0.4",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
@@ -25,6 +28,7 @@
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
     "react-router-dom": "^7.18.0",
+    "three": "^0.175.0",
     "vite": "^6.2.3"
   },
   "devDependencies": {
