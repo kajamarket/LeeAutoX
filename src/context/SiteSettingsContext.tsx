@@ -21,7 +21,7 @@ const SETTINGS_REST_URL =
   `/databases/${encodeURIComponent(firebaseConfig.firestoreDatabaseId)}` +
   `/documents/settings/site?key=${encodeURIComponent(firebaseConfig.apiKey)}`;
 
-async function fetchSiteSettingsViaRest(signal: AbortSignal): Promise<{ ok: true; enabled: boolean } | { ok: false }> {
+async function fetchSiteSettingsViaRest(signal?: AbortSignal): Promise<{ ok: true; enabled: boolean } | { ok: false }> {
   try {
     const res = await fetch(SETTINGS_REST_URL, {
       method: 'GET',
@@ -45,6 +45,9 @@ async function fetchSiteSettingsViaRest(signal: AbortSignal): Promise<{ ok: true
     return { ok: false };
   }
 }
+
+let initialRestSettingsPromise: Promise<{ ok: true; enabled: boolean } | { ok: false }> | null =
+  typeof window !== 'undefined' ? fetchSiteSettingsViaRest() : null;
 
 export function SiteSettingsProvider({ children }: { children: React.ReactNode }) {
   const { isAdmin, currentUser } = useAuth();
@@ -89,8 +92,10 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
       resolveFallback();
     }, SETTINGS_TIMEOUT_MS);
 
-    // 1. Fast stateless REST GET (bypasses WebChannel handshake and IndexedDB startup)
-    void fetchSiteSettingsViaRest(abortController.signal).then((result) => {
+    // 1. Fast stateless REST GET (reuse eager boot fetch if available, otherwise fetch fresh)
+    const restPromise = initialRestSettingsPromise ?? fetchSiteSettingsViaRest(abortController.signal);
+    initialRestSettingsPromise = null;
+    void restPromise.then((result) => {
       if (!active || resolvedFromServer) return;
       if (result.ok) {
         resolveServerValue(result.enabled);

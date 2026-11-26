@@ -1,11 +1,10 @@
-import { Suspense, lazy, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import './intro.css';
 import Phase1Preloader from './Phase1Preloader';
+import Phase2VideoReveal from './Phase2VideoReveal';
 import { claimIntroSession, finishIntroSession, isAdminPath, isHomeEntryPath } from './sessionGate';
 import { useSiteSettings } from '../../context/SiteSettingsContext';
-
-const Phase2VideoReveal = lazy(() => import('./Phase2VideoReveal'));
 
 type IntroStage = 'pending' | 'admin_bypass' | 'phase1' | 'phase2' | 'done';
 
@@ -44,13 +43,6 @@ export default function HomepageIntroGate() {
     });
   }, [pathname, settingsLoaded, preloaderEnabled]);
 
-  // Pre-warm Phase 2 video reveal module only when Phase 1 actually starts
-  useEffect(() => {
-    if (stage === 'phase1') {
-      void import('./Phase2VideoReveal');
-    }
-  }, [stage]);
-
   // Dismiss immediately if user navigates off '/' or admin disables preloader while active
   useEffect(() => {
     if (stage === 'phase1' || stage === 'phase2') {
@@ -83,6 +75,12 @@ export default function HomepageIntroGate() {
 
   return (
     <>
+      {(stage === 'phase1' || stage === 'phase2') && (
+        <Phase2VideoReveal
+          active={stage === 'phase2'}
+          onRevealComplete={handleSkipOrFinish}
+        />
+      )}
       {stage === 'phase1' && (
         <Phase1Preloader
           onComplete={() => {
@@ -90,11 +88,6 @@ export default function HomepageIntroGate() {
           }}
           onSkip={handleSkipOrFinish}
         />
-      )}
-      {stage === 'phase2' && (
-        <Suspense fallback={<div className="fixed inset-0 z-[9999] bg-black" aria-hidden="true" />}>
-          <Phase2VideoReveal onRevealComplete={handleSkipOrFinish} />
-        </Suspense>
       )}
     </>
   );

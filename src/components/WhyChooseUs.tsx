@@ -130,7 +130,8 @@ export default function WhyChooseUs() {
             className={`w-full object-contain drop-shadow-2xl transition-opacity duration-200 ${
               theme === 'dark' ? 'hidden' : 'block'
             }`}
-            loading="eager"
+            loading="lazy"
+            decoding="async"
           />
           <img
             src="https://hercules-cdn.com/file_siaP29l0QmGIt1LzZaBx46SG"
@@ -138,7 +139,8 @@ export default function WhyChooseUs() {
             className={`w-full object-contain drop-shadow-2xl transition-opacity duration-200 ${
               theme === 'dark' ? 'block' : 'hidden'
             }`}
-            loading="eager"
+            loading="lazy"
+            decoding="async"
           />
         </motion.div>
 

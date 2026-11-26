@@ -385,6 +385,8 @@ export default function DeliveriesTimeline() {
                               <img 
                                 src={item.image} 
                                 alt={`${activeVehicle.name} - ${item.stage}`}
+                                loading="lazy"
+                                decoding="async"
                                 referrerPolicy="no-referrer"
                                 className="w-full h-44 object-cover object-center grayscale-[15%] hover:grayscale-0 transition-all duration-500 hover:scale-105"
                               />

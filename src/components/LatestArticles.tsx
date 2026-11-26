@@ -43,6 +43,8 @@ export default function LatestArticles() {
                   <img
                     src={leadPost.featuredImage?.url || 'https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&q=80&w=1200'}
                     alt={leadPost.featuredImage?.alt || leadPost.title}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -89,6 +91,8 @@ export default function LatestArticles() {
                   <img
                     src={post.featuredImage?.url || 'https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&q=80&w=1200'}
                     alt={post.featuredImage?.alt || post.title}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
