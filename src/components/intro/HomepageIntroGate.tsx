@@ -1,14 +1,13 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import './intro.css';
-import type { PreloadedIntroAssets } from './Phase1Preloader';
-import { claimIntroSession, finishIntroSession, isHomeEntryPath } from './sessionGate';
+import Phase1Preloader, { type PreloadedIntroAssets } from './Phase1Preloader';
+import { claimIntroSession, finishIntroSession, isAdminPath, isHomeEntryPath } from './sessionGate';
 import { useSiteSettings } from '../../context/SiteSettingsContext';
 
-const Phase1Preloader = lazy(() => import('./Phase1Preloader'));
 const Phase2StartingGrid = lazy(() => import('./Phase2StartingGrid'));
 
-type IntroStage = 'pending' | 'phase1' | 'phase2' | 'done';
+type IntroStage = 'pending' | 'admin_bypass' | 'phase1' | 'phase2' | 'done';
 
 export default function HomepageIntroGate() {
   const { pathname } = useLocation();
@@ -19,8 +18,13 @@ export default function HomepageIntroGate() {
     hdrBuffer: null,
   });
 
-  // Resolve initial stage once authoritative backend site setting is loaded
+  // Resolve stage once authoritative backend site setting is loaded
   useEffect(() => {
+    if (isAdminPath(pathname)) {
+      setStage('admin_bypass');
+      return;
+    }
+
     if (!isHomeEntryPath(pathname)) {
       finishIntroSession();
       setStage('done');
@@ -37,10 +41,19 @@ export default function HomepageIntroGate() {
     }
 
     setStage((currentStage) => {
-      if (currentStage !== 'pending') return currentStage;
+      if (currentStage !== 'pending' && currentStage !== 'admin_bypass') {
+        return currentStage;
+      }
       return claimIntroSession(pathname) ? 'phase1' : 'done';
     });
   }, [pathname, settingsLoaded, preloaderEnabled]);
+
+  // Pre-warm the heavy Phase 2 3D chunk only when Phase 1 actually starts
+  useEffect(() => {
+    if (stage === 'phase1') {
+      void import('./Phase2StartingGrid');
+    }
+  }, [stage]);
 
   // Dismiss immediately if user navigates off '/' or admin disables preloader while active
   useEffect(() => {
@@ -63,7 +76,7 @@ export default function HomepageIntroGate() {
     };
   }, [stage]);
 
-  if (stage === 'pending' || stage === 'done' || preloaderEnabled !== true) {
+  if (stage === 'pending' || stage === 'admin_bypass' || stage === 'done' || preloaderEnabled !== true) {
     return null;
   }
 
@@ -73,7 +86,7 @@ export default function HomepageIntroGate() {
   };
 
   return (
-    <Suspense fallback={null}>
+    <>
       {stage === 'phase1' && (
         <Phase1Preloader
           onComplete={(assets) => {
@@ -84,11 +97,13 @@ export default function HomepageIntroGate() {
         />
       )}
       {stage === 'phase2' && (
-        <Phase2StartingGrid
-          preloadedAssets={preloadedAssets}
-          onRevealComplete={handleSkipOrFinish}
-        />
+        <Suspense fallback={<div className="fixed inset-0 z-[9999] bg-[#cfdbe6]" aria-hidden="true" />}>
+          <Phase2StartingGrid
+            preloadedAssets={preloadedAssets}
+            onRevealComplete={handleSkipOrFinish}
+          />
+        </Suspense>
       )}
-    </Suspense>
+    </>
   );
 }

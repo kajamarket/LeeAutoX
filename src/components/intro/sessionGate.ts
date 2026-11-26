@@ -8,6 +8,12 @@ export function isHomeEntryPath(pathname: string): boolean {
   return pathname === '/' || pathname === '/index.html';
 }
 
+export function isAdminPath(pathname: string): boolean {
+  if (!pathname) return false;
+  const normalized = pathname.toLowerCase();
+  return normalized.startsWith('/bkend') || normalized.startsWith('/admin');
+}
+
 function safeReadSessionFlag(): boolean {
   try {
     if (typeof window !== 'undefined' && window.sessionStorage) {
@@ -30,6 +36,18 @@ export function markIntroSeen(): void {
   }
 }
 
+export function resetIntroSessionForPreview(): void {
+  claimedThisLoad = false;
+  dismissedThisLoad = false;
+  try {
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      window.sessionStorage.removeItem(INTRO_SESSION_KEY);
+    }
+  } catch {
+    // Ignore storage errors
+  }
+}
+
 /**
  * Determines synchronously on initial app mount whether the intro should play.
  * Handles React 19 StrictMode double-mounts safely by retaining `claimedThisLoad`
@@ -47,6 +65,10 @@ export function claimIntroSession(initialPathname: string): boolean {
 
   if (safeReadSessionFlag()) {
     dismissedThisLoad = true;
+    return false;
+  }
+
+  if (isAdminPath(initialPathname)) {
     return false;
   }
 

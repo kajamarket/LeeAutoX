@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useInventory } from '../context/InventoryContext';
 import { useAuth } from '../context/AuthContext';
 import { useSiteSettings } from '../context/SiteSettingsContext';
+import { resetIntroSessionForPreview } from '../components/intro/sessionGate';
 import { VehicleItem, getVehicleUrl } from '../data/inventory';
 import { has360Content } from '../utils/panoee';
 import { 
@@ -118,6 +119,9 @@ export default function AdminBackend() {
     setPreloaderFeedback(null);
     const result = await updatePreloaderEnabled(nextEnabled);
     if (result.ok) {
+      if (nextEnabled) {
+        resetIntroSessionForPreview();
+      }
       const msg = `Homepage Preloader ${nextEnabled ? 'Enabled' : 'Disabled'} globally for all visitors.`;
       setPreloaderFeedback({ type: 'success', text: msg });
       showToast(msg);
