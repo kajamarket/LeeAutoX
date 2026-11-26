@@ -1,11 +1,11 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import './intro.css';
-import Phase1Preloader, { type PreloadedIntroAssets } from './Phase1Preloader';
+import Phase1Preloader from './Phase1Preloader';
 import { claimIntroSession, finishIntroSession, isAdminPath, isHomeEntryPath } from './sessionGate';
 import { useSiteSettings } from '../../context/SiteSettingsContext';
 
-const Phase2StartingGrid = lazy(() => import('./Phase2StartingGrid'));
+const Phase2VideoReveal = lazy(() => import('./Phase2VideoReveal'));
 
 type IntroStage = 'pending' | 'admin_bypass' | 'phase1' | 'phase2' | 'done';
 
@@ -13,10 +13,6 @@ export default function HomepageIntroGate() {
   const { pathname } = useLocation();
   const { preloaderEnabled, settingsLoaded } = useSiteSettings();
   const [stage, setStage] = useState<IntroStage>('pending');
-  const [preloadedAssets, setPreloadedAssets] = useState<PreloadedIntroAssets>({
-    glbBuffer: null,
-    hdrBuffer: null,
-  });
 
   // Resolve stage once authoritative backend site setting is loaded
   useEffect(() => {
@@ -48,10 +44,10 @@ export default function HomepageIntroGate() {
     });
   }, [pathname, settingsLoaded, preloaderEnabled]);
 
-  // Pre-warm the heavy Phase 2 3D chunk only when Phase 1 actually starts
+  // Pre-warm Phase 2 video reveal module only when Phase 1 actually starts
   useEffect(() => {
     if (stage === 'phase1') {
-      void import('./Phase2StartingGrid');
+      void import('./Phase2VideoReveal');
     }
   }, [stage]);
 
@@ -89,19 +85,15 @@ export default function HomepageIntroGate() {
     <>
       {stage === 'phase1' && (
         <Phase1Preloader
-          onComplete={(assets) => {
-            setPreloadedAssets(assets);
+          onComplete={() => {
             setStage('phase2');
           }}
           onSkip={handleSkipOrFinish}
         />
       )}
       {stage === 'phase2' && (
-        <Suspense fallback={<div className="fixed inset-0 z-[9999] bg-[#cfdbe6]" aria-hidden="true" />}>
-          <Phase2StartingGrid
-            preloadedAssets={preloadedAssets}
-            onRevealComplete={handleSkipOrFinish}
-          />
+        <Suspense fallback={<div className="fixed inset-0 z-[9999] bg-black" aria-hidden="true" />}>
+          <Phase2VideoReveal onRevealComplete={handleSkipOrFinish} />
         </Suspense>
       )}
     </>

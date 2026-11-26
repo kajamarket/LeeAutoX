@@ -1,159 +1,66 @@
 import { useEffect, useRef, useState } from 'react';
 
-export interface PreloadedIntroAssets {
-  glbBuffer: ArrayBuffer | null;
-  hdrBuffer: ArrayBuffer | null;
-}
-
 interface Phase1PreloaderProps {
-  onComplete: (assets: PreloadedIntroAssets) => void;
+  onComplete: () => void;
   onSkip: () => void;
-}
-
-const GLB_URL = '/cars/2021_lexus_lc_500_convertible.glb';
-const HDR_URL = '/env/rooitou_park_1k.hdr';
-const FALLBACK_TOTAL_BYTES = 16_600_000; // ~15MB GLB + ~1.6MB HDR
-
-async function fetchWithProgress(
-  url: string,
-  onBytes: (loaded: number, total: number) => void,
-  signal: AbortSignal
-): Promise<ArrayBuffer | null> {
-  try {
-    const res = await fetch(url, { signal, cache: 'force-cache' });
-    if (!res.ok) return null;
-
-    const headerLen = Number(res.headers.get('Content-Length') || 0);
-    if (!res.body) {
-      const buf = await res.arrayBuffer();
-      onBytes(buf.byteLength, headerLen || buf.byteLength);
-      return buf;
-    }
-
-    const reader = res.body.getReader();
-    const chunks: Uint8Array[] = [];
-    let received = 0;
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      if (value) {
-        chunks.push(value);
-        received += value.byteLength;
-        onBytes(received, headerLen || Math.max(received, FALLBACK_TOTAL_BYTES * 0.5));
-      }
-    }
-
-    const combined = new Uint8Array(received);
-    let offset = 0;
-    for (const chunk of chunks) {
-      combined.set(chunk, offset);
-      offset += chunk.byteLength;
-    }
-    onBytes(received, received);
-    return combined.buffer;
-  } catch {
-    return null;
-  }
 }
 
 export default function Phase1Preloader({ onComplete, onSkip }: Phase1PreloaderProps) {
   const [percent, setPercent] = useState(1);
   const completedRef = useRef(false);
-  const assetsRef = useRef<PreloadedIntroAssets>({ glbBuffer: null, hdrBuffer: null });
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   useEffect(() => {
-    const controller = new AbortController();
+    let active = true;
     let rafId = 0;
     let timerId = 0;
-    let realTarget = 0.05; // 5% base initialization
     let displayed = 1;
-    let downloadsDone = false;
+    let readyDone = false;
     const startTime = performance.now();
     const MIN_PACING_MS = 1350;
-    const MAX_WAIT_MS = 6500;
-
-    let glbLoaded = 0;
-    let glbTotal = 15_000_000;
-    let hdrLoaded = 0;
-    let hdrTotal = 1_600_000;
-    let fontsReady = false;
-
-    const recomputeTarget = () => {
-      const byteRatio = Math.min(1, (glbLoaded + hdrLoaded) / Math.max(1, glbTotal + hdrTotal));
-      const fontBonus = fontsReady ? 0.08 : 0.02;
-      const computed = Math.min(0.99, byteRatio * 0.92 + fontBonus);
-      realTarget = Math.max(realTarget, computed);
-    };
+    const MAX_WAIT_MS = 3500;
 
     const waitFonts =
       typeof document !== 'undefined' && document.fonts?.ready
-        ? document.fonts.ready.then(() => {
-            fontsReady = true;
-            recomputeTarget();
-          })
-        : Promise.resolve().then(() => {
-            fontsReady = true;
-          });
+        ? document.fonts.ready.catch(() => undefined)
+        : Promise.resolve();
 
-    const loadAll = Promise.all([
-      waitFonts,
-      fetchWithProgress(
-        GLB_URL,
-        (loaded, total) => {
-          glbLoaded = loaded;
-          if (total > 0) glbTotal = total;
-          recomputeTarget();
-        },
-        controller.signal
-      ).then((buf) => {
-        assetsRef.current.glbBuffer = buf;
-      }),
-      fetchWithProgress(
-        HDR_URL,
-        (loaded, total) => {
-          hdrLoaded = loaded;
-          if (total > 0) hdrTotal = total;
-          recomputeTarget();
-        },
-        controller.signal
-      ).then((buf) => {
-        assetsRef.current.hdrBuffer = buf;
-      }),
-    ]).finally(() => {
-      downloadsDone = true;
-      realTarget = 1;
+    void waitFonts.finally(() => {
+      if (active) {
+        readyDone = true;
+      }
     });
 
-    // Safety ceiling so slow networks never stall on Phase 1 indefinitely
+    // Safety ceiling so slow font loading never stalls Phase 1
     const maxTimeout = window.setTimeout(() => {
-      downloadsDone = true;
-      realTarget = 1;
+      readyDone = true;
     }, MAX_WAIT_MS);
 
     const tick = (now: number) => {
+      if (!active) return;
       const elapsed = now - startTime;
       const minCeiling = Math.min(1, elapsed / MIN_PACING_MS);
 
-      // Smoothly advance toward the real asset progress, capped by minCeiling until assets finish
-      const targetFloat = downloadsDone
+      const targetFloat = readyDone
         ? Math.min(1, Math.max(displayed / 100, minCeiling))
-        : Math.min(0.96, realTarget * minCeiling);
+        : Math.min(0.92, minCeiling * 0.92);
 
       const targetPct = Math.max(1, Math.min(100, Math.round(targetFloat * 100)));
       if (targetPct > displayed) {
-        // Step smoothly without ever overshooting 100
-        const step = downloadsDone ? Math.max(1, Math.ceil((targetPct - displayed) * 0.24)) : 1;
+        const step = readyDone ? Math.max(1, Math.ceil((targetPct - displayed) * 0.24)) : 1;
         displayed = Math.min(100, displayed + step);
         setPercent(displayed);
       }
 
-      if (displayed >= 100 && downloadsDone && elapsed >= MIN_PACING_MS) {
+      if (displayed >= 100 && readyDone && elapsed >= MIN_PACING_MS) {
         if (!completedRef.current) {
           completedRef.current = true;
           setPercent(100);
           timerId = window.setTimeout(() => {
-            onComplete(assetsRef.current);
+            if (active) {
+              onCompleteRef.current();
+            }
           }, 220);
         }
         return;
@@ -162,16 +69,15 @@ export default function Phase1Preloader({ onComplete, onSkip }: Phase1PreloaderP
       rafId = requestAnimationFrame(tick);
     };
 
-    void loadAll;
     rafId = requestAnimationFrame(tick);
 
     return () => {
-      controller.abort();
+      active = false;
       cancelAnimationFrame(rafId);
       window.clearTimeout(timerId);
       window.clearTimeout(maxTimeout);
     };
-  }, [onComplete]);
+  }, []);
 
   const safePercent = Math.max(1, Math.min(100, Math.round(percent)));
 
