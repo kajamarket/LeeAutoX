@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import AnimatedText from './ui/AnimatedText';
 import Reveal from './ui/Reveal';
+import GraffitiLayer from './ui/GraffitiLayer';
 import { prefersReducedMotion } from '../motion/scrollEngine';
 
 interface TimelineStage {
@@ -115,18 +116,15 @@ export default function DeliveriesTimeline() {
     <section
       id="deliveries"
       ref={sectionRef}
-      className="lx-band-surface relative px-4 sm:px-6 md:px-12 py-16 overflow-x-clip border-t border-b border-[var(--line)] transition-colors duration-500"
+      className="lx-band-surface relative overflow-hidden px-4 sm:px-6 md:px-12 py-16 border-t border-b border-[var(--line)] transition-colors duration-500"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <div className="lx-bg-lanes absolute inset-0 opacity-85" />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'radial-gradient(ellipse 65% 45% at 50% 10%, var(--accent-soft) 0%, transparent 70%)',
-          }}
-        />
-      </div>
+      <GraffitiLayer
+        variant="timeline"
+        surface="adaptive"
+        words={['PORT CLEAR', 'TRANSIT', 'ROAD READY']}
+        topic="LOGISTICS"
+        statusCode="CLEARED"
+      />
       <div className="relative z-10 max-w-6xl mx-auto">
         <Reveal variant="rise">
           <div className="text-center mb-14">

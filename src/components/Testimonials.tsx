@@ -13,7 +13,8 @@ import { useReviews, ReviewItem } from '../context/ReviewsContext';
 import LeaveReviewModal from './LeaveReviewModal';
 import AnimatedText from './ui/AnimatedText';
 import Reveal from './ui/Reveal';
-import { RippleButton, BreathOrb } from './ui/ImportedControls';
+import GraffitiLayer from './ui/GraffitiLayer';
+import { RippleButton } from './ui/ImportedControls';
 import { observeOffscreenLoop, prefersReducedMotion } from '../motion/scrollEngine';
 
 function truncateAtWord(text: string, maxChars: number): string {
@@ -260,12 +261,13 @@ export default function Testimonials() {
   return (
     <section
       id="testimonials"
-      className="lx-band-white relative border-t border-[var(--line)] transition-colors duration-500 pt-6 pb-16 overflow-x-clip"
+      className="lx-band-white relative overflow-hidden border-t border-[var(--line)] transition-colors duration-500 pt-6 pb-16"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <div className="lx-bg-dots absolute inset-0 opacity-45" />
-        <BreathOrb className="w-[38vw] h-[28vw] -top-10 left-[8%] opacity-50" />
-      </div>
+      <GraffitiLayer
+        variant="testimonials"
+        surface="adaptive"
+        words={['TRUSTED', 'CLIENTS', 'DELIVERED']}
+      />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
         <Reveal variant="rise">

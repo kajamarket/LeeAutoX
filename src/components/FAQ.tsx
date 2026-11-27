@@ -4,23 +4,19 @@ import { FAQ_ITEMS } from '../constants';
 import { FAQItem } from '../types';
 import AnimatedText from './ui/AnimatedText';
 import Reveal from './ui/Reveal';
+import GraffitiLayer from './ui/GraffitiLayer';
 
 export default function FAQ() {
   return (
     <section
       id="faq"
-      className="lx-band-surface relative border-t border-[var(--line)] transition-colors duration-500 px-4 sm:px-6 md:px-12 py-16 overflow-x-clip"
+      className="lx-band-surface relative overflow-hidden border-t border-[var(--line)] transition-colors duration-500 px-4 sm:px-6 md:px-12 py-16"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <div className="lx-bg-dots absolute inset-0 opacity-60" />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'radial-gradient(ellipse 60% 45% at 50% 10%, var(--accent-soft) 0%, transparent 70%)',
-          }}
-        />
-      </div>
+      <GraffitiLayer
+        variant="faq"
+        surface="adaptive"
+        words={['ANSWERS', 'CLARITY', 'GUIDANCE']}
+      />
       <div className="relative z-10 max-w-3xl mx-auto">
         <Reveal variant="rise">
           <div className="text-center mb-12">

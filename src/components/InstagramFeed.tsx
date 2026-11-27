@@ -3,6 +3,7 @@ import { Instagram } from 'lucide-react';
 import { CONTACT_INFO } from '../constants';
 import AnimatedText from './ui/AnimatedText';
 import Reveal from './ui/Reveal';
+import GraffitiLayer from './ui/GraffitiLayer';
 
 export default function InstagramFeed() {
   useEffect(() => {
@@ -19,10 +20,8 @@ export default function InstagramFeed() {
   }, []);
 
   return (
-    <section className="lx-band-surface px-4 sm:px-6 md:px-12 py-16 border-t border-[var(--line)] relative overflow-x-clip transition-colors duration-500">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <div className="lx-bg-dots absolute inset-0 opacity-50" />
-      </div>
+    <section className="lx-band-surface relative overflow-hidden px-4 sm:px-6 md:px-12 py-16 border-t border-[var(--line)] transition-colors duration-500">
+      <GraffitiLayer variant="social" surface="adaptive" words={['ARRIVALS']} />
       <div className="max-w-7xl mx-auto relative z-10">
         <Reveal variant="rise">
           <div className="text-center mb-12">

@@ -5,6 +5,7 @@ import { useTheme } from '../context/ThemeContext';
 import { CheckCircle2 } from 'lucide-react';
 import LexusLX700hShowcase from './whyChooseShowcase/LexusLX700hShowcase';
 import AnimatedText from './ui/AnimatedText';
+import GraffitiLayer from './ui/GraffitiLayer';
 
 export default function WhyChooseUs() {
   const { theme } = useTheme();
@@ -15,20 +16,13 @@ export default function WhyChooseUs() {
   return (
     <section
       id="why-us"
-      className="lx-band-white relative border-t border-[var(--line)] transition-colors duration-500 px-4 sm:px-6 md:px-12 py-16 overflow-x-clip"
+      className="lx-band-white relative overflow-hidden border-t border-[var(--line)] transition-colors duration-500 px-4 sm:px-6 md:px-12 py-16"
     >
-      {/* Visible architectural watermark & dot backdrop */}
-      <div aria-hidden="true" className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden">
-        <div className="lx-bg-dots absolute inset-0 opacity-45" />
-        <div className="opacity-[0.065] text-[var(--ink)]">
-          <div className="absolute -top-10 -left-20 text-[18vw] font-black leading-none tracking-tighter rotate-[-15deg] whitespace-nowrap">
-            LOGISTICS
-          </div>
-          <div className="absolute top-1/2 -right-40 text-[16vw] font-serif font-bold leading-none rotate-[12deg] whitespace-nowrap">
-            PREMIUM
-          </div>
-        </div>
-      </div>
+      <GraffitiLayer
+        variant="whyChooseUs"
+        surface="adaptive"
+        words={['VERIFIED', 'DIRECT', 'LOGISTICS']}
+      />
 
       <div ref={ref} className="relative z-10 max-w-4xl mx-auto text-center mb-12">
         <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase text-[var(--accent)] tracking-[0.2em] mb-4">
@@ -52,7 +46,7 @@ export default function WhyChooseUs() {
         </div>
       </div>
 
-      <div className="relative mx-auto max-w-2xl select-none">
+      <div className="relative z-10 mx-auto max-w-2xl select-none">
         {/* Soft transparent radial backdrop */}
         <div
           className="absolute inset-0 z-0 transition-opacity duration-500 pointer-events-none"

@@ -1,15 +1,20 @@
 import { Link } from 'react-router-dom';
 import Reveal from './ui/Reveal';
+import GraffitiLayer from './ui/GraffitiLayer';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="lx-band-dark relative border-t border-[var(--line)] px-6 md:px-12 py-16 md:py-20 overflow-hidden transition-colors duration-500">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <div className="lx-bg-grid absolute inset-0 opacity-55" />
-      </div>
-      <div className="relative z-[1] max-w-7xl mx-auto">
+    <footer className="lx-band-dark relative overflow-hidden border-t border-[var(--line)] px-6 md:px-12 py-16 md:py-20 transition-colors duration-500">
+      <GraffitiLayer
+        variant="footer"
+        surface="dark"
+        brand="LEEAUTOX"
+        words={['LEEAUTOX', 'VEHICLES']}
+        year="2024"
+      />
+      <div className="relative z-10 max-w-7xl mx-auto">
         <Reveal variant="rise">
           <div className="flex flex-col md:flex-row justify-between gap-12 mb-14">
             {/* Brand Column */}

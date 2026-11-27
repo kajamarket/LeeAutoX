@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import GraffitiLayer from '../ui/GraffitiLayer';
 
 interface Phase1PreloaderProps {
   onComplete: () => void;
@@ -88,33 +89,14 @@ export default function Phase1Preloader({ onComplete, onSkip }: Phase1PreloaderP
       aria-live="polite"
       aria-label={`Loading LeeAutoX ${safePercent} percent`}
     >
-      {/* Reproduced Footer Visual Background Identity (excluding links, nav, and contact details) */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden opacity-[0.03]"
-      >
-        <div className="absolute top-0 left-0 text-[15vw] font-black leading-none tracking-tighter rotate-[-5deg] whitespace-nowrap">
-          LEEAUTOX
-        </div>
-        <div className="absolute bottom-10 right-0 text-[12vw] font-serif font-bold leading-none rotate-[8deg] whitespace-nowrap">
-          VEHICLES
-        </div>
-
-        {/* Random Pattern Accents */}
-        <div className="absolute top-[20%] left-[20%] flex gap-1">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="w-10 h-[1px] bg-background" />
-          ))}
-        </div>
-        <div className="absolute bottom-[30%] left-[10%] grid grid-cols-2 gap-2 opacity-30">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="w-2 h-2 border border-background" />
-          ))}
-        </div>
-        <div className="absolute top-[40%] right-[15%] text-[5vw] font-mono leading-none rotate-[45deg]">
-          EST.2024
-        </div>
-      </div>
+      {/* Reproduced Footer Visual Background Identity via shared GraffitiLayer */}
+      <GraffitiLayer
+        variant="footer"
+        surface="inverted"
+        brand="LEEAUTOX"
+        words={['LEEAUTOX', 'VEHICLES']}
+        year="2024"
+      />
 
       {/* Subtle atmospheric radial sheen */}
       <div

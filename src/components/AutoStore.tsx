@@ -4,6 +4,7 @@ import { STORE_PRODUCTS } from '../constants';
 import { getProducts } from '../services/wordpress';
 import AnimatedText from './ui/AnimatedText';
 import Reveal from './ui/Reveal';
+import GraffitiLayer from './ui/GraffitiLayer';
 import { OriginalLoader } from './ui/ImportedControls';
 
 export default function AutoStore() {
@@ -31,27 +32,13 @@ export default function AutoStore() {
   return (
     <section
       id="store"
-      className="lx-band-dark relative border-t border-[var(--line)] transition-colors duration-500 px-4 sm:px-6 md:px-12 py-16 overflow-x-clip"
+      className="lx-band-dark relative overflow-hidden border-t border-[var(--line)] transition-colors duration-500 px-4 sm:px-6 md:px-12 py-16"
     >
-      {/* Visible architectural watermark & radial spotlight layer */}
-      <div aria-hidden="true" className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden">
-        <div className="lx-bg-grid absolute inset-0 opacity-50" />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'radial-gradient(ellipse 65% 55% at 80% 25%, var(--accent-soft) 0%, transparent 72%)',
-          }}
-        />
-        <div className="opacity-[0.075] text-[var(--ink)]">
-          <div className="absolute top-1/4 -right-20 text-[18vw] font-black leading-none tracking-tighter rotate-[14deg] whitespace-nowrap">
-            GENUINE
-          </div>
-          <div className="absolute -bottom-10 -left-20 text-[16vw] font-serif font-bold leading-none rotate-[-10deg] whitespace-nowrap">
-            QUALITY
-          </div>
-        </div>
-      </div>
+      <GraffitiLayer
+        variant="store"
+        surface="dark"
+        words={['GENUINE', 'OEM PARTS']}
+      />
 
       <div className="max-w-7xl mx-auto relative z-10">
         <Reveal variant="rise">

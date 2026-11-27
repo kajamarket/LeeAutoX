@@ -5,6 +5,7 @@ import HeroSearchWidget from './HeroSearchWidget';
 import VeyraHeroCar from './VeyraCar/VeyraHeroCar';
 import AnimatedText from './ui/AnimatedText';
 import Reveal from './ui/Reveal';
+import GraffitiLayer from './ui/GraffitiLayer';
 import { BreathOrb } from './ui/ImportedControls';
 import { prefersReducedMotion, registerScrollTrack } from '../motion/scrollEngine';
 
@@ -69,12 +70,13 @@ export default function Hero() {
 
   return (
     <section className="lx-band-dark relative overflow-x-clip transition-colors duration-500">
-      {/* Studio Backdrop + Explicit Grid & Radial Spotlight */}
+      <GraffitiLayer variant="heroShowcase" surface="dark" words={['AUCTIONS', 'EXPORTS']} />
+
+      {/* Studio Backdrop & Radial Spotlight */}
       <div
         data-ready={readyAttr}
         className="lx-hero-bg pointer-events-none absolute inset-0 z-0 overflow-hidden"
       >
-        <div className="lx-bg-grid absolute inset-0 opacity-70" />
         <div
           className="absolute inset-0"
           style={{
@@ -91,7 +93,7 @@ export default function Hero() {
         ref={trackRef}
         data-hero-scroll
         data-scroll-active="false"
-        className="lx-scroll-track relative z-[1] min-h-[160svh] md:min-h-[205svh]"
+        className="lx-scroll-track relative z-10 min-h-[160svh] md:min-h-[205svh]"
       >
         <div className="sticky top-0 min-h-[100svh] flex items-center pt-20 sm:pt-24 md:pt-[108px] pb-8 md:pb-12 px-5 sm:px-8 md:px-12">
           <div className="max-w-7xl mx-auto w-full">
