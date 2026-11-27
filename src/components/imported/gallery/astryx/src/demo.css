@@ -1,0 +1,108 @@
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: var(--color-text-primary);
+  background: var(--color-background-surface);
+}
+
+[data-embedded] body { background: transparent; }
+
+.stage {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.stage output { font-size: 12px; }
+.stage output:empty { display: none; }
+.stage:has([data-preview-snapshot]) { position: relative; height: 100dvh; padding: 0; }
+.card-panel {
+  box-sizing: border-box;
+  background: var(--color-background-surface);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-default, color-mix(in srgb, currentColor 20%, transparent));
+  box-shadow: 0 10px 24px rgb(0 0 0 / .16);
+}
+.card-panel h2 { margin: 0; font-size: 18px; line-height: 1.35; }
+.card-panel p { margin: 10px 0 0; font-size: 14px; line-height: 1.45; }
+.card-palette { width: min(360px, calc(100% - 28px)); border-radius: 12px; overflow: clip; }
+.card-palette-search { padding: 13px 16px; border-bottom: 1px solid color-mix(in srgb, currentColor 17%, transparent); }
+.card-palette ul { list-style: none; margin: 0; padding: 6px; font-size: 14px; }
+.card-palette li { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; min-height: 34px; }
+.card-palette li[data-selected] { border-radius: 6px; background: color-mix(in srgb, currentColor 12%, transparent); }
+.card-sheet {
+  position: absolute;
+  inset: auto 12px 0;
+  min-height: 62%;
+  padding: 22px;
+  border-radius: 16px 16px 0 0;
+}
+.card-sheet::before {
+  display: block;
+  content: '';
+  width: 30px;
+  height: 3px;
+  margin: -10px auto 15px;
+  border-radius: 3px;
+  background: currentColor;
+  opacity: .24;
+}
+.card-panel-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+.card-drawer {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: min(355px, 74%);
+  padding: 22px;
+}
+.card-drawer header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid color-mix(in srgb, currentColor 17%, transparent); }
+.card-drawer header span { font-size: 20px; }
+.card-drawer-details { margin: 8px 0 14px; font-size: 13px; }
+.card-drawer-details div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 10px; padding-block: 10px; border-bottom: 1px solid color-mix(in srgb, currentColor 12%, transparent); }
+.card-drawer-details dd { margin: 0; }
+.date-range { width: min(100%, 245px); }
+[data-embedded] .stage[data-sample="date-range"] {
+  justify-content: flex-start;
+  padding-top: 24px;
+}
+.sheet-content { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.showcase { display: grid; justify-items: center; width: min(100%, 600px); }
+.stage:is([data-sample="lab-navigation-stack"], [data-sample="lab-transfer-list"]) .showcase > * { width: 100%; }
+
+[data-fit-preview] .stage {
+  position: relative;
+  height: 100dvh;
+  overflow: clip;
+}
+[data-fit-preview] .showcase {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 400px;
+  transform-origin: top left;
+  transform: translate(var(--preview-x, 0px), var(--preview-y, 0px)) scale(var(--preview-scale, 1));
+  /* Apply the fit in the same frame, including under reduced motion. */
+  transition-property: none;
+}
+[data-fit-preview] .showcase:not([data-preview-fit="ready"]) { visibility: hidden; }
+/* 只缩放表格的滚动视口，横向滚动仍能访问虚拟化的列。 */
+[data-fit-preview] [data-sample="variant-table-columns-virtualization-hook-usage"] .showcase > * {
+  width: 100%;
+  min-width: 0;
+  max-height: 220px;
+}
+
+[data-gallery-active="false"] :where(*, *::before, *::after) {
+  animation-duration: 0.01ms !important;
+  transition-duration: 0.01ms !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(*, *::before, *::after) {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
