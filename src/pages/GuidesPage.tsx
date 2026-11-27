@@ -3,12 +3,13 @@ import { useLocation, Link } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
 import ImportDutyCalculator from '../components/ImportDutyCalculator';
 import { SEO_DATA } from '../seoData';
-import { useTheme } from '../context/ThemeContext';
-import { BookOpen, Calendar, User, Clock, ArrowLeft, MessageSquare, ChevronRight } from 'lucide-react';
-import { CONTACT_INFO } from '../constants';
+import { Calendar, User, Clock, ArrowLeft, ChevronRight } from 'lucide-react';
 import WhatsAppCTA from '../components/WhatsAppCTA';
 import Contact from '../components/Contact';
 import { cleanPathname } from '../utils/path';
+import Reveal from '../components/ui/Reveal';
+import AnimatedText from '../components/ui/AnimatedText';
+import { RippleLink } from '../components/ui/ImportedControls';
 
 // Detailed Guide Content Map to serve real content
 const GUIDES_CONTENT: Record<string, {
@@ -417,7 +418,6 @@ const GUIDES_CONTENT: Record<string, {
 };
 
 export default function GuidesPage() {
-  const { theme } = useTheme();
   const { pathname } = useLocation();
 
   // Render text containing markdown links [text](url) and bold **text**
@@ -427,7 +427,7 @@ export default function GuidesPage() {
       let subLastIndex = 0;
       let subMatch;
       const subBoldRegex = /\*\*([^*]+)\*\*/g;
-      
+
       while ((subMatch = subBoldRegex.exec(subStr)) !== null) {
         const subMatchIndex = subMatch.index;
         if (subMatchIndex > subLastIndex) {
@@ -435,7 +435,7 @@ export default function GuidesPage() {
         }
         const boldText = subMatch[1];
         subParts.push(
-          <strong key={`${keyPrefix}-b-${subMatchIndex}`} className="font-extrabold text-[#2B59FF]">
+          <strong key={`${keyPrefix}-b-${subMatchIndex}`} className="font-bold text-[var(--accent)]">
             {boldText}
           </strong>
         );
@@ -459,17 +459,17 @@ export default function GuidesPage() {
       }
       const linkText = match[1];
       const linkUrl = match[2];
-      
+
       const key = `l-${matchIndex}`;
       if (linkUrl.startsWith('/') && !linkUrl.startsWith('//')) {
         parts.push(
-          <Link key={key} to={linkUrl} className="text-[#2B59FF] font-semibold underline hover:text-[#1a41cc] transition-colors">
+          <Link key={key} to={linkUrl} className="text-[var(--accent)] font-semibold underline hover:opacity-80 transition-opacity">
             {linkText}
           </Link>
         );
       } else {
         parts.push(
-          <a key={key} href={linkUrl} target="_blank" rel="noopener noreferrer" className="text-[#2B59FF] font-semibold underline hover:text-[#1a41cc] transition-colors">
+          <a key={key} href={linkUrl} target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] font-semibold underline hover:opacity-80 transition-opacity">
             {linkText}
           </a>
         );
@@ -491,65 +491,50 @@ export default function GuidesPage() {
   const isMainHub = cleanPath === '/guides/';
   const guideData = GUIDES_CONTENT[cleanPath];
 
-  // WhatsApp custom coordination link
-  const whatsappMsg = encodeURIComponent(
-    `Hello LeeAutoX! I am reviewing your technical guide on "${guideData?.title || 'Vehicle Importing'}" and would like to ask some questions.`
-  );
-  const whatsappUrl = `https://wa.me/${CONTACT_INFO.whatsappRaw}?text=${whatsappMsg}`;
-
   // If viewing the main Hub list
   if (isMainHub) {
     const mainData = SEO_DATA['/guides/'];
     return (
-      <div className="min-h-screen bg-background text-foreground">
-        <PageHeader 
-          title={mainData.heading} 
-          subtitle={mainData.description} 
-          breadcrumbs={mainData.breadcrumbs} 
+      <div className="min-h-screen bg-[var(--bg)] text-[var(--ink)]">
+        <PageHeader
+          title={mainData.heading}
+          subtitle={mainData.description}
+          breadcrumbs={mainData.breadcrumbs}
         />
 
         {/* Guides List Grid */}
-        <section className={`py-16 px-6 md:px-12 ${
-          theme === 'dark' ? 'bg-zinc-950' : 'bg-white'
-        }`}>
+        <section className="py-16 md:py-20 px-6 md:px-12 bg-[var(--bg)] text-[var(--ink)]">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {Object.entries(GUIDES_CONTENT).map(([route, content]) => (
-                <div 
-                  key={route}
-                  className={`p-6 border flex flex-col justify-between transition-all duration-300 hover:border-[#2B59FF]/50 hover:shadow-2xl ${
-                    theme === 'dark' ? 'bg-zinc-900 border-zinc-800' : 'bg-slate-50 border-slate-200'
-                  }`}
-                >
-                  <div>
-                    <span className="text-[10px] font-bold tracking-widest text-[#2B59FF] uppercase font-mono block mb-3">
-                      {content.category}
-                    </span>
-                    <h3 className={`font-extrabold text-lg uppercase tracking-tight mb-3 line-clamp-2 ${
-                      theme === 'dark' ? 'text-white' : 'text-slate-950'
-                    }`}>
-                      {content.title}
-                    </h3>
-                    <p className={`text-xs mb-6 line-clamp-3 leading-relaxed ${
-                      theme === 'dark' ? 'text-zinc-400' : 'text-slate-600'
-                    }`}>
-                      {content.summary}
-                    </p>
-                  </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Object.entries(GUIDES_CONTENT).map(([route, content], idx) => (
+                <Reveal key={route} variant="isometric" delay={(idx % 6) * 60}>
+                  <div className="lx-card h-full p-7 border border-[var(--line)] bg-[var(--card)] flex flex-col justify-between transition-colors duration-300 hover:border-[var(--accent)]/50">
+                    <div>
+                      <span className="text-[11px] font-semibold tracking-[0.14em] text-[var(--accent)] uppercase font-mono block mb-3">
+                        {content.category}
+                      </span>
+                      <h3 className="font-serif text-xl font-normal tracking-tight mb-3 line-clamp-2 text-[var(--ink)]">
+                        {content.title}
+                      </h3>
+                      <p className="text-xs sm:text-sm mb-6 line-clamp-3 leading-relaxed text-[var(--ink-2)]">
+                        {content.summary}
+                      </p>
+                    </div>
 
-                  <div className="flex items-center justify-between border-t border-zinc-800/10 pt-4">
-                    <span className="text-[10px] font-mono text-zinc-500">
-                      {content.readTime}
-                    </span>
-                    <Link 
-                      to={route}
-                      className="text-xs font-extrabold text-[#2B59FF] uppercase tracking-wider flex items-center gap-1 hover:underline"
-                    >
-                      Read Guide
-                      <ChevronRight size={14} />
-                    </Link>
+                    <div className="flex items-center justify-between border-t border-[var(--line)] pt-4">
+                      <span className="text-[11px] font-mono text-[var(--ink-2)]">
+                        {content.readTime}
+                      </span>
+                      <Link
+                        to={route}
+                        className="text-xs font-semibold text-[var(--accent)] uppercase tracking-wider flex items-center gap-1 hover:underline"
+                      >
+                        Read Guide
+                        <ChevronRight size={14} />
+                      </Link>
+                    </div>
                   </div>
-                </div>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -560,13 +545,12 @@ export default function GuidesPage() {
 
   // If viewing a specific Guide details
   if (!guideData) {
-    // 404 guide fallback
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center bg-background">
-        <h2 className="text-3xl font-black uppercase mb-4">Guide Not Found</h2>
-        <Link to="/guides/" className="px-6 py-3 bg-[#2B59FF] text-white font-bold uppercase text-xs tracking-wider">
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center bg-[var(--bg)] text-[var(--ink)]">
+        <h2 className="font-serif text-3xl font-normal mb-4">Guide Not Found</h2>
+        <RippleLink to="/guides/" variant="secondary">
           Return to Guides Hub
-        </Link>
+        </RippleLink>
       </div>
     );
   }
@@ -574,65 +558,71 @@ export default function GuidesPage() {
   const seoData = SEO_DATA[cleanPath] || SEO_DATA['/guides/'];
 
   return (
-    <div className="min-h-screen bg-background">
-      <PageHeader 
-        title={guideData.title} 
-        subtitle={`Written by ${guideData.author} | ${guideData.date}`} 
-        breadcrumbs={seoData.breadcrumbs} 
+    <div className="min-h-screen bg-[var(--bg)] text-[var(--ink)]">
+      <PageHeader
+        title={guideData.title}
+        subtitle={`Written by ${guideData.author} | ${guideData.date}`}
+        breadcrumbs={seoData.breadcrumbs}
       />
 
-      <section className={`py-16 px-6 md:px-12 ${
-        theme === 'dark' ? 'bg-zinc-950 text-white' : 'bg-white text-slate-900'
-      }`}>
+      <section className="py-16 px-6 md:px-12 bg-[var(--bg)] text-[var(--ink)]">
         <div className="max-w-4xl mx-auto">
           {/* Back Button */}
-          <Link 
-            to="/guides/" 
-            className="inline-flex items-center gap-2 mb-8 text-xs font-bold uppercase tracking-wider text-[#2B59FF] hover:underline"
+          <Link
+            to="/guides/"
+            className="inline-flex items-center gap-2 mb-8 text-xs font-mono font-semibold uppercase tracking-wider text-[var(--accent)] hover:underline"
           >
             <ArrowLeft size={14} />
             Back to Guides Hub
           </Link>
 
           {/* Guide Meta Details */}
-          <div className="flex flex-wrap items-center gap-6 mb-10 text-xs font-mono text-zinc-500 border-b pb-6 border-zinc-800/10">
+          <div className="flex flex-wrap items-center gap-5 mb-10 text-xs font-mono text-[var(--ink-2)] border-b border-[var(--line)] pb-6">
             <div className="flex items-center gap-1.5">
-              <User size={14} className="text-[#2B59FF]" />
+              <User size={14} className="text-[var(--accent)]" />
               <span>{guideData.author}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Calendar size={14} className="text-[#2B59FF]" />
+              <Calendar size={14} className="text-[var(--accent)]" />
               <span>{guideData.date}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Clock size={14} className="text-[#2B59FF]" />
+              <Clock size={14} className="text-[var(--accent)]" />
               <span>{guideData.readTime}</span>
             </div>
-            <span className="bg-[#2B59FF]/10 text-[#2B59FF] px-2 py-1 uppercase text-[9px] font-bold font-mono">
+            <span className="bg-[var(--accent-soft)] text-[var(--accent)] px-3 py-1 rounded-full uppercase text-[10px] font-bold font-mono">
               {guideData.category}
             </span>
           </div>
 
           {/* Guide Article Body */}
-          <div className="prose prose-invert max-w-none space-y-6 text-sm md:text-base leading-relaxed font-sans">
+          <div className="space-y-6 text-sm md:text-base leading-relaxed font-sans text-[var(--ink-2)] lx-prose">
             {guideData.paragraphs.map((p, index) => {
               if (p.startsWith('### Quick answer box')) {
                 return (
-                  <div key={index} className={`p-6 border-l-4 border-[#2B59FF] my-6 rounded-r ${theme === 'dark' ? 'bg-zinc-900/90 text-zinc-200' : 'bg-blue-50/70 text-slate-800'}`}>
-                    <span className="text-[10px] font-mono uppercase font-bold tracking-widest text-[#2B59FF] block mb-2">QUICK ANSWER</span>
-                    <p className="text-sm md:text-base leading-relaxed">{renderParagraphText(p.replace('### Quick answer box\n', ''))}</p>
-                  </div>
+                  <Reveal key={index} variant="rise">
+                    <div className="lx-card p-6 sm:p-7 border border-[var(--accent)]/30 bg-[var(--accent-soft)]/50 my-6 text-[var(--ink)]">
+                      <span className="text-[11px] font-mono uppercase font-bold tracking-[0.14em] text-[var(--accent)] block mb-2">
+                        QUICK ANSWER
+                      </span>
+                      <p className="text-sm md:text-base leading-relaxed text-[var(--ink)]">
+                        {renderParagraphText(p.replace('### Quick answer box\n', ''))}
+                      </p>
+                    </div>
+                  </Reveal>
                 );
               }
               if (p.startsWith('> **Key takeaways:**')) {
                 const items = p.replace('> **Key takeaways:**\n', '').split('\n').filter(Boolean);
                 return (
-                  <aside key={index} aria-label="summary" className={`p-6 border my-6 rounded ${theme === 'dark' ? 'bg-zinc-900 border-zinc-800 text-zinc-300' : 'bg-slate-50 border-slate-200 text-slate-800'}`}>
-                    <span className="text-[10px] font-mono uppercase font-bold tracking-widest text-[#2B59FF] block mb-3">KEY TAKEAWAYS</span>
-                    <ul className="space-y-2 text-xs md:text-sm">
+                  <aside key={index} aria-label="summary" className="lx-card p-6 sm:p-7 border border-[var(--line)] my-6 bg-[var(--card)] text-[var(--ink-2)]">
+                    <span className="text-[11px] font-mono uppercase font-bold tracking-[0.14em] text-[var(--accent)] block mb-3">
+                      KEY TAKEAWAYS
+                    </span>
+                    <ul className="space-y-2.5 text-xs md:text-sm">
                       {items.map((it, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <span className="text-[#2B59FF] font-bold">•</span>
+                        <li key={i} className="flex items-start gap-2.5">
+                          <span className="text-[var(--accent)] font-bold">•</span>
                           <span>{renderParagraphText(it.replace('- ', ''))}</span>
                         </li>
                       ))}
@@ -642,8 +632,8 @@ export default function GuidesPage() {
               }
               if (p.startsWith('## ')) {
                 return (
-                  <h2 key={index} className={`text-2xl font-extrabold uppercase mt-12 mb-4 tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
-                    {p.replace('## ', '')}
+                  <h2 key={index} className="font-serif text-2xl sm:text-3xl font-normal mt-12 mb-4 tracking-tight text-[var(--ink)]">
+                    <AnimatedText text={p.replace('## ', '')} variant="blur-in" />
                   </h2>
                 );
               }
@@ -651,11 +641,11 @@ export default function GuidesPage() {
                 const parts = p.split('\n');
                 return (
                   <div key={index} className="my-4">
-                    <h3 className={`text-xl font-bold uppercase mt-8 mb-2 tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                    <h3 className="font-serif text-xl sm:text-2xl font-normal mt-8 mb-2 tracking-tight text-[var(--ink)]">
                       {parts[0].replace('### ', '')}
                     </h3>
                     {parts.slice(1).map((subP, subI) => (
-                      <p key={subI} className={`text-sm md:text-base leading-relaxed ${theme === 'dark' ? 'text-zinc-300' : 'text-slate-800'}`}>
+                      <p key={subI} className="text-sm md:text-base leading-relaxed text-[var(--ink-2)]">
                         {renderParagraphText(subP)}
                       </p>
                     ))}
@@ -664,7 +654,7 @@ export default function GuidesPage() {
               }
               if (p.startsWith('- ')) {
                 return (
-                  <ul key={index} className={`list-disc list-inside pl-4 space-y-2 my-4 ${theme === 'dark' ? 'text-zinc-300' : 'text-slate-800'}`}>
+                  <ul key={index} className="list-disc list-inside pl-4 space-y-2 my-4 text-[var(--ink-2)]">
                     {p.split('\n').map((li, i) => (
                       <li key={i} className="leading-relaxed">{renderParagraphText(li.replace('- ', ''))}</li>
                     ))}
@@ -674,28 +664,28 @@ export default function GuidesPage() {
               if (p.startsWith('|')) {
                 const rows = p.split('\n').filter(r => r.trim().startsWith('|'));
                 if (rows.length >= 2) {
-                  const parseCells = (rowStr: string) => 
-                    rowStr.split('|').map(c => c.trim()).filter((c, i, arr) => i > 0 && i < arr.length - 1);
+                  const parseCells = (rowStr: string) =>
+                    rowStr.split('|').map(c => c.trim()).filter((_, i, arr) => i > 0 && i < arr.length - 1);
                   const headers = parseCells(rows[0]);
                   const dataRows = rows.slice(2).map(parseCells);
 
                   return (
-                    <div key={index} className="overflow-x-auto my-6 rounded border border-zinc-700/30">
+                    <div key={index} className="overflow-x-auto my-6 lx-card border border-[var(--line)] bg-[var(--card)]">
                       <table className="w-full text-left text-xs md:text-sm border-collapse">
                         <thead>
-                          <tr className={theme === 'dark' ? 'bg-zinc-900 border-b border-zinc-800 text-white' : 'bg-slate-100 border-b border-slate-300 text-slate-900'}>
+                          <tr className="bg-[var(--surface)] border-b border-[var(--line)] text-[var(--ink)]">
                             {headers.map((h, hi) => (
-                              <th key={hi} className="p-3.5 font-bold uppercase tracking-wide text-xs">
+                              <th key={hi} className="p-4 font-mono font-bold uppercase tracking-wide text-xs">
                                 {renderParagraphText(h)}
                               </th>
                             ))}
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-zinc-800/30">
+                        <tbody className="divide-y divide-[var(--line)]">
                           {dataRows.map((dr, ri) => (
-                            <tr key={ri} className={theme === 'dark' ? 'hover:bg-zinc-900/60 text-zinc-300' : 'hover:bg-slate-50 text-slate-800'}>
+                            <tr key={ri} className="hover:bg-[var(--surface)]/60 text-[var(--ink-2)] transition-colors">
                               {dr.map((c, ci) => (
-                                <td key={ci} className="p-3.5 align-top">
+                                <td key={ci} className="p-4 align-top">
                                   {renderParagraphText(c)}
                                 </td>
                               ))}
@@ -708,7 +698,7 @@ export default function GuidesPage() {
                 }
               }
               return (
-                <p key={index} className={theme === 'dark' ? 'text-zinc-300' : 'text-slate-800'}>
+                <p key={index} className="text-[var(--ink-2)] leading-relaxed">
                   {renderParagraphText(p)}
                 </p>
               );
@@ -717,8 +707,8 @@ export default function GuidesPage() {
 
           {/* Dynamic Duty Calculator Mount */}
           {cleanPath.includes('duty-calculator') && (
-            <div className="mt-12 border-t pt-12">
-              <span className="text-xs font-bold tracking-widest text-[#2B59FF] uppercase bg-[#2B59FF]/10 px-3 py-1.5 inline-block mb-6 font-mono">
+            <div className="mt-12 border-t border-[var(--line)] pt-12">
+              <span className="text-xs font-bold tracking-[0.14em] text-[var(--accent)] uppercase bg-[var(--accent-soft)] px-3.5 py-1.5 rounded-full inline-block mb-6 font-mono">
                 INTERACTIVE WIDGET
               </span>
               <ImportDutyCalculator />
@@ -726,14 +716,13 @@ export default function GuidesPage() {
           )}
 
           {/* Related Actions */}
-          <div className="mt-16 border-t pt-10">
-            <WhatsAppCTA 
+          <div className="mt-16 border-t border-[var(--line)] pt-10">
+            <WhatsAppCTA
               message={`Hello LeeAutoX! I am reviewing your technical guide on "${guideData?.title || 'Vehicle Importing'}" and would like to ask some questions.`}
               title="Have questions about this guide?"
               subtitle="Connect directly with our logistics authors for a live consultation."
             />
           </div>
-
         </div>
       </section>
 

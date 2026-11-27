@@ -66,6 +66,8 @@
   inset: 0;
   overflow: hidden;
   pointer-events: none;
+  mask-image: radial-gradient(ellipse 88% 86% at 50% 50%, #000 64%, transparent 99%);
+  -webkit-mask-image: radial-gradient(ellipse 88% 86% at 50% 50%, #000 64%, transparent 99%);
 }
 
 .veyra-scope .car-visual {

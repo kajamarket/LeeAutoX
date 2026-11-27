@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { ChevronDown, Plus, Minus } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ChevronDown, Plus, Minus, ArrowRight } from 'lucide-react';
 import { FLEET } from '../constants';
-import { FleetItem } from '../types';
+import AnimatedText from './ui/AnimatedText';
+import Reveal from './ui/Reveal';
 
 export default function Fleet() {
   const [isSectionOpen, setIsSectionOpen] = useState(true);
@@ -13,118 +14,112 @@ export default function Fleet() {
   };
 
   return (
-    <section id="fleet" className="px-6 md:px-12 py-24 bg-muted/40">
+    <section id="fleet" className="px-4 sm:px-6 md:px-12 py-20 bg-[var(--surface)] text-[var(--ink)] border-t border-[var(--line)]">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-6">
-          <div>
-            <h2 className="font-serif text-5xl md:text-6xl font-bold leading-tight text-[#2B59FF]">
-              What we source
-            </h2>
+        <Reveal variant="rise">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-6">
+            <div>
+              <span className="inline-block text-[11px] font-mono uppercase tracking-[0.22em] text-[var(--accent)] font-bold mb-2">
+                Sourcing Categories
+              </span>
+              <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl font-normal leading-tight text-[var(--ink)]">
+                <AnimatedText text="What we source" variant="word-stagger" />
+              </h2>
+            </div>
+            <div className="shrink-0">
+              <button
+                type="button"
+                onClick={() => setIsSectionOpen(!isSectionOpen)}
+                aria-expanded={isSectionOpen}
+                className="lx-pill-btn border border-[var(--line)] bg-[var(--card)] text-[var(--ink)] hover:border-[var(--accent)] text-xs font-mono uppercase tracking-wider"
+              >
+                <span>{isSectionOpen ? 'Collapse Section' : 'Expand Section'}</span>
+                <ChevronDown
+                  size={16}
+                  className={`transition-transform duration-300 ${isSectionOpen ? 'rotate-180' : ''}`}
+                />
+              </button>
+            </div>
           </div>
-          <div className="shrink-0">
-            <button
-              onClick={() => setIsSectionOpen(!isSectionOpen)}
-              aria-expanded={isSectionOpen}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#2B59FF]/30 hover:border-[#2B59FF] bg-[#2B59FF]/10 hover:bg-[#2B59FF]/20 text-[#2B59FF] text-xs font-mono font-bold uppercase tracking-wider transition-all cursor-pointer shadow-sm active:scale-[0.98]"
-            >
-              <span>{isSectionOpen ? 'Collapse Section' : 'Expand Section'}</span>
-              <ChevronDown
-                size={16}
-                className={`transition-transform duration-300 ${isSectionOpen ? 'rotate-180' : ''}`}
-              />
-            </button>
-          </div>
-        </div>
+        </Reveal>
 
-        <AnimatePresence>
-          {isSectionOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.35, ease: 'easeInOut' }}
-              className="overflow-hidden"
-            >
-              <p className="text-muted-foreground text-sm max-w-xl leading-relaxed md:font-serif md:font-bold mb-12">
-                From luxury sedans to heavy-duty commercial vehicles — click any category to expand or collapse details.
-              </p>
+        <div className="lx-accordion-body" data-open={isSectionOpen ? 'true' : 'false'}>
+          <div className="lx-accordion-inner">
+            <p className="text-[var(--ink-2)] text-sm sm:text-base max-w-xl leading-relaxed mb-10">
+              From executive SUVs to heavy-duty commercial fleet units — tap any category to inspect sourcing specifications.
+            </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
-                {FLEET.map((item, index) => {
-                  const isExpanded = expandedIndex === index;
-                  return (
-                    <motion.div
-                      key={item.title}
-                      initial={{ y: 30, opacity: 0 }}
-                      whileInView={{ y: 0, opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.1, duration: 0.6 }}
-                      className="border border-border bg-background/50 overflow-hidden shadow-sm"
-                    >
-                      <div 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+              {FLEET.map((item, index) => {
+                const isExpanded = expandedIndex === index;
+                return (
+                  <Reveal key={item.title} variant="scale" delay={index * 60}>
+                    <div className="lx-card overflow-hidden">
+                      <div
                         onClick={() => toggleItem(index)}
-                        className="relative overflow-hidden aspect-[16/9] bg-muted cursor-pointer group"
+                        className="relative overflow-hidden aspect-[16/9] bg-[var(--bg)] cursor-pointer group"
                       >
                         <img
                           src={item.image}
                           alt={item.title}
                           loading="lazy"
                           decoding="async"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                         />
-                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-all duration-300" />
-                        <div className="absolute top-4 right-4 w-9 h-9 bg-background flex items-center justify-center text-[#2B59FF] shadow-lg">
+                        <div className="absolute inset-0 bg-black/25 group-hover:bg-black/10 transition-colors duration-300" />
+                        <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-[var(--card)] text-[var(--accent)] flex items-center justify-center shadow-lg">
                           {isExpanded ? <Minus size={16} /> : <Plus size={16} />}
                         </div>
                         <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
-                          <span className="font-mono text-xs uppercase tracking-widest bg-black/60 px-2.5 py-1 backdrop-blur-sm">{item.label}</span>
-                          <span className="font-mono text-xs text-white/80">{item.category}</span>
+                          <span className="font-mono text-xs uppercase tracking-widest bg-black/65 px-3 py-1 rounded-full backdrop-blur-sm">
+                            {item.label}
+                          </span>
+                          <span className="font-mono text-xs text-white/90">{item.category}</span>
                         </div>
                       </div>
 
                       <div className="p-6">
                         <button
+                          type="button"
                           onClick={() => toggleItem(index)}
+                          aria-expanded={isExpanded}
                           className="w-full flex items-center justify-between text-left cursor-pointer focus:outline-none"
                         >
-                          <h3 className="font-serif text-2xl font-bold">{item.title}</h3>
-                          <div className="text-[#2B59FF]">
-                            <ChevronDown size={20} className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
-                          </div>
+                          <h3 className="font-serif text-2xl font-normal text-[var(--ink)]">{item.title}</h3>
+                          <ChevronDown
+                            size={20}
+                            className={`text-[var(--accent)] transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+                          />
                         </button>
 
-                        <AnimatePresence>
-                          {isExpanded && (
-                            <motion.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: 'auto', opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.3 }}
-                              className="overflow-hidden mt-4 pt-4 border-t border-border"
-                            >
-                              <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+                        <div className="lx-accordion-body" data-open={isExpanded ? 'true' : 'false'}>
+                          <div className="lx-accordion-inner">
+                            <div className="mt-4 pt-4 border-t border-[var(--line)]">
+                              <p className="text-[var(--ink-2)] text-sm leading-relaxed mb-4">
                                 We handle direct auction bidding, thorough pre-purchase inspections, container securing, marine insurance, and port clearance for all {item.title.toLowerCase()} listings sourced from USA and Canadian markets.
                               </p>
                               <div className="flex items-center justify-between">
-                                <span className="text-xs font-mono text-[#2B59FF] font-bold">Category: {item.category}</span>
-                                <a
-                                  href="/inventory/"
-                                  className="text-xs font-mono uppercase tracking-widest text-[#2B59FF] underline underline-offset-4 hover:opacity-80"
+                                <span className="text-xs font-mono text-[var(--accent)] font-bold">
+                                  Category: {item.category}
+                                </span>
+                                <Link
+                                  to="/inventory/"
+                                  className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-[var(--accent)] hover:underline"
                                 >
-                                  View Inventory →
-                                </a>
+                                  View Inventory <ArrowRight size={13} />
+                                </Link>
                               </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                    </div>
+                  </Reveal>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

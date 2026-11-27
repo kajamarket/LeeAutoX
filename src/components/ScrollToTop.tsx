@@ -1,86 +1,63 @@
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
 import { ArrowUp } from 'lucide-react';
+import { prefersReducedMotion } from '../motion/scrollEngine';
 
 export default function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
-  const { scrollYProgress } = useScroll();
-  
-  // Smooth the progress for the circular indicator
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const toggleVisibility = () => {
-      if (window.pageYOffset > 300) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
+    const onScroll = () => {
+      const y = window.scrollY;
+      setIsVisible(y > 320);
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(total > 0 ? Math.min(1, Math.max(0, y / total)) : 0);
     };
-
-    window.addEventListener('scroll', toggleVisibility);
-    return () => window.removeEventListener('scroll', toggleVisibility);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-  };
+  if (!isVisible) return null;
+
+  const radius = 20;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference * (1 - progress);
 
   return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.button
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.5 }}
-          onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-[100] group"
-          role="button"
-          aria-label="Scroll to top"
-        >
-          <div className="relative flex items-center justify-center w-14 h-14">
-            {/* Circular Progress Indicator */}
-            <svg className="absolute inset-0 w-full h-full -rotate-90">
-              <circle
-                cx="28"
-                cy="28"
-                r="24"
-                stroke="currentColor"
-                strokeWidth="2"
-                fill="transparent"
-                className="text-white/10"
-              />
-              <motion.circle
-                cx="28"
-                cy="28"
-                r="24"
-                stroke="currentColor"
-                strokeWidth="2"
-                fill="transparent"
-                style={{
-                  pathLength: smoothProgress,
-                }}
-                className="text-white"
-              />
-            </svg>
-
-            {/* Inner Button Circle */}
-            <div 
-              className="absolute w-10 h-10 rounded-full flex items-center justify-center text-white transition-transform duration-300 group-hover:scale-110 shadow-lg"
-              style={{ backgroundColor: 'rgb(89, 94, 224)' }}
-            >
-              <ArrowUp size={20} />
-            </div>
-          </div>
-        </motion.button>
-      )}
-    </AnimatePresence>
+    <button
+      type="button"
+      onClick={() =>
+        window.scrollTo({
+          top: 0,
+          behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+        })
+      }
+      aria-label="Scroll to top"
+      className="fixed bottom-20 right-4 sm:bottom-24 sm:right-6 z-[var(--z-sticky)] flex h-12 w-12 items-center justify-center rounded-full lx-glass text-[var(--ink)] transition-transform duration-300 ease-[var(--spring)] hover:-translate-y-0.5 active:scale-95 cursor-pointer"
+    >
+      <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 48 48" aria-hidden="true">
+        <circle
+          cx="24"
+          cy="24"
+          r={radius}
+          fill="none"
+          stroke="var(--line)"
+          strokeWidth="2"
+        />
+        <circle
+          cx="24"
+          cy="24"
+          r={radius}
+          fill="none"
+          stroke="var(--accent)"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+        />
+      </svg>
+      <ArrowUp size={16} className="relative z-[1] text-[var(--ink)]" />
+    </button>
   );
 }

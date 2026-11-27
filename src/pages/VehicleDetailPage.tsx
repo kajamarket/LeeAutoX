@@ -31,18 +31,19 @@ import SoldWatermark from '../components/SoldWatermark';
 import Icon360 from '../components/Icon360';
 import VehicleViewer from '../components/VehicleViewer';
 import { normalizeView360 } from '../utils/view360';
-import { extractPanoeeUrl } from '../utils/panoee';
 import { downloadImage } from '../utils/downloadImage';
+import Reveal from '../components/ui/Reveal';
+import AnimatedText from '../components/ui/AnimatedText';
+import { RippleButton, RippleLink, StrokeChecklist } from '../components/ui/ImportedControls';
 
 interface PaymentPlannerProps {
   fullPrice: number;
   initialDeposit: string;
-  theme: string;
   isCanadaUSA?: boolean;
   isSold?: boolean;
 }
 
-function PaymentPlanner({ fullPrice, initialDeposit, theme, isCanadaUSA = false, isSold = false }: PaymentPlannerProps) {
+function PaymentPlanner({ fullPrice, initialDeposit, isCanadaUSA = false, isSold = false }: PaymentPlannerProps) {
   // Parse initial numeric deposit or default to 30% of fullPrice
   const parsedDefault = useMemo(() => {
     const raw = Number(String(initialDeposit).replace(/[^0-9]/g, ''));
@@ -121,40 +122,38 @@ function PaymentPlanner({ fullPrice, initialDeposit, theme, isCanadaUSA = false,
   }, [balanceAfterDeposit, selectedSplits]);
 
   return (
-    <div className={`p-6 rounded-3xl border mb-6 transition-all relative overflow-hidden ${
-      theme === 'dark' ? 'bg-[#181818] border-zinc-800' : 'bg-white border-slate-200 shadow-md'
-    }`}>
-      {/* Target 2: Metadata display field for static full price */}
+    <div className="lx-card p-6 mb-6 transition-all relative overflow-hidden">
+      {/* Static Full Price */}
       <div className="flex justify-between items-baseline mb-3">
-        <span className="text-xs uppercase font-mono tracking-wider text-slate-500 dark:text-zinc-400 font-medium">
+        <span className="text-xs uppercase font-mono tracking-wider text-[var(--ink-2)] font-medium">
           Full Price (Static)
         </span>
-        <span className="text-2xl sm:text-3xl font-bold font-serif text-[#2B59FF]">
+        <span className="text-2xl sm:text-3xl font-normal font-serif text-[var(--accent)] tabular-nums">
           {formatNaira(fullPrice)}
         </span>
       </div>
 
-      <div className="pt-3 border-t border-slate-200/20 dark:border-zinc-800 space-y-3">
-        {/* Target 1: Display field for active deposit value */}
+      <div className="pt-3 border-t border-[var(--line)] space-y-3">
+        {/* Active Deposit Value */}
         <div className="flex justify-between items-center text-xs">
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-600 dark:text-zinc-300 font-mono font-medium">Active Deposit:</span>
+            <span className="text-[var(--ink-2)] font-mono font-medium">Active Deposit:</span>
             {!isEditingDeposit && (
               <button
                 type="button"
                 onClick={() => setIsEditingDeposit(true)}
-                className="text-[10px] text-[#2B59FF] hover:underline cursor-pointer font-mono"
+                className="text-[11px] text-[var(--accent)] hover:underline cursor-pointer font-mono"
               >
                 ({isCanadaUSA ? 'Change' : 'Customise'})
               </button>
             )}
           </div>
           {!isEditingDeposit ? (
-            <span className="font-mono font-bold text-emerald-500 text-sm">
+            <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-sm tabular-nums">
               {formatNaira(depositAmount)}
             </span>
           ) : (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
               <input
                 type="number"
                 value={depositInput}
@@ -162,12 +161,12 @@ function PaymentPlanner({ fullPrice, initialDeposit, theme, isCanadaUSA = false,
                 onBlur={handleDepositSubmit}
                 onKeyDown={(e) => e.key === 'Enter' && handleDepositSubmit()}
                 autoFocus
-                className="w-28 px-2 py-1 text-xs rounded bg-black/60 border border-[#2B59FF] text-white font-mono focus:outline-none"
+                className="w-28 px-2.5 py-1 text-xs rounded-lg bg-[var(--surface)] border border-[var(--accent)] text-[var(--ink)] font-mono focus:outline-none tabular-nums"
               />
               <button
                 type="button"
                 onClick={handleDepositSubmit}
-                className="px-2 py-1 bg-[#2B59FF] text-white text-[10px] rounded font-mono font-bold cursor-pointer"
+                className="px-2.5 py-1 bg-[var(--accent)] text-[var(--accent-ink)] text-[10px] rounded-lg font-mono font-bold cursor-pointer"
               >
                 Apply
               </button>
@@ -184,27 +183,28 @@ function PaymentPlanner({ fullPrice, initialDeposit, theme, isCanadaUSA = false,
             step={50000}
             value={depositAmount}
             onChange={(e) => handleDepositChange(Number(e.target.value))}
-            className="w-full accent-[#2B59FF] cursor-pointer h-1.5 bg-slate-200 dark:bg-zinc-700 rounded-lg"
+            aria-label="Adjust deposit amount"
+            className="w-full accent-[var(--accent)] cursor-pointer h-1.5 bg-[var(--surface)] rounded-lg"
           />
         </div>
 
-        {/* Target 3: Calculated display field for remaining balance */}
-        <div className="flex justify-between items-center pt-2 border-t border-slate-200/20 dark:border-zinc-800 text-xs">
-          <span className="text-slate-600 dark:text-zinc-300 font-mono font-medium">
+        {/* Remaining Balance */}
+        <div className="flex justify-between items-center pt-2 border-t border-[var(--line)] text-xs">
+          <span className="text-[var(--ink-2)] font-mono font-medium">
             Calculated Remaining Balance:
           </span>
-          <span className="font-mono font-bold text-slate-900 dark:text-white">
+          <span className="font-mono font-bold text-[var(--ink)] tabular-nums">
             {formatNaira(balanceAfterDeposit)}
           </span>
         </div>
 
-        {/* Target 4: 4-way toggle option array (1, 2, 3, 4) for active split configuration */}
+        {/* 4-Way Split Configuration */}
         <div className="pt-2">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] uppercase font-mono tracking-wider text-slate-500 dark:text-zinc-400 font-medium">
+            <span className="text-[11px] uppercase font-mono tracking-wider text-[var(--ink-2)] font-medium">
               Payment Splits:
             </span>
-            <span className="text-[10px] font-mono text-slate-500 dark:text-zinc-400">
+            <span className="text-[10px] font-mono text-[var(--ink-2)] tabular-nums">
               Min. ₦10,000 / split
             </span>
           </div>
@@ -225,14 +225,12 @@ function PaymentPlanner({ fullPrice, initialDeposit, theme, isCanadaUSA = false,
                       setHasError(false);
                     }
                   }}
-                  className={`py-2 px-1 text-center rounded-xl border text-xs font-mono font-bold transition-all cursor-pointer ${
+                  className={`min-h-[44px] py-2 px-1 text-center rounded-xl border text-xs font-mono font-bold transition-all cursor-pointer tabular-nums ${
                     isSelected
-                      ? 'bg-[#2B59FF] text-white border-[#2B59FF] shadow-md shadow-[#2B59FF]/20 scale-[1.02]'
+                      ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-[var(--accent)] shadow-sm'
                       : available
-                      ? theme === 'dark'
-                        ? 'bg-white/5 border-white/10 text-white hover:border-[#2B59FF]/50 hover:bg-white/10'
-                        : 'bg-slate-50 border-slate-200 text-slate-800 hover:border-[#2B59FF]/50 hover:bg-white'
-                      : 'opacity-30 cursor-not-allowed border-dashed bg-black/20 text-slate-500'
+                      ? 'bg-[var(--surface)] border-[var(--line)] text-[var(--ink)] hover:border-[var(--accent)]'
+                      : 'opacity-35 cursor-not-allowed border-dashed bg-[var(--surface)] text-[var(--ink-2)]'
                   }`}
                 >
                   <div>{split} {split === 1 ? 'Stage' : 'Stages'}</div>
@@ -245,26 +243,25 @@ function PaymentPlanner({ fullPrice, initialDeposit, theme, isCanadaUSA = false,
           </div>
         </div>
 
-        {/* Warning visual cues when constraint is reached */}
         {(hasError || isInvalid) && (
-          <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs flex items-center gap-2">
-            <AlertCircle size={15} className="shrink-0 text-amber-400" />
+          <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs flex items-center gap-2">
+            <AlertCircle size={15} className="shrink-0" />
             <span>Installment amount cannot fall below ₦10,000 minimum.</span>
           </div>
         )}
 
-        {/* Target 5: Prominent callout output for single installment amount */}
-        <div className="mt-4 p-4 rounded-2xl bg-[#2B59FF]/10 border border-[#2B59FF]/25 text-center">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#2B59FF] font-bold block mb-1">
+        {/* Prominent Installment Callout */}
+        <div className="mt-4 p-4 rounded-2xl bg-[var(--accent-soft)] border border-[var(--accent)]/25 text-center">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--accent)] font-bold block mb-1">
             {selectedSplits === 1 ? 'Single Installment Amount' : `Installment Amount (${selectedSplits} Equal Splits)`}
           </span>
-          <div className="font-serif text-2xl sm:text-3xl font-extrabold text-[#2B59FF]">
+          <div className="font-serif text-2xl sm:text-3xl font-normal text-[var(--accent)] tabular-nums">
             {formatNaira(installmentAmount)}
-            <span className="text-xs font-mono font-normal opacity-70 ml-1 text-slate-600 dark:text-zinc-300">
+            <span className="text-xs font-mono font-normal opacity-75 ml-1 text-[var(--ink-2)]">
               / installment
             </span>
           </div>
-          <p className="text-[11px] font-light mt-1.5 opacity-80 text-slate-600 dark:text-zinc-300">
+          <p className="text-[11px] font-normal mt-1.5 text-[var(--ink-2)]">
             Shipped upon deposit confirmation. Balance spread across container shipping and port clearing.
           </p>
         </div>
@@ -393,9 +390,14 @@ export default function VehicleDetailPage() {
 
   const activeSlideType = slideItems[activeSlideIndex]?.type;
 
-  // Keyboard navigation (photos & lightbox only so 360 viewer handles its own arrow keys)
+  // Keyboard navigation (photos & lightbox & sourcing modal Escape)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (sourcingModalOpen && e.key === 'Escape') {
+        setSourcingModalOpen(false);
+        return;
+      }
+
       if (isLightboxOpen) {
         if (e.key === 'Escape') {
           setIsLightboxOpen(false);
@@ -421,7 +423,7 @@ export default function VehicleDetailPage() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isLightboxOpen, activeSlideType, slideItems.length, galleryImages.length]);
+  }, [isLightboxOpen, sourcingModalOpen, activeSlideType, slideItems.length, galleryImages.length]);
 
   // Touch Swipe on Prominent Card (photos only so 360 drag/pinch works uninterrupted)
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -557,21 +559,16 @@ export default function VehicleDetailPage() {
 
   if (!vehicle) {
     return (
-      <div className={`min-h-screen pt-36 pb-20 px-6 text-center transition-colors duration-500 ${
-        theme === 'dark' ? 'bg-[#0f0f0f] text-white' : 'bg-[#FAFBFD] text-slate-900'
-      }`}>
-        <div className="max-w-md mx-auto">
-          <Car size={48} className="mx-auto text-[#2B59FF] mb-4 opacity-75" />
-          <h1 className="font-serif text-3xl font-bold mb-3">Vehicle Not Found</h1>
-          <p className="text-sm opacity-70 mb-6">
+      <div className="min-h-screen bg-[var(--bg)] text-[var(--ink)] pt-36 pb-20 px-6 text-center transition-colors duration-300">
+        <div className="lx-card max-w-md mx-auto p-8">
+          <Car size={48} className="mx-auto text-[var(--accent)] mb-4 opacity-80" />
+          <h1 className="font-serif text-3xl font-normal mb-3">Vehicle Not Found</h1>
+          <p className="text-sm text-[var(--ink-2)] mb-6">
             The vehicle you are looking for may have been sold or removed from the active catalogue.
           </p>
-          <Link
-            to="/inventory/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#2B59FF] text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-blue-600 transition-colors"
-          >
+          <RippleLink to="/inventory/" className="text-xs uppercase tracking-wider">
             <ArrowLeft size={16} /> Return to Inventory
-          </Link>
+          </RippleLink>
         </div>
       </div>
     );
@@ -590,7 +587,7 @@ export default function VehicleDetailPage() {
       navigator.clipboard.writeText(window.location.href);
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
-    } catch (e) {
+    } catch {
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     }
@@ -603,31 +600,28 @@ export default function VehicleDetailPage() {
   );
 
   return (
-    <div className={`min-h-screen pt-32 pb-24 transition-colors duration-500 ${
-      theme === 'dark' ? 'bg-[#0f0f0f] text-white' : 'bg-[#FAFBFD] text-slate-900'
-    }`}>
+    <div className="min-h-screen bg-[var(--bg)] text-[var(--ink)] pt-28 sm:pt-32 pb-24 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         {/* Breadcrumb & Navigation */}
-        <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200/20">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8 pb-4 border-b border-[var(--line)]">
           <Link
             to="/inventory/"
-            className="group inline-flex items-center gap-2 text-sm font-semibold opacity-70 hover:opacity-100 hover:text-[#2B59FF] transition-all"
+            className="group inline-flex items-center gap-2 text-sm font-semibold text-[var(--ink-2)] hover:text-[var(--accent)] transition-colors"
           >
             <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
             Back to All Inventory
           </Link>
           <div className="flex items-center gap-3">
-            <button
+            <RippleButton
               type="button"
+              variant="outline"
               onClick={handleShare}
-              className={`p-2 rounded-xl border text-xs font-semibold transition-all active:scale-[0.98] cursor-pointer flex items-center gap-1.5 ${
-                theme === 'dark' ? 'border-white/10 hover:bg-white/10 text-white' : 'border-slate-200 hover:bg-slate-100 text-slate-700'
-              }`}
+              className="!min-h-[38px] !px-4 !py-1.5 text-xs font-semibold"
             >
               {copied ? <Check size={14} className="text-emerald-500" /> : <Share2 size={14} />}
               <span>{copied ? 'Link Copied!' : 'Share Vehicle'}</span>
-            </button>
-            <span className="font-mono text-xs uppercase px-3 py-1 rounded-full bg-[#2B59FF]/15 text-[#2B59FF] font-bold">
+            </RippleButton>
+            <span className="font-mono text-xs uppercase px-3 py-1 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] font-bold">
               {isOverseas ? "Located Overseas" : vehicle.condition}
             </span>
           </div>
@@ -635,14 +629,12 @@ export default function VehicleDetailPage() {
 
         {/* Main Vehicle Overview Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-16">
-          {/* Left Column (7 cols): Photo Gallery & 360 Viewer */}
-          <div className="lg:col-span-7 flex flex-col gap-4">
+          {/* Left Column (7 cols): Photo Gallery & 360 Viewer (STRICTLY opacity-only reveal wrapper — ZERO transform/filter on ancestors of VehicleViewer) */}
+          <Reveal variant="opacity" immediate className="lg:col-span-7 flex flex-col gap-4">
             {/* Primary Featured Image & 360 Display Card */}
             <div
               data-has-mode-toggle={has360 ? 'true' : 'false'}
-              className={`aspect-[16/10] w-full rounded-3xl overflow-hidden relative border shadow-lg bg-black ${
-                theme === 'dark' ? 'border-white/10' : 'border-slate-200'
-              }`}
+              className="aspect-[16/10] w-full rounded-3xl overflow-hidden relative border border-[var(--line)] shadow-lg bg-black"
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
@@ -906,39 +898,33 @@ export default function VehicleDetailPage() {
 
             {/* Interior 360° Placeholder Notice when vehicle has no interior panorama */}
             {vehicle.interior360Unavailable && !hasInterior && (
-              <div className={`px-4 py-2.5 rounded-xl border text-xs font-mono ${
-                theme === 'dark'
-                  ? 'bg-white/5 border-white/10 text-zinc-400'
-                  : 'bg-slate-50 border-slate-200 text-slate-500'
-              }`}>
+              <div className="px-4 py-2.5 rounded-2xl border border-[var(--line)] bg-[var(--surface)] text-xs font-mono text-[var(--ink-2)]">
                 Interior 360° View Not Available
               </div>
             )}
 
             {/* Verification Guarantee Card */}
-            <div className={`p-6 rounded-2xl border flex items-start gap-4 mt-2 ${
-              theme === 'dark' ? 'bg-[#181818] border-white/10' : 'bg-white border-slate-200 shadow-xs'
-            }`}>
-              <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shrink-0">
+            <div className="lx-card p-6 flex items-start gap-4 mt-2">
+              <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shrink-0">
                 <ShieldCheck size={24} />
               </div>
               <div>
-                <h4 className="font-serif text-base font-bold mb-1">
+                <h4 className="font-serif text-base font-normal text-[var(--ink)] mb-1">
                   {isOverseas ? 'LeeAutoX Overseas Sourcing Guarantee' : 'LeeAutoX Verified Status Guarantee'}
                 </h4>
-                <p className={`text-xs leading-relaxed font-light ${theme === 'dark' ? 'text-white/70' : 'text-slate-600'}`}>
+                <p className="text-xs leading-relaxed text-[var(--ink-2)]">
                   {isOverseas
                     ? "This vehicle is located in Canada & USA and will be containerized and shipped to Nigeria upon the owner's request once a deposit is made. Full title verification and pre-shipping inspection guaranteed."
                     : "Every vehicle displayed in our catalogue is currently available in Nigeria, with local availability confirmed."}
                 </p>
               </div>
             </div>
-          </div>
+          </Reveal>
 
           {/* Right Column (5 cols): Pricing, Specs & CTAs */}
           <div className="lg:col-span-5 flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-2 mb-2 font-mono text-xs text-slate-500 dark:text-zinc-400 uppercase font-medium">
+              <div className="flex items-center gap-2 mb-2 font-mono text-xs text-[var(--ink-2)] uppercase font-medium">
                 <span>{vehicle.year}</span>
                 <span>•</span>
                 <span>{vehicle.make}</span>
@@ -946,51 +932,42 @@ export default function VehicleDetailPage() {
                 <span>{vehicle.bodyType}</span>
               </div>
 
-              <h1 
-                className={`font-serif text-3xl sm:text-4xl font-bold leading-tight mb-4 ${
-                  theme === 'dark' ? 'text-white' : 'text-slate-950'
-                }`}
-                style={{ color: theme === 'dark' ? '#ffffff' : '#0a0a0a' }}
-              >
-                {vehicle.name}
+              <h1 className="font-serif text-3xl sm:text-4xl font-normal leading-tight mb-4 text-[var(--ink)]">
+                <AnimatedText text={vehicle.name} variant="blur-in" trigger="mount" />
               </h1>
 
-              <div className="flex items-center gap-2 text-xs font-mono text-slate-600 dark:text-zinc-300 mb-6 font-medium">
-                <MapPin size={14} className="text-[#2B59FF]" />
+              <div className="flex items-center gap-2 text-xs font-mono text-[var(--ink-2)] mb-6 font-medium">
+                <MapPin size={14} className="text-[var(--accent)]" />
                 <span>Current Location: {vehicle.currentLocation || vehicle.location}</span>
               </div>
 
-              {/* Price & Deposit Box: Interactive Payment Planner for Canada & USA, Static for Nigeria */}
+              {/* Price & Deposit Box */}
               {isOverseas ? (
                 <PaymentPlanner
                   fullPrice={vehicle.numericPrice}
                   initialDeposit={vehicle.deposit}
-                  theme={theme}
                   isCanadaUSA={isOverseas}
                   isSold={isSold}
                 />
               ) : (
-                <div className={`p-6 rounded-3xl border mb-6 relative overflow-hidden transition-all ${
-                  theme === 'dark' ? 'bg-[#181818] border-zinc-800' : 'bg-white border-slate-200 shadow-md'
-                }`}>
+                <div className="lx-card p-6 mb-6 relative overflow-hidden">
                   <div className="flex justify-between items-baseline mb-3">
-                    <span className="text-xs uppercase font-mono tracking-wider text-slate-500 dark:text-zinc-400 font-medium">Price</span>
-                    <span className="text-2xl sm:text-3xl font-bold font-serif text-[#2B59FF]">{vehicle.price}</span>
+                    <span className="text-xs uppercase font-mono tracking-wider text-[var(--ink-2)] font-medium">Price</span>
+                    <span className="text-2xl sm:text-3xl font-normal font-serif text-[var(--accent)] tabular-nums">{vehicle.price}</span>
                   </div>
                   {vehicle.deposit && (
                     <>
-                      <div className="flex justify-between items-center pt-3 border-t border-slate-200/20 dark:border-zinc-800 text-xs">
-                        <span className="text-slate-600 dark:text-zinc-300 font-mono font-medium">Commitment Deposit:</span>
-                        <span className="font-mono font-bold text-emerald-500">{vehicle.deposit}</span>
+                      <div className="flex justify-between items-center pt-3 border-t border-[var(--line)] text-xs">
+                        <span className="text-[var(--ink-2)] font-mono font-medium">Commitment Deposit:</span>
+                        <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">{vehicle.deposit}</span>
                       </div>
-                      <div className="flex justify-between items-center pt-2 text-[11px] text-slate-500 dark:text-zinc-400 font-mono">
+                      <div className="flex justify-between items-center pt-2 text-[11px] text-[var(--ink-2)] font-mono">
                         <span>Balance terms:</span>
                         <span>Based on agreement</span>
                       </div>
                     </>
                   )}
 
-                  {/* Frosted glass overlay for sold vehicles */}
                   {isSold && (
                     <div 
                       className="absolute inset-0 z-20 flex items-center justify-center bg-black/45 dark:bg-black/55 backdrop-blur-[3.5px] rounded-3xl select-none cursor-not-allowed"
@@ -1011,195 +988,169 @@ export default function VehicleDetailPage() {
 
               {/* Action Buttons */}
               <div className="flex flex-col gap-3 mb-8">
-                {/* Enquire on WhatsApp CTA pre-filled with vehicle details */}
                 <a
                   href={`https://wa.me/${CONTACT_INFO.whatsappRaw}?text=${whatsappMessage}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-4 px-6 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-bold text-xs sm:text-sm uppercase tracking-wider rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
+                  className="lx-pill-btn w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm uppercase tracking-wider shadow-lg"
                 >
                   <MessageSquare size={18} />
                   Enquire on WhatsApp
                 </a>
 
-                {/* Request Sourcing Similar to This CTA */}
-                <button
+                <RippleButton
                   type="button"
+                  variant="secondary"
                   onClick={() => setSourcingModalOpen(true)}
-                  className={`w-full py-3.5 px-6 rounded-2xl border text-xs sm:text-sm font-bold uppercase tracking-wider transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 ${
-                    theme === 'dark'
-                      ? 'border-white/20 bg-white/5 hover:bg-white/10 text-white'
-                      : 'border-slate-300 bg-white hover:bg-slate-100 text-slate-800 shadow-xs'
-                  }`}
+                  className="w-full py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider"
                 >
                   <Car size={16} />
                   Request Sourcing Similar to This
-                </button>
+                </RippleButton>
               </div>
             </div>
 
             {/* Quick Sourcing Highlights */}
-            <div className={`p-5 rounded-2xl border text-xs space-y-2.5 ${
-              theme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-200 text-slate-700'
-            }`}>
-              <div className="flex items-center gap-2">
-                <CheckCircle size={15} className="text-emerald-500 shrink-0" />
-                <span>
-                  {isOverseas ? 'Vehicle located in Canada & USA — ready for export' : 'Vehicle available locally in Nigeria'}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle size={15} className="text-emerald-500 shrink-0" />
-                <span>
-                  {isOverseas ? "Shipped directly to Nigeria upon owner's deposit confirmation" : 'Port cleared at Apapa / Tin Can Island'}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle size={15} className="text-emerald-500 shrink-0" />
-                <span>
-                  {isOverseas ? 'Full vehicle identification, title verification and inspection report supplied' : 'Vehicle identification and documentation verification supplied'}
-                </span>
-              </div>
-            </div>
+            <StrokeChecklist
+              items={[
+                isOverseas ? 'Vehicle located in Canada & USA — ready for export' : 'Vehicle available locally in Nigeria',
+                isOverseas ? "Shipped directly to Nigeria upon owner's deposit confirmation" : 'Port cleared at Apapa / Tin Can Island',
+                isOverseas ? 'Full vehicle identification, title verification and inspection report supplied' : 'Vehicle identification and documentation verification supplied',
+              ]}
+            />
           </div>
         </div>
 
         {/* Full Specifications Table */}
-        <section className={`rounded-3xl border p-8 sm:p-12 mb-16 ${
-          theme === 'dark' ? 'bg-[#181818] border-white/10' : 'bg-white border-slate-200 shadow-sm'
-        }`}>
-          <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200/20">
-            <div>
-              <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#2B59FF] block mb-1">
-                Technical Blueprint
-              </span>
-              <h2 className="font-serif text-2xl sm:text-3xl font-bold">
-                Vehicle Specifications
-              </h2>
+        <Reveal variant="rise">
+          <section className="lx-card p-8 sm:p-12 mb-16">
+            <div className="flex items-center justify-between mb-8 pb-4 border-b border-[var(--line)]">
+              <div>
+                <span className="text-xs font-mono font-bold uppercase tracking-widest text-[var(--accent)] block mb-1">
+                  Technical Blueprint
+                </span>
+                <h2 className="font-serif text-2xl sm:text-3xl font-normal text-[var(--ink)]">
+                  Vehicle Specifications
+                </h2>
+              </div>
+              <FileText size={24} className="text-[var(--ink-2)] opacity-60" />
             </div>
-            <FileText size={24} className="opacity-40" />
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
-              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Make</span>
-              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.make}</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              <div className="p-4 rounded-2xl border border-[var(--line)] bg-[var(--surface)]">
+                <span className="text-[11px] font-mono uppercase text-[var(--ink-2)] font-medium block mb-1">Make</span>
+                <span className="font-serif text-lg font-normal text-[var(--ink)]">{vehicle.make}</span>
+              </div>
+              <div className="p-4 rounded-2xl border border-[var(--line)] bg-[var(--surface)]">
+                <span className="text-[11px] font-mono uppercase text-[var(--ink-2)] font-medium block mb-1">Model</span>
+                <span className="font-serif text-lg font-normal text-[var(--ink)]">{vehicle.model}</span>
+              </div>
+              <div className="p-4 rounded-2xl border border-[var(--line)] bg-[var(--surface)]">
+                <span className="text-[11px] font-mono uppercase text-[var(--ink-2)] font-medium block mb-1">Model Year</span>
+                <span className="font-serif text-lg font-normal text-[var(--ink)] tabular-nums">{vehicle.year}</span>
+              </div>
+              {vehicle.mileage && (
+                <div className="p-4 rounded-2xl border border-[var(--line)] bg-[var(--surface)]">
+                  <span className="text-[11px] font-mono uppercase text-[var(--ink-2)] font-medium block mb-1">Mileage / Odometer</span>
+                  <span className="font-serif text-lg font-normal text-[var(--ink)] tabular-nums">{vehicle.mileage}</span>
+                </div>
+              )}
+              {vehicle.transmission && (
+                <div className="p-4 rounded-2xl border border-[var(--line)] bg-[var(--surface)]">
+                  <span className="text-[11px] font-mono uppercase text-[var(--ink-2)] font-medium block mb-1">Transmission</span>
+                  <span className="font-serif text-lg font-normal text-[var(--ink)]">{vehicle.transmission}</span>
+                </div>
+              )}
+              {vehicle.fuelType && (
+                <div className="p-4 rounded-2xl border border-[var(--line)] bg-[var(--surface)]">
+                  <span className="text-[11px] font-mono uppercase text-[var(--ink-2)] font-medium block mb-1">Fuel Type</span>
+                  <span className="font-serif text-lg font-normal text-[var(--ink)]">{vehicle.fuelType}</span>
+                </div>
+              )}
+              {vehicle.bodyType && (
+                <div className="p-4 rounded-2xl border border-[var(--line)] bg-[var(--surface)]">
+                  <span className="text-[11px] font-mono uppercase text-[var(--ink-2)] font-medium block mb-1">Body Style</span>
+                  <span className="font-serif text-lg font-normal text-[var(--ink)]">{vehicle.bodyType}</span>
+                </div>
+              )}
+              {vehicle.colour && (
+                <div className="p-4 rounded-2xl border border-[var(--line)] bg-[var(--surface)]">
+                  <span className="text-[11px] font-mono uppercase text-[var(--ink-2)] font-medium block mb-1">Exterior Colour</span>
+                  <span className="font-serif text-lg font-normal text-[var(--ink)]">{vehicle.colour}</span>
+                </div>
+              )}
+              {!isOverseas && (
+                <div className="p-4 rounded-2xl border border-[var(--line)] bg-[var(--surface)]">
+                  <span className="text-[11px] font-mono uppercase text-[var(--ink-2)] font-medium block mb-1">Condition Status</span>
+                  <span className="font-serif text-lg font-normal text-emerald-600 dark:text-emerald-400">{vehicle.condition}</span>
+                </div>
+              )}
+              <div className="p-4 rounded-2xl border border-[var(--line)] bg-[var(--surface)]">
+                <span className="text-[11px] font-mono uppercase text-[var(--ink-2)] font-medium block mb-1">Vehicle VIN</span>
+                <span className="font-mono text-sm font-bold tracking-wider text-[var(--ink)]">{vehicle.vin || 'Available on request'}</span>
+              </div>
+              <div className="p-4 rounded-2xl border border-[var(--line)] bg-[var(--surface)] sm:col-span-2">
+                <span className="text-[11px] font-mono uppercase text-[var(--ink-2)] font-medium block mb-1">Hub Location</span>
+                <span className="font-serif text-lg font-normal text-[var(--ink)]">{vehicle.currentLocation || vehicle.location}</span>
+              </div>
             </div>
-            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
-              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Model</span>
-              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.model}</span>
-            </div>
-            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
-              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Model Year</span>
-              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.year}</span>
-            </div>
-            {vehicle.mileage && (
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
-                <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Mileage / Odometer</span>
-                <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.mileage}</span>
-              </div>
-            )}
-            {vehicle.transmission && (
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
-                <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Transmission</span>
-                <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.transmission}</span>
-              </div>
-            )}
-            {vehicle.fuelType && (
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
-                <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Fuel Type</span>
-                <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.fuelType}</span>
-              </div>
-            )}
-            {vehicle.bodyType && (
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
-                <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Body Style</span>
-                <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.bodyType}</span>
-              </div>
-            )}
-            {vehicle.colour && (
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
-                <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Exterior Colour</span>
-                <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.colour}</span>
-              </div>
-            )}
-            {!isOverseas && (
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
-                <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Condition Status</span>
-                <span className="font-serif text-lg font-bold text-emerald-500">{vehicle.condition}</span>
-              </div>
-            )}
-            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60">
-              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Vehicle VIN</span>
-              <span className="font-mono text-sm font-bold tracking-wider text-slate-900 dark:text-zinc-100">{vehicle.vin || 'Available on request'}</span>
-            </div>
-            <div className="p-4 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-900/60 sm:col-span-2">
-              <span className="text-[11px] font-mono uppercase text-slate-500 dark:text-zinc-400 font-medium block mb-1">Hub Location</span>
-              <span className="font-serif text-lg font-bold text-slate-900 dark:text-zinc-100">{vehicle.currentLocation || vehicle.location}</span>
-            </div>
-          </div>
-        </section>
+          </section>
+        </Reveal>
 
         {/* Related Vehicles Section */}
         {relatedVehicles.length > 0 && (
           <section className="mt-20">
             <div className="mb-8 flex items-end justify-between">
               <div>
-                <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#2B59FF] block mb-1">
+                <span className="text-xs font-mono font-bold uppercase tracking-widest text-[var(--accent)] block mb-1">
                   Alternative Options
                 </span>
-                <h3 className="font-serif text-2xl sm:text-3xl font-bold">
+                <h3 className="font-serif text-2xl sm:text-3xl font-normal text-[var(--ink)]">
                   Similar Vehicles in Stock
                 </h3>
               </div>
-              <Link to="/inventory/" className="text-xs font-bold uppercase tracking-wider text-[#2B59FF] hover:underline">
+              <Link to="/inventory/" className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--accent)] hover:underline">
                 View All
               </Link>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {relatedVehicles.map(rel => (
-                <div
-                  key={rel.id}
-                  className={`rounded-2xl border overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between ${
-                    theme === 'dark' ? 'bg-[#181818] border-white/10' : 'bg-white border-slate-200 shadow-xs'
-                  }`}
-                >
-                  <div className="aspect-[16/10] overflow-hidden relative bg-black">
-                    <img 
-                      src={rel.image} 
-                      alt={rel.name} 
-                      className="w-full h-full object-cover" 
-                      onError={(e) => {
-                        const target = e.currentTarget;
-                        if (target.src.includes('leeautox.com/cars/')) {
-                          target.src = target.src.replace('https://leeautox.com/cars/', '/cars/');
-                        }
-                      }}
-                    />
-                    <span className="absolute top-3 left-3 bg-[#2B59FF] text-white text-[10px] font-mono px-2 py-0.5 rounded font-bold">
-                      {rel.location === "Canada & USA" ? "Located Overseas" : rel.condition}
-                    </span>
-                    {rel.status?.toLowerCase() === 'sold' && (
-                      <SoldWatermark size="card" />
-                    )}
-                  </div>
-                  <div className="p-5 flex-1 flex flex-col justify-between">
-                    <div>
-                      <h4 className="font-serif text-lg font-bold mb-1 truncate">{rel.name}</h4>
-                      <p className="text-xs font-mono opacity-60 mb-3">{rel.specs}</p>
+              {relatedVehicles.map((rel, idx) => (
+                <Reveal key={rel.id} variant="rise" delay={idx * 60} className="h-full">
+                  <div className="lx-card h-full overflow-hidden flex flex-col justify-between hover:-translate-y-1">
+                    <div className="aspect-[16/10] overflow-hidden relative bg-black">
+                      <img 
+                        src={rel.image} 
+                        alt={rel.name} 
+                        className="w-full h-full object-cover" 
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          if (target.src.includes('leeautox.com/cars/')) {
+                            target.src = target.src.replace('https://leeautox.com/cars/', '/cars/');
+                          }
+                        }}
+                      />
+                      <span className="absolute top-3 left-3 bg-[var(--accent)] text-[var(--accent-ink)] text-[10px] font-mono px-2.5 py-0.5 rounded-full font-bold">
+                        {rel.location === "Canada & USA" ? "Located Overseas" : rel.condition}
+                      </span>
+                      {rel.status?.toLowerCase() === 'sold' && (
+                        <SoldWatermark size="card" />
+                      )}
                     </div>
-                    <div className="pt-3 border-t border-slate-200/20 flex items-center justify-between">
-                      <span className="text-[#2B59FF] font-bold text-base font-serif">{rel.price}</span>
-                      <Link
-                        to={getVehicleUrl(rel)}
-                        className="px-3 py-1.5 bg-[#2B59FF] text-white text-xs font-bold rounded-lg uppercase tracking-wider"
-                      >
-                        View
-                      </Link>
+                    <div className="p-5 flex-1 flex flex-col justify-between">
+                      <div>
+                        <h4 className="font-serif text-lg font-normal text-[var(--ink)] mb-1 truncate">{rel.name}</h4>
+                        <p className="text-xs font-mono text-[var(--ink-2)] mb-3">{rel.specs}</p>
+                      </div>
+                      <div className="pt-3 border-t border-[var(--line)] flex items-center justify-between gap-2">
+                        <span className="text-[var(--accent)] font-normal text-base font-serif tabular-nums">{rel.price}</span>
+                        <RippleLink to={getVehicleUrl(rel)} className="!min-h-[36px] !px-4 !py-1.5 text-xs uppercase tracking-wider">
+                          View
+                        </RippleLink>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </Reveal>
               ))}
             </div>
           </section>
@@ -1208,15 +1159,22 @@ export default function VehicleDetailPage() {
 
       {/* Sourcing Modal */}
       {sourcingModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className={`max-w-lg w-full rounded-3xl p-6 sm:p-8 border shadow-2xl relative ${
-            theme === 'dark' ? 'bg-[#181818] border-white/15 text-white' : 'bg-white border-slate-200 text-slate-900'
-          }`}>
-            <h3 className="font-serif text-2xl font-bold mb-2">Request Similar Vehicle</h3>
-            <p className="text-xs opacity-70 mb-6 font-mono">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Request similar vehicle sourcing"
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+          onClick={() => setSourcingModalOpen(false)}
+        >
+          <div
+            className="lx-card max-w-lg w-full p-6 sm:p-8 relative text-[var(--ink)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="font-serif text-2xl font-normal mb-2">Request Similar Vehicle</h3>
+            <p className="text-xs text-[var(--ink-2)] mb-5 font-mono">
               Vehicle reference: {vehicle.name} ({vehicle.year})
             </p>
-            <p className="text-sm leading-relaxed mb-6 font-light">
+            <p className="text-sm leading-relaxed mb-6 text-[var(--ink-2)]">
               Our Canadian desk bids directly on Copart and IAA auction yards. We can source the same make and model within your targeted year range and budget.
             </p>
             <div className="flex flex-col gap-3">
@@ -1226,14 +1184,14 @@ export default function VehicleDetailPage() {
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="py-3 px-5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2"
+                className="lx-pill-btn bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider"
               >
                 <MessageSquare size={16} /> Contact Desk on WhatsApp
               </a>
               <button
                 type="button"
                 onClick={() => setSourcingModalOpen(false)}
-                className="py-2.5 px-4 text-xs font-bold uppercase tracking-wider opacity-60 hover:opacity-100"
+                className="py-2.5 px-4 text-xs font-mono font-bold uppercase tracking-wider text-[var(--ink-2)] hover:text-[var(--ink)] cursor-pointer"
               >
                 Close
               </button>
@@ -1242,20 +1200,20 @@ export default function VehicleDetailPage() {
         </div>
       )}
 
-      {/* TASK 5: FULLSCREEN PHOTO GALLERY OVERLAY */}
+      {/* FULLSCREEN PHOTO GALLERY OVERLAY */}
       {isLightboxOpen && (
         <div
           role="dialog"
           aria-modal="true"
           aria-label="Full-screen photo gallery"
-          className="fixed inset-0 z-50 bg-black/95 flex flex-col justify-between p-4 md:p-8 animate-fadeIn"
+          className="fixed inset-0 z-[60] bg-black/95 flex flex-col justify-between p-4 md:p-8"
           onClick={() => setIsLightboxOpen(false)}
         >
           {/* Lightbox Top Bar */}
           <div className="flex items-center justify-between text-white max-w-6xl mx-auto w-full">
             <div>
-              <h4 className="font-serif text-lg font-bold">{vehicle.name}</h4>
-              <p className="text-xs font-mono opacity-70">
+              <h4 className="font-serif text-lg font-normal">{vehicle.name}</h4>
+              <p className="text-xs font-mono opacity-70 tabular-nums">
                 Photo {lightboxPhotoIndex + 1} of {galleryImages.length}
               </p>
             </div>
@@ -1272,7 +1230,7 @@ export default function VehicleDetailPage() {
                   downloadImage(currentUrl, filename);
                 }}
                 aria-label="Download current photo"
-                className="px-3.5 py-2 bg-white/10 hover:bg-white/20 active:scale-95 rounded-xl text-white font-mono text-xs cursor-pointer flex items-center gap-1.5 transition-all"
+                className="px-3.5 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white font-mono text-xs cursor-pointer flex items-center gap-1.5 transition-all"
                 title="Download current photo"
               >
                 <Download size={14} />
@@ -1282,7 +1240,7 @@ export default function VehicleDetailPage() {
                 type="button"
                 onClick={() => setIsLightboxOpen(false)}
                 aria-label="Close gallery"
-                className="px-4 py-2 bg-white/10 hover:bg-white/20 active:scale-95 rounded-xl text-white font-mono text-xs cursor-pointer flex items-center gap-1.5 transition-all"
+                className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full text-white font-mono text-xs cursor-pointer flex items-center gap-1.5 transition-all"
               >
                 <X size={14} />
                 <span>Close [ESC]</span>
@@ -1310,7 +1268,7 @@ export default function VehicleDetailPage() {
                     setLightboxPhotoIndex((prev) => (prev > 0 ? prev - 1 : galleryImages.length - 1));
                   }}
                   aria-label="Previous photo"
-                  className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-all cursor-pointer shadow-lg backdrop-blur-md active:scale-95"
+                  className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-all cursor-pointer shadow-lg backdrop-blur-md"
                 >
                   <ChevronLeft size={24} />
                 </button>
@@ -1321,7 +1279,7 @@ export default function VehicleDetailPage() {
                     setLightboxPhotoIndex((prev) => (prev < galleryImages.length - 1 ? prev + 1 : 0));
                   }}
                   aria-label="Next photo"
-                  className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-all cursor-pointer shadow-lg backdrop-blur-md active:scale-95"
+                  className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center transition-all cursor-pointer shadow-lg backdrop-blur-md"
                 >
                   <ChevronRight size={24} />
                 </button>
@@ -1344,7 +1302,7 @@ export default function VehicleDetailPage() {
                 }}
                 className={`relative w-16 h-12 shrink-0 rounded-md overflow-hidden border-2 transition-all cursor-pointer ${
                   idx === lightboxPhotoIndex
-                    ? 'border-[#2B59FF] scale-105'
+                    ? 'border-[var(--accent)] scale-105'
                     : 'border-transparent opacity-60 hover:opacity-100'
                 }`}
               >

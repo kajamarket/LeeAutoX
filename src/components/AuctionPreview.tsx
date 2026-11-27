@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { Clock, ArrowRight, ChevronLeft, ChevronRight, ShieldCheck, Zap, Gavel } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
 import { VehicleLotItem } from '../types/auction';
 import { searchAuctionVehicles } from '../services/auctionService';
 import { MOCK_AUCTION_VEHICLES } from '../data/mockAuctionLots';
 import AuctionVehicleCard from './AuctionVehicleCard';
+import AnimatedText from './ui/AnimatedText';
+import Reveal from './ui/Reveal';
+import { LeafTabs, RippleLink, BreathOrb, TabOption } from './ui/ImportedControls';
 
 type AuctionTab = 'closing-soon' | 'upcoming' | 'buy-it-now' | 'recently-sold';
 
 export default function AuctionPreview() {
-  const { theme } = useTheme();
   const [activeTab, setActiveTab] = useState<AuctionTab>('closing-soon');
   const [lotsByTab, setLotsByTab] = useState<Record<AuctionTab, VehicleLotItem[]>>({
     'closing-soon': [],
@@ -21,11 +21,9 @@ export default function AuctionPreview() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // Fetch auction data for activeTab with caching per tab
   useEffect(() => {
     let isMounted = true;
 
-    // Check if we already have items for this tab
     if (lotsByTab[activeTab] && lotsByTab[activeTab].length > 0) {
       setIsLoading(false);
       return;
@@ -35,7 +33,7 @@ export default function AuctionPreview() {
 
     async function loadTabLots() {
       try {
-        let filters: any = { per_page: 8 };
+        const filters: any = { per_page: 8 };
 
         if (activeTab === 'closing-soon') {
           filters.upcoming = 'only';
@@ -76,122 +74,99 @@ export default function AuctionPreview() {
   }, [activeTab]);
 
   const scrollLeft = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: -360, behavior: 'smooth' });
-    }
+    scrollContainerRef.current?.scrollBy({ left: -360, behavior: 'smooth' });
   };
 
   const scrollRight = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: 360, behavior: 'smooth' });
-    }
+    scrollContainerRef.current?.scrollBy({ left: 360, behavior: 'smooth' });
   };
+
+  const tabOptions: TabOption[] = [
+    {
+      value: 'closing-soon',
+      label: (
+        <span className="inline-flex items-center gap-1.5">
+          <Clock size={14} /> Closing Soon
+        </span>
+      ),
+    },
+    {
+      value: 'upcoming',
+      label: (
+        <span className="inline-flex items-center gap-1.5">
+          <Gavel size={14} /> All Upcoming
+        </span>
+      ),
+    },
+    {
+      value: 'buy-it-now',
+      label: (
+        <span className="inline-flex items-center gap-1.5">
+          <Zap size={14} /> Buy It Now
+        </span>
+      ),
+    },
+    {
+      value: 'recently-sold',
+      label: (
+        <span className="inline-flex items-center gap-1.5">
+          <ShieldCheck size={14} /> Recently Sold
+        </span>
+      ),
+    },
+  ];
 
   const currentItems = lotsByTab[activeTab] || [];
 
   return (
     <section
       id="auction-listings"
-      className={`relative pt-10 pb-16 px-6 md:px-12 border-t transition-colors duration-500 overflow-hidden ${
-        theme === 'dark' ? 'bg-[#0d0d0d] text-white border-white/10' : 'bg-[#F4F6F9] text-slate-900 border-slate-200'
-      }`}
+      className="lx-band-white relative pt-5 pb-16 px-4 sm:px-6 md:px-12 border-t border-[var(--line)] transition-colors duration-500 overflow-x-clip"
     >
-      <div className="absolute top-0 right-1/4 w-[40vw] h-[30vw] bg-[#2B59FF]/5 rounded-full blur-3xl pointer-events-none" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        <div className="lx-bg-grid absolute inset-0 opacity-45" />
+        <BreathOrb className="w-[40vw] h-[30vw] -top-12 right-[12%] opacity-60" />
+      </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="mb-8">
-          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
-            Live Auction Cars <span className="text-base sm:text-lg font-mono font-normal opacity-60">(Copart · IAAI)</span>
-          </h2>
-          <p className={`text-xs sm:text-sm font-mono mt-1 ${theme === 'dark' ? 'text-white/60' : 'text-slate-600'}`}>
-            Direct North American salvage, clean title, and wholesale auction feeds updated in real-time.
-          </p>
-        </div>
+        <Reveal variant="rise">
+          <div className="mb-8">
+            <span className="inline-block text-[11px] font-mono uppercase tracking-[0.22em] text-[var(--accent)] font-bold mb-2">
+              Copart &amp; IAAI Direct Feed
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-[var(--ink)]">
+              <AnimatedText text="Live Auction Cars" variant="mask-rise" />{' '}
+              <span className="text-base sm:text-lg font-mono font-normal text-[var(--ink-2)]">(Copart · IAAI)</span>
+            </h2>
+            <p className="text-xs sm:text-sm font-mono mt-2 text-[var(--ink-2)] max-w-2xl">
+              Direct North American salvage, clean title, and wholesale auction feeds updated in real-time.
+            </p>
+          </div>
+        </Reveal>
 
         {/* Filter Tabs & Carousel Navigation Toolbar */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-8">
-          <div className="flex items-center gap-3 overflow-x-auto pb-2 sm:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            <button
-              type="button"
-              onClick={() => setActiveTab('closing-soon')}
-              className={`px-5 py-3 rounded-xl text-xs sm:text-sm font-bold tracking-wide flex items-center gap-2 whitespace-nowrap transition-all active:scale-[0.98] cursor-pointer ${
-                activeTab === 'closing-soon'
-                  ? 'bg-[#2B59FF] text-white shadow-lg shadow-blue-500/25'
-                  : theme === 'dark'
-                  ? 'bg-white/5 text-white/70 hover:text-white border border-white/10'
-                  : 'bg-white text-slate-700 hover:text-slate-950 border border-slate-200'
-              }`}
-            >
-              <Clock size={15} />
-              Closing Soon
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab('upcoming')}
-              className={`px-5 py-3 rounded-xl text-xs sm:text-sm font-bold tracking-wide flex items-center gap-2 whitespace-nowrap transition-all active:scale-[0.98] cursor-pointer ${
-                activeTab === 'upcoming'
-                  ? 'bg-[#2B59FF] text-white shadow-lg shadow-blue-500/25'
-                  : theme === 'dark'
-                  ? 'bg-white/5 text-white/70 hover:text-white border border-white/10'
-                  : 'bg-white text-slate-700 hover:text-slate-950 border border-slate-200'
-              }`}
-            >
-              <Gavel size={15} />
-              All Upcoming
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab('buy-it-now')}
-              className={`px-5 py-3 rounded-xl text-xs sm:text-sm font-bold tracking-wide flex items-center gap-2 whitespace-nowrap transition-all active:scale-[0.98] cursor-pointer ${
-                activeTab === 'buy-it-now'
-                  ? 'bg-[#2B59FF] text-white shadow-lg shadow-blue-500/25'
-                  : theme === 'dark'
-                  ? 'bg-white/5 text-white/70 hover:text-white border border-white/10'
-                  : 'bg-white text-slate-700 hover:text-slate-950 border border-slate-200'
-              }`}
-            >
-              <Zap size={15} />
-              Buy It Now
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab('recently-sold')}
-              className={`px-5 py-3 rounded-xl text-xs sm:text-sm font-bold tracking-wide flex items-center gap-2 whitespace-nowrap transition-all active:scale-[0.98] cursor-pointer ${
-                activeTab === 'recently-sold'
-                  ? 'bg-[#2B59FF] text-white shadow-lg shadow-blue-500/25'
-                  : theme === 'dark'
-                  ? 'bg-white/5 text-white/70 hover:text-white border border-white/10'
-                  : 'bg-white text-slate-700 hover:text-slate-950 border border-slate-200'
-              }`}
-            >
-              <ShieldCheck size={15} />
-              Recently Sold
-            </button>
+          <div className="overflow-x-auto pb-1 sm:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <LeafTabs
+              options={tabOptions}
+              value={activeTab}
+              onChange={(val) => setActiveTab(val as AuctionTab)}
+            />
           </div>
 
-          {/* Carousel Arrows */}
           <div className="hidden sm:flex items-center gap-2 shrink-0">
             <button
+              type="button"
               onClick={scrollLeft}
-              className={`p-2.5 rounded-xl border transition-all active:scale-[0.95] cursor-pointer ${
-                theme === 'dark'
-                  ? 'border-white/15 bg-white/5 hover:bg-white/10 text-white'
-                  : 'border-slate-300 bg-white hover:bg-slate-100 text-slate-800 shadow-xs'
-              }`}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--line)] bg-[var(--card)] text-[var(--ink)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all active:scale-95 cursor-pointer shadow-xs"
               aria-label="Scroll left"
             >
               <ChevronLeft size={18} />
             </button>
             <button
+              type="button"
               onClick={scrollRight}
-              className={`p-2.5 rounded-xl border transition-all active:scale-[0.95] cursor-pointer ${
-                theme === 'dark'
-                  ? 'border-white/15 bg-white/5 hover:bg-white/10 text-white'
-                  : 'border-slate-300 bg-white hover:bg-slate-100 text-slate-800 shadow-xs'
-              }`}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--line)] bg-[var(--card)] text-[var(--ink)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all active:scale-95 cursor-pointer shadow-xs"
               aria-label="Scroll right"
             >
               <ChevronRight size={18} />
@@ -202,49 +177,43 @@ export default function AuctionPreview() {
         {/* Carousel / Cards Grid */}
         <div
           ref={scrollContainerRef}
-          className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory [scrollbar-width:thin] scroll-smooth"
+          className="lx-perspective flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory [scrollbar-width:thin] scroll-smooth"
         >
           {isLoading ? (
-            // Loading Skeletons
             [1, 2, 3].map((n) => (
               <div
                 key={n}
-                className={`w-[85vw] sm:w-[48vw] lg:w-[calc(33.333%-16px)] shrink-0 rounded-2xl border overflow-hidden p-4 animate-pulse ${
-                  theme === 'dark' ? 'bg-[#151515] border-white/10' : 'bg-white border-slate-200'
-                }`}
+                className="w-[85vw] sm:w-[48vw] lg:w-[calc(33.333%-16px)] shrink-0 lx-card-padded animate-pulse"
               >
-                <div className="aspect-[16/10] bg-slate-200 dark:bg-white/10 rounded-xl mb-4" />
-                <div className="h-5 bg-slate-200 dark:bg-white/10 rounded w-3/4 mb-2" />
-                <div className="h-4 bg-slate-200 dark:bg-white/10 rounded w-1/2 mb-4" />
-                <div className="h-16 bg-slate-200 dark:bg-white/10 rounded mb-4" />
-                <div className="h-10 bg-slate-200 dark:bg-white/10 rounded" />
+                <div className="aspect-[16/10] bg-[var(--surface)] rounded-2xl mb-4" />
+                <div className="h-5 bg-[var(--surface)] rounded w-3/4 mb-2" />
+                <div className="h-4 bg-[var(--surface)] rounded w-1/2 mb-4" />
+                <div className="h-16 bg-[var(--surface)] rounded mb-4" />
+                <div className="h-10 bg-[var(--surface)] rounded-full" />
               </div>
             ))
           ) : currentItems.length === 0 ? (
-            <div
-              className={`w-full py-16 px-6 text-center border rounded-2xl ${
-                theme === 'dark' ? 'bg-white/5 border-white/10 text-white/70' : 'bg-white border-slate-200 text-slate-600'
-              }`}
-            >
-              <ShieldCheck size={36} className="mx-auto text-[#2B59FF] mb-3 opacity-80" />
-              <h4 className="font-serif text-xl font-bold mb-2">No lots found in this category</h4>
-              <p className="text-xs font-mono max-w-md mx-auto mb-4">
+            <div className="w-full py-16 px-6 text-center lx-card-padded">
+              <ShieldCheck size={36} className="mx-auto text-[var(--accent)] mb-3 opacity-85" />
+              <h4 className="font-serif text-xl font-normal mb-2 text-[var(--ink)]">
+                No lots found in this category
+              </h4>
+              <p className="text-xs font-mono max-w-md mx-auto mb-5 text-[var(--ink-2)]">
                 Try searching our full auction catalog or refresh to see newly scheduled lane entries.
               </p>
-              <Link
-                to="/auction-search/"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#2B59FF] text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-blue-600"
-              >
+              <RippleLink to="/auction-search/" variant="primary" className="px-6 py-2.5 text-xs uppercase tracking-wider">
                 Browse Auction Inventory <ArrowRight size={14} />
-              </Link>
+              </RippleLink>
             </div>
           ) : (
-            currentItems.map((vehicle) => (
-              <div 
-                key={vehicle.id} 
+            currentItems.map((vehicle, idx) => (
+              <div
+                key={vehicle.id}
                 className="w-[85vw] sm:w-[48vw] lg:w-[calc(33.333%-16px)] shrink-0 snap-start"
               >
-                <AuctionVehicleCard vehicle={vehicle} viewMode="grid" />
+                <Reveal variant="isometric" col={idx % 3}>
+                  <AuctionVehicleCard vehicle={vehicle} viewMode="grid" />
+                </Reveal>
               </div>
             ))
           )}
@@ -252,13 +221,14 @@ export default function AuctionPreview() {
 
         {/* View All Live Inventory CTA */}
         <div className="mt-8 text-center">
-          <Link
+          <RippleLink
             to="/auction-search/"
-            className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#2B59FF] text-white text-xs sm:text-sm font-mono font-bold uppercase tracking-wider rounded-xl hover:bg-blue-600 transition-colors shadow-lg shadow-blue-500/20"
+            variant="primary"
+            className="px-8 py-3.5 text-xs sm:text-sm font-mono uppercase tracking-wider shadow-lg"
           >
             <span>Explore All 50,000+ Auction Lots</span>
             <ArrowRight size={16} />
-          </Link>
+          </RippleLink>
         </div>
       </div>
     </section>

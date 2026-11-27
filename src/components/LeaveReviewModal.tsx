@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Star, Upload, Image as ImageIcon, Video, CheckCircle, AlertCircle, MessageCircle } from 'lucide-react';
+import { X, Upload, Image as ImageIcon, Video, CheckCircle, AlertCircle, MessageCircle } from 'lucide-react';
 import { useReviews } from '../context/ReviewsContext';
-import { useTheme } from '../context/ThemeContext';
 import { CONTACT_INFO } from '../constants';
+import { PebbleRating, PaperPlaneButton } from './ui/ImportedControls';
 
 interface LeaveReviewModalProps {
   isOpen: boolean;
@@ -11,7 +11,6 @@ interface LeaveReviewModalProps {
 }
 
 export default function LeaveReviewModal({ isOpen, onClose }: LeaveReviewModalProps) {
-  const { theme } = useTheme();
   const { addReview } = useReviews();
 
   const [author, setAuthor] = useState('');
@@ -19,7 +18,6 @@ export default function LeaveReviewModal({ isOpen, onClose }: LeaveReviewModalPr
   const [service, setService] = useState('');
   const [quote, setQuote] = useState('');
   const [rating, setRating] = useState(5);
-  const [hoverRating, setHoverRating] = useState(0);
   const [mediaType, setMediaType] = useState<'image' | 'video' | 'none'>('none');
   const [mediaUrl, setMediaUrl] = useState('');
   const [mediaFileName, setMediaFileName] = useState('');
@@ -29,12 +27,19 @@ export default function LeaveReviewModal({ isOpen, onClose }: LeaveReviewModalPr
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Handle local image file upload & conversion to Base64 for instant slide display
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, onClose]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Check size limit (max 5MB for smooth browser storage)
     if (file.size > 5 * 1024 * 1024) {
       setError('File size must be under 5MB for instant upload.');
       return;
@@ -42,12 +47,7 @@ export default function LeaveReviewModal({ isOpen, onClose }: LeaveReviewModalPr
 
     setError('');
     setMediaFileName(file.name);
-
-    if (file.type.startsWith('video/')) {
-      setMediaType('video');
-    } else {
-      setMediaType('image');
-    }
+    setMediaType(file.type.startsWith('video/') ? 'video' : 'image');
 
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -87,7 +87,6 @@ export default function LeaveReviewModal({ isOpen, onClose }: LeaveReviewModalPr
       setTimeout(() => {
         setSuccess(false);
         onClose();
-        // Reset form
         setAuthor('');
         setRole('');
         setService('');
@@ -97,7 +96,7 @@ export default function LeaveReviewModal({ isOpen, onClose }: LeaveReviewModalPr
         setMediaUrl('');
         setMediaFileName('');
       }, 2200);
-    } catch (err) {
+    } catch {
       setError('Failed to submit review. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -106,10 +105,12 @@ export default function LeaveReviewModal({ isOpen, onClose }: LeaveReviewModalPr
 
   if (!isOpen) return null;
 
+  const inputClass =
+    'w-full px-4 py-2.5 text-sm rounded-2xl border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] placeholder:text-[var(--ink-2)]/50 focus:outline-none focus:border-[var(--accent)] transition-colors';
+
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-        {/* Backdrop */}
+      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6 overflow-y-auto" role="dialog" aria-modal="true" aria-label="Leave a Review">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -118,100 +119,69 @@ export default function LeaveReviewModal({ isOpen, onClose }: LeaveReviewModalPr
           className="fixed inset-0 bg-black/80 backdrop-blur-sm"
         />
 
-        {/* Modal Window */}
         <motion.div
-          initial={{ scale: 0.95, opacity: 0, y: 20 }}
+          initial={{ scale: 0.96, opacity: 0, y: 16 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.95, opacity: 0, y: 20 }}
-          className={`relative w-full max-w-2xl my-8 border shadow-2xl z-10 overflow-hidden ${
-            theme === 'dark' ? 'bg-[#0D0D0D] border-white/15 text-white' : 'bg-white border-slate-200 text-slate-900'
-          }`}
+          exit={{ scale: 0.96, opacity: 0, y: 16 }}
+          className="relative w-full max-w-2xl my-8 lx-card z-10 overflow-hidden"
         >
-          {/* Header */}
-          <div className={`flex items-center justify-between px-6 py-5 border-b ${
-            theme === 'dark' ? 'border-white/10 bg-white/[0.02]' : 'border-slate-100 bg-slate-50'
-          }`}>
+          <div className="flex items-center justify-between px-6 py-5 border-b border-[var(--line)] bg-[var(--surface)]">
             <div>
-              <span className="text-[10px] font-mono tracking-widest text-[#2B59FF] uppercase block mb-1">
-                Client Feedback & Rating
+              <span className="text-[10px] font-mono tracking-widest text-[var(--accent)] uppercase block mb-1 font-bold">
+                Client Feedback &amp; Rating
               </span>
-              <h2 className="text-xl font-serif font-bold">
+              <h2 className="text-xl font-serif font-normal text-[var(--ink)]">
                 Share Your Experience with LeeAutoX
               </h2>
             </div>
             <button
+              type="button"
               onClick={onClose}
-              className={`p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors ${
-                theme === 'dark' ? 'text-white/60 hover:text-white' : 'text-slate-400 hover:text-slate-800'
-              }`}
+              aria-label="Close modal"
+              className="p-2 rounded-full border border-[var(--line)] text-[var(--ink-2)] hover:text-[var(--ink)] hover:border-[var(--accent)] transition-colors cursor-pointer"
             >
-              <X size={20} />
+              <X size={18} />
             </button>
           </div>
 
           {success ? (
             <div className="p-12 text-center flex flex-col items-center justify-center">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: 'spring', damping: 12 }}
-                className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-6"
-              >
+              <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-500 mb-6">
                 <CheckCircle size={32} />
-              </motion.div>
-              <h3 className="text-2xl font-serif font-bold mb-2">Thank You for Your Review!</h3>
-              <p className="text-sm text-zinc-400 max-w-md mb-6 leading-relaxed">
-                Your testimonial has been verified and added to our live reviews slide deck and rating ledger.
+              </div>
+              <h3 className="text-2xl font-serif font-normal mb-2 text-[var(--ink)]">Thank You for Your Review!</h3>
+              <p className="text-sm text-[var(--ink-2)] max-w-md mb-6 leading-relaxed">
+                Your testimonial has been verified and added to our live reviews marquee and rating ledger.
               </p>
-              <div className="text-xs font-mono text-[#2B59FF] flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#2B59FF] animate-pulse" />
-                Updated live in Hero Trust Badge
+              <div className="text-xs font-mono text-[var(--accent)] flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse" />
+                Updated live in Trust Ledger
               </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
+            <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-5">
               {error && (
-                <div className="p-3 bg-red-500/10 border border-red-500/30 text-red-400 text-xs flex items-center gap-2">
+                <div className="p-3 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-500 text-xs flex items-center gap-2">
                   <AlertCircle size={16} />
                   <span>{error}</span>
                 </div>
               )}
 
-              {/* Star Rating Select */}
               <div>
-                <label className="block text-xs font-mono tracking-wider uppercase text-zinc-400 mb-2">
+                <label className="block text-xs font-mono tracking-wider uppercase text-[var(--ink-2)] mb-2">
                   Your Overall Rating
                 </label>
-                <div className="flex items-center gap-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      onClick={() => setRating(star)}
-                      onMouseEnter={() => setHoverRating(star)}
-                      onMouseLeave={() => setHoverRating(0)}
-                      className="p-1 transition-transform hover:scale-110 focus:outline-none"
-                    >
-                      <Star
-                        size={28}
-                        className={`transition-colors ${
-                          (hoverRating || rating) >= star
-                            ? 'text-amber-400 fill-amber-400'
-                            : 'text-zinc-600 dark:text-zinc-700'
-                        }`}
-                      />
-                    </button>
-                  ))}
-                  <span className="ml-3 text-xs font-bold text-amber-400">
+                <div className="flex flex-wrap items-center gap-3">
+                  <PebbleRating value={rating} onChange={setRating} />
+                  <span className="text-xs font-mono font-bold text-amber-500">
                     {rating === 5 ? '5.0 — Excellent' : `${rating}.0 / 5.0`}
                   </span>
                 </div>
               </div>
 
-              {/* Name & Location Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-mono tracking-wider uppercase text-zinc-400 mb-1.5">
+                  <label className="block text-xs font-mono tracking-wider uppercase text-[var(--ink-2)] mb-1.5">
                     Your Name / Business *
                   </label>
                   <input
@@ -220,31 +190,26 @@ export default function LeaveReviewModal({ isOpen, onClose }: LeaveReviewModalPr
                     placeholder="e.g. Chief Adebayo K."
                     value={author}
                     onChange={(e) => setAuthor(e.target.value)}
-                    className={`w-full px-4 py-2.5 text-sm border focus:outline-none focus:border-[#2B59FF] transition-colors ${
-                      theme === 'dark' ? 'bg-black/50 border-white/15 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'
-                    }`}
+                    className={inputClass}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono tracking-wider uppercase text-zinc-400 mb-1.5">
-                    City & Country / Role
+                  <label className="block text-xs font-mono tracking-wider uppercase text-[var(--ink-2)] mb-1.5">
+                    City &amp; Country / Role
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. Lagos, Nigeria or CEO, Auto Fleet"
+                    placeholder="e.g. Lagos, Nigeria"
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
-                    className={`w-full px-4 py-2.5 text-sm border focus:outline-none focus:border-[#2B59FF] transition-colors ${
-                      theme === 'dark' ? 'bg-black/50 border-white/15 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'
-                    }`}
+                    className={inputClass}
                   />
                 </div>
               </div>
 
-              {/* Service or Car Model */}
               <div>
-                <label className="block text-xs font-mono tracking-wider uppercase text-zinc-400 mb-1.5">
+                <label className="block text-xs font-mono tracking-wider uppercase text-[var(--ink-2)] mb-1.5">
                   Vehicle Imported or Service Received
                 </label>
                 <input
@@ -252,49 +217,39 @@ export default function LeaveReviewModal({ isOpen, onClose }: LeaveReviewModalPr
                   placeholder="e.g. 2022 Lexus RX 350 Sourcing & Port Clearance"
                   value={service}
                   onChange={(e) => setService(e.target.value)}
-                  className={`w-full px-4 py-2.5 text-sm border focus:outline-none focus:border-[#2B59FF] transition-colors ${
-                    theme === 'dark' ? 'bg-black/50 border-white/15 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'
-                  }`}
+                  className={inputClass}
                 />
               </div>
 
-              {/* Review Text */}
               <div>
-                <label className="block text-xs font-mono tracking-wider uppercase text-zinc-400 mb-1.5">
-                  Your Review & Experience *
+                <label className="block text-xs font-mono tracking-wider uppercase text-[var(--ink-2)] mb-1.5">
+                  Your Review &amp; Experience *
                 </label>
                 <textarea
                   required
                   rows={4}
-                  placeholder="Describe the speed of delivery, vehicle condition, auction updates, and communication with the LeeAutoX team..."
+                  placeholder="Describe the speed of delivery, vehicle condition, auction updates, and communication..."
                   value={quote}
                   onChange={(e) => setQuote(e.target.value)}
-                  className={`w-full p-4 text-sm border focus:outline-none focus:border-[#2B59FF] transition-colors resize-none leading-relaxed ${
-                    theme === 'dark' ? 'bg-black/50 border-white/15 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'
-                  }`}
+                  className={`${inputClass} resize-none leading-relaxed`}
                 />
               </div>
 
-              {/* Media Upload (Photo / Video proof) */}
               <div className="space-y-2">
-                <label className="block text-xs font-mono tracking-wider uppercase text-zinc-400">
+                <label className="block text-xs font-mono tracking-wider uppercase text-[var(--ink-2)]">
                   Attach Delivery Photo / Video Clip (Optional)
                 </label>
-                
-                <div className={`p-4 border border-dashed flex flex-col sm:flex-row items-center justify-between gap-4 ${
-                  theme === 'dark' ? 'border-white/20 bg-white/[0.02]' : 'border-slate-300 bg-slate-50'
-                }`}>
+
+                <div className="p-4 rounded-2xl border border-dashed border-[var(--line)] bg-[var(--surface)] flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <div className="p-3 bg-[#2B59FF]/10 text-[#2B59FF]">
-                      {mediaType === 'video' ? <Video size={20} /> : <ImageIcon size={20} />}
+                    <div className="p-3 rounded-full bg-[var(--accent-soft)] text-[var(--accent)]">
+                      {mediaType === 'video' ? <Video size={18} /> : <ImageIcon size={18} />}
                     </div>
                     <div>
-                      <p className="text-xs font-bold">
+                      <p className="text-xs font-semibold text-[var(--ink)]">
                         {mediaFileName ? mediaFileName : 'Upload car delivery photo or handover clip'}
                       </p>
-                      <p className="text-[11px] text-zinc-500">
-                        Supports JPG, PNG, WebP, MP4 (Max 5MB)
-                      </p>
+                      <p className="text-[11px] text-[var(--ink-2)]">Supports JPG, PNG, WebP, MP4 (Max 5MB)</p>
                     </div>
                   </div>
 
@@ -309,10 +264,10 @@ export default function LeaveReviewModal({ isOpen, onClose }: LeaveReviewModalPr
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-mono uppercase tracking-wider transition-colors flex items-center gap-2 cursor-pointer"
+                      className="lx-pill-btn border border-[var(--line)] bg-[var(--card)] text-[var(--ink)] hover:border-[var(--accent)] px-4 py-2 text-xs font-mono uppercase tracking-wider"
                     >
                       <Upload size={14} />
-                      <span>{mediaFileName ? 'Change File' : 'Browse'}</span>
+                      <span>{mediaFileName ? 'Change' : 'Browse'}</span>
                     </button>
                     {mediaUrl && (
                       <button
@@ -322,7 +277,7 @@ export default function LeaveReviewModal({ isOpen, onClose }: LeaveReviewModalPr
                           setMediaFileName('');
                           setMediaType('none');
                         }}
-                        className="px-3 py-2 text-xs text-red-400 hover:text-red-300"
+                        className="px-3 py-2 text-xs text-red-500 hover:underline cursor-pointer"
                       >
                         Remove
                       </button>
@@ -330,9 +285,8 @@ export default function LeaveReviewModal({ isOpen, onClose }: LeaveReviewModalPr
                   </div>
                 </div>
 
-                {/* Media Preview if attached */}
                 {mediaUrl && (
-                  <div className="relative mt-2 rounded overflow-hidden border border-white/10 h-36 bg-black/40 flex items-center justify-center">
+                  <div className="relative mt-2 rounded-2xl overflow-hidden border border-[var(--line)] h-36 bg-black/30 flex items-center justify-center">
                     {mediaType === 'video' ? (
                       <video src={mediaUrl} controls className="max-h-full max-w-full" />
                     ) : (
@@ -342,27 +296,26 @@ export default function LeaveReviewModal({ isOpen, onClose }: LeaveReviewModalPr
                 )}
               </div>
 
-              {/* Submit Buttons */}
-              <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="pt-4 border-t border-[var(--line)] flex flex-col sm:flex-row items-center justify-between gap-4">
                 <a
                   href={`https://wa.me/${CONTACT_INFO.whatsappRaw}?text=${encodeURIComponent(
                     `Hello LeeAutoX! I am submitting a review on your website. My name is ${author || 'Client'} and I'm sharing my feedback regarding ${service || 'my vehicle'}.`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-emerald-400 hover:text-emerald-300 flex items-center gap-1.5 order-2 sm:order-1"
+                  className="text-xs font-mono text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1.5 order-2 sm:order-1"
                 >
                   <MessageCircle size={14} />
-                  <span>Send direct video to our WhatsApp DM</span>
+                  <span>Send video to WhatsApp DM</span>
                 </a>
 
-                <button
+                <PaperPlaneButton
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full sm:w-auto px-8 py-3.5 bg-[#2B59FF] hover:bg-[#1a41cc] text-white font-bold text-xs uppercase tracking-widest transition-colors disabled:opacity-50 cursor-pointer order-1 sm:order-2"
-                >
-                  {isSubmitting ? 'Posting Review...' : 'Submit Verified Review'}
-                </button>
+                  sending={isSubmitting}
+                  label={isSubmitting ? 'Posting Review...' : 'Submit Verified Review'}
+                  className="w-full sm:w-auto px-7 py-3 order-1 sm:order-2"
+                />
               </div>
             </form>
           )}

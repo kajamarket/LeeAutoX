@@ -1,29 +1,27 @@
-import { motion } from 'motion/react';
-import { Sun, Moon } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { PullCordLamp } from './ui/ImportedControls';
 
 export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
+  const isDark = theme === 'dark';
 
   return (
-    <motion.button
-      onClick={toggleTheme}
-      initial={false}
-      animate={{
-        backgroundColor: theme === 'light' ? '#000000' : '#ffffff',
-        color: theme === 'light' ? '#ffffff' : '#000000',
-      }}
-      className="fixed bottom-8 left-8 z-[100] w-9 h-9 rounded-full flex items-center justify-center shadow-lg cursor-pointer transition-shadow hover:shadow-xl border border-white/10"
-      role="button"
-      aria-label="Toggle theme"
-    >
-      <motion.div
-        initial={false}
-        animate={{ rotate: theme === 'light' ? 0 : 360 }}
-        transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+    <div className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-[var(--z-sticky)]">
+      {/* Desktop interactive Pull Cord Lamp */}
+      <div className="hidden sm:block">
+        <PullCordLamp isDark={isDark} onToggle={toggleTheme} />
+      </div>
+
+      {/* Compact mobile toggle */}
+      <button
+        type="button"
+        onClick={toggleTheme}
+        aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+        className="sm:hidden flex h-11 w-11 items-center justify-center rounded-full lx-glass text-[var(--ink)] cursor-pointer transition-transform active:scale-90"
       >
-        {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-      </motion.div>
-    </motion.button>
+        {isDark ? <Sun size={18} /> : <Moon size={18} />}
+      </button>
+    </div>
   );
 }

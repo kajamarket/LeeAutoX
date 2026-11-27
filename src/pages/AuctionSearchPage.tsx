@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { 
-  Search, SlidersHorizontal, Grid, List, X, Clock, 
-  MapPin, Gavel, ChevronLeft, ChevronRight, RotateCcw, AlertCircle, 
-  ShieldCheck, RefreshCw, MessageCircle, ChevronDown, Check, Activity
+  Search, SlidersHorizontal, Grid, List, X, ChevronLeft, ChevronRight, RotateCcw, AlertCircle, 
+  ShieldCheck, ChevronDown, Check
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import PageHeader from '../components/PageHeader';
@@ -11,17 +10,15 @@ import { VehicleLotItem, AuctionFilterValues, FilterOptionsMetadata } from '../t
 import { 
   searchAuctionVehicles, 
   getAuctionFilterOptions, 
-  buildFilterQuery,
   getAuctionDiagnostics,
   RelayDiagnostics 
 } from '../services/auctionService';
 import { STATIC_FILTER_METADATA } from '../data/auctionFilters';
-import { CONTACT_INFO } from '../constants';
 import AuctionVehicleCard from '../components/AuctionVehicleCard';
+import { OriginalLoader, RippleButton, RockerSwitch } from '../components/ui/ImportedControls';
 
 export default function AuctionSearchPage() {
   const { theme } = useTheme();
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // View state: grid vs list
@@ -95,7 +92,9 @@ export default function AuctionSearchPage() {
     colors: STATIC_FILTER_METADATA.colors,
     fuels: STATIC_FILTER_METADATA.fuels,
     transmissions: STATIC_FILTER_METADATA.transmissions,
-    driveTypes: STATIC_FILTER_METADATA.driveTypes.map((d) => ({ value: d, label: d })),
+    driveTypes: STATIC_FILTER_METADATA.driveTypes.map((d) =>
+      typeof d === 'string' ? { value: d, label: d } : { value: d.value, label: d.label || d.value }
+    ),
     runConditions: [
       { value: 'RUNS AND DRIVES', label: 'Run and Drive' },
       { value: 'ENGINE START PROGRAM', label: 'Vehicle starts' },
@@ -190,7 +189,13 @@ export default function AuctionSearchPage() {
         setHasMore(Boolean(res.meta.has_more));
         setDataSource(res.source);
         if (res.diagnostics) {
-          setDiagnostics(res.diagnostics);
+          setDiagnostics((prev) => ({
+            ...prev,
+            ...res.diagnostics,
+            source: res.source,
+          }));
+        } else {
+          setDiagnostics(getAuctionDiagnostics());
         }
         setIsLoading(false);
       }
@@ -410,9 +415,7 @@ export default function AuctionSearchPage() {
   }, [filters, metadata.types]);
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${
-      theme === 'dark' ? 'bg-[#090909] text-white' : 'bg-slate-50 text-slate-900'
-    }`}>
+    <div className="min-h-screen bg-[var(--bg)] text-[var(--ink)] transition-colors duration-300">
       <PageHeader
         title="Live Auction Vehicles"
         subtitle="Search and bid on live Copart & IAAI salvage, repairable, and clean title auction lots in North America with full export logistics."
@@ -446,17 +449,18 @@ export default function AuctionSearchPage() {
         )}
 
         {/* TOP CONTROLS: Mobile Filter Button, View Mode, Result Count */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--line)]">
           <div className="flex items-center gap-3">
-            <button
+            <RippleButton
+              type="button"
               onClick={() => setIsMobileFiltersOpen((prev) => !prev)}
-              className="lg:hidden px-4 py-2.5 bg-[#2B59FF] text-white text-xs font-mono font-bold uppercase tracking-wider rounded-xl flex items-center gap-2 cursor-pointer shadow-sm"
+              className="lg:hidden !min-h-[40px] !px-4 !py-2 text-xs font-mono font-bold uppercase tracking-wider"
             >
               <SlidersHorizontal size={14} />
               <span>Filters {activeChips.length > 0 && `(${activeChips.length})`}</span>
-            </button>
+            </RippleButton>
 
-            <span className="text-xs font-mono opacity-80">
+            <span className="text-xs font-mono text-[var(--ink-2)] tabular-nums">
               {totalCount !== null 
                 ? `${totalCount.toLocaleString()}${isExactTotal ? ' vehicles' : '+ vehicles'} available`
                 : `${vehicles.length} vehicles on this page`}
@@ -464,61 +468,44 @@ export default function AuctionSearchPage() {
           </div>
 
           {/* Grid / List View Toggle & Reset */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             {activeChips.length > 0 && (
               <button
                 type="button"
                 onClick={clearAllFilters}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono text-[#2B59FF] hover:underline cursor-pointer"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono text-[var(--accent)] hover:underline cursor-pointer"
               >
                 <RotateCcw size={12} />
                 <span>Reset All</span>
               </button>
             )}
 
-            <div className="flex items-center p-1 rounded-xl bg-slate-200/80 dark:bg-white/10 border border-slate-300 dark:border-white/10">
-              <button
-                type="button"
-                onClick={() => setViewMode('grid')}
-                className={`p-1.5 rounded-lg transition-all cursor-pointer ${
-                  viewMode === 'grid'
-                    ? 'bg-white dark:bg-black text-[#2B59FF] shadow-xs'
-                    : 'text-slate-600 dark:text-white/60 hover:text-slate-900 dark:hover:text-white'
-                }`}
-                title="Grid view"
-              >
-                <Grid size={16} />
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode('list')}
-                className={`p-1.5 rounded-lg transition-all cursor-pointer ${
-                  viewMode === 'list'
-                    ? 'bg-white dark:bg-black text-[#2B59FF] shadow-xs'
-                    : 'text-slate-600 dark:text-white/60 hover:text-slate-900 dark:hover:text-white'
-                }`}
-                title="List view"
-              >
-                <List size={16} />
-              </button>
-            </div>
+            <RockerSwitch
+              value={viewMode}
+              onChange={(val) => setViewMode(val as 'grid' | 'list')}
+              options={[
+                { value: 'grid', label: <span className="inline-flex items-center gap-1"><Grid size={14} /> Grid</span> },
+                { value: 'list', label: <span className="inline-flex items-center gap-1"><List size={14} /> List</span> },
+              ]}
+            />
           </div>
         </div>
 
         {/* ACTIVE FILTER CHIPS */}
         {activeChips.length > 0 && (
           <div className="flex flex-wrap items-center gap-2 mb-6">
-            <span className="text-xs font-mono opacity-60">Active:</span>
+            <span className="text-xs font-mono text-[var(--ink-2)]">Active:</span>
             {activeChips.map((chip) => (
               <span
                 key={chip.key}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-[#2B59FF] dark:text-blue-300 border border-blue-200 dark:border-blue-800/40 text-xs font-mono"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent)]/25 text-xs font-mono"
               >
                 <span>{chip.label}</span>
                 <button
                   type="button"
                   onClick={chip.onRemove}
-                  className="hover:text-red-500 cursor-pointer ml-1"
+                  aria-label={`Remove ${chip.label}`}
+                  className="hover:text-red-500 cursor-pointer ml-0.5"
                 >
                   <X size={13} />
                 </button>
@@ -527,7 +514,7 @@ export default function AuctionSearchPage() {
             <button
               type="button"
               onClick={clearAllFilters}
-              className="text-xs font-mono text-[#2B59FF] hover:underline cursor-pointer ml-2"
+              className="text-xs font-mono text-[var(--accent)] hover:underline cursor-pointer ml-2"
             >
               Clear all
             </button>
@@ -536,29 +523,28 @@ export default function AuctionSearchPage() {
 
         {/* MAIN LAYOUT: SIDEBAR FILTER PANEL + RESULTS GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* SIDEBAR FILTER PANEL (Task 2 complete specification) */}
+          {/* SIDEBAR FILTER PANEL */}
           <aside className={`lg:block ${isMobileFiltersOpen ? 'block' : 'hidden'} lg:col-span-1 space-y-5`}>
-            <div className={`p-5 rounded-3xl border transition-colors ${
-              theme === 'dark' ? 'bg-[#121212] border-white/10' : 'bg-white border-slate-200 shadow-sm'
-            }`}>
-              <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-200 dark:border-white/10">
-                <h3 className="font-serif text-base font-bold flex items-center gap-2">
-                  <SlidersHorizontal size={16} className="text-[#2B59FF]" />
+            <div className="lx-card p-5 transition-colors">
+              <div className="flex items-center justify-between pb-3 mb-4 border-b border-[var(--line)]">
+                <h3 className="font-serif text-base font-normal text-[var(--ink)] flex items-center gap-2">
+                  <SlidersHorizontal size={16} className="text-[var(--accent)]" />
                   Filters
                 </h3>
                 {activeChips.length > 0 && (
                   <button
+                    type="button"
                     onClick={clearAllFilters}
-                    className="text-xs font-mono text-[#2B59FF] hover:underline flex items-center gap-1 cursor-pointer"
+                    className="text-xs font-mono text-[var(--accent)] hover:underline flex items-center gap-1 cursor-pointer"
                   >
                     <RotateCcw size={12} /> Reset
                   </button>
                 )}
               </div>
 
-              {/* 1. Keyword search (VIN, lot, text) */}
+              {/* 1. Keyword search */}
               <div className="mb-4">
-                <label className="text-[10px] font-mono uppercase tracking-wider block mb-1 opacity-70">
+                <label className="text-[10px] font-mono uppercase tracking-wider block mb-1 text-[var(--ink-2)]">
                   Search Text (VIN, Lot or Keyword)
                 </label>
                 <form 
@@ -573,13 +559,12 @@ export default function AuctionSearchPage() {
                     value={draftKeyword}
                     onChange={(e) => setDraftKeyword(e.target.value)}
                     placeholder="Search VIN, Lot, Model..."
-                    className={`w-full min-h-[40px] px-3 pr-8 text-xs rounded-xl border outline-none font-medium ${
-                      theme === 'dark' ? 'bg-black/50 border-white/15 text-white' : 'bg-slate-50 border-slate-200'
-                    }`}
+                    className="w-full min-h-[40px] px-3 pr-8 text-xs rounded-xl border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] outline-none focus:border-[var(--accent)] font-medium"
                   />
                   <button
                     type="submit"
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#2B59FF]"
+                    aria-label="Run search"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--ink-2)] hover:text-[var(--accent)] cursor-pointer"
                   >
                     <Search size={14} />
                   </button>
@@ -665,9 +650,7 @@ export default function AuctionSearchPage() {
                 <button
                   type="button"
                   onClick={() => setIsMakeDropdownOpen((prev) => !prev)}
-                  className={`w-full min-h-[40px] px-3 py-2 text-xs font-mono rounded-xl border flex items-center justify-between cursor-pointer ${
-                    theme === 'dark' ? 'bg-black/50 border-white/15 text-white' : 'bg-slate-50 border-slate-200'
-                  }`}
+                  className="w-full min-h-[40px] px-3 py-2 text-xs font-mono rounded-xl border bg-[var(--surface)] border-[var(--line)] text-[var(--ink)] flex items-center justify-between cursor-pointer"
                 >
                   <span className="truncate font-bold">
                     {filters.make === 'All' ? 'All Makes' : filters.make}
@@ -676,9 +659,7 @@ export default function AuctionSearchPage() {
                 </button>
 
                 {isMakeDropdownOpen && (
-                  <div className={`absolute left-0 top-full mt-1 w-full max-h-64 rounded-2xl border shadow-2xl z-50 overflow-hidden flex flex-col ${
-                    theme === 'dark' ? 'bg-[#181818] border-white/15 text-white' : 'bg-white border-slate-200 text-slate-900'
-                  }`}>
+                  <div className="absolute left-0 top-full mt-1 w-full max-h-64 rounded-2xl border shadow-2xl z-50 overflow-hidden flex flex-col bg-[var(--card)] border-[var(--line)] text-[var(--ink)]">
                     <div className="p-2 border-b border-slate-200 dark:border-white/10">
                       <input
                         type="text"
@@ -723,9 +704,7 @@ export default function AuctionSearchPage() {
                   value={filters.model || 'All'}
                   onChange={(e) => updateFilter('model', e.target.value)}
                   disabled={!filters.make || filters.make === 'All'}
-                  className={`w-full min-h-[40px] px-3 py-2 text-xs font-mono rounded-xl border outline-none disabled:opacity-40 cursor-pointer ${
-                    theme === 'dark' ? 'bg-[#181818] border-white/15 text-white' : 'bg-slate-50 border-slate-200'
-                  }`}
+                  className="w-full min-h-[40px] px-3 py-2 text-xs font-mono rounded-xl border outline-none disabled:opacity-40 cursor-pointer bg-[var(--surface)] border-[var(--line)] text-[var(--ink)]"
                 >
                   <option value="All">{!filters.make || filters.make === 'All' ? 'Select Make First' : 'All Models'}</option>
                   {availableModels.map((m) => (
@@ -741,9 +720,7 @@ export default function AuctionSearchPage() {
                   <select
                     value={filters.series || 'All'}
                     onChange={(e) => updateFilter('series', e.target.value)}
-                    className={`w-full min-h-[40px] px-3 py-2 text-xs font-mono rounded-xl border outline-none cursor-pointer ${
-                      theme === 'dark' ? 'bg-[#181818] border-white/15 text-white' : 'bg-slate-50 border-slate-200'
-                    }`}
+                    className="w-full min-h-[40px] px-3 py-2 text-xs font-mono rounded-xl border outline-none cursor-pointer bg-[var(--surface)] border-[var(--line)] text-[var(--ink)]"
                   >
                     <option value="All">All Series</option>
                     {seriesList.map((s) => (
@@ -760,9 +737,7 @@ export default function AuctionSearchPage() {
                   <select
                     value={filters.generation || 'All'}
                     onChange={(e) => updateFilter('generation', e.target.value)}
-                    className={`w-full min-h-[40px] px-3 py-2 text-xs font-mono rounded-xl border outline-none cursor-pointer ${
-                      theme === 'dark' ? 'bg-[#181818] border-white/15 text-white' : 'bg-slate-50 border-slate-200'
-                    }`}
+                    className="w-full min-h-[40px] px-3 py-2 text-xs font-mono rounded-xl border outline-none cursor-pointer bg-[var(--surface)] border-[var(--line)] text-[var(--ink)]"
                   >
                     <option value="All">All Generations</option>
                     {generationList.map((g) => (
@@ -778,9 +753,7 @@ export default function AuctionSearchPage() {
                 <select
                   value={filters.type_id || 'All'}
                   onChange={(e) => updateFilter('type', e.target.value)}
-                  className={`w-full min-h-[40px] px-3 py-2 text-xs font-mono rounded-xl border outline-none cursor-pointer ${
-                    theme === 'dark' ? 'bg-[#181818] border-white/15 text-white' : 'bg-slate-50 border-slate-200'
-                  }`}
+                  className="w-full min-h-[40px] px-3 py-2 text-xs font-mono rounded-xl border outline-none cursor-pointer bg-[var(--surface)] border-[var(--line)] text-[var(--ink)]"
                 >
                   <option value="All">All Vehicle Types</option>
                   {metadata.types.map((vt) => (
@@ -798,9 +771,7 @@ export default function AuctionSearchPage() {
                   <select
                     value={filters.year_from || ''}
                     onChange={(e) => updateFilter('year_from', e.target.value || null)}
-                    className={`w-full min-h-[40px] px-2 text-xs font-mono rounded-xl border outline-none ${
-                      theme === 'dark' ? 'bg-[#181818] border-white/15 text-white' : 'bg-slate-50 border-slate-200'
-                    }`}
+                    className="w-full min-h-[40px] px-2 text-xs font-mono rounded-xl border outline-none bg-[var(--surface)] border-[var(--line)] text-[var(--ink)]"
                   >
                     <option value="">Year From</option>
                     {yearOptions.map((y) => (
@@ -810,9 +781,7 @@ export default function AuctionSearchPage() {
                   <select
                     value={filters.year_to || ''}
                     onChange={(e) => updateFilter('year_to', e.target.value || null)}
-                    className={`w-full min-h-[40px] px-2 text-xs font-mono rounded-xl border outline-none ${
-                      theme === 'dark' ? 'bg-[#181818] border-white/15 text-white' : 'bg-slate-50 border-slate-200'
-                    }`}
+                    className="w-full min-h-[40px] px-2 text-xs font-mono rounded-xl border outline-none bg-[var(--surface)] border-[var(--line)] text-[var(--ink)]"
                   >
                     <option value="">Year To</option>
                     {yearOptions.map((y) => (
@@ -833,9 +802,7 @@ export default function AuctionSearchPage() {
                     min="0"
                     value={filters.price_min || ''}
                     onChange={(e) => updateFilter('price_min', e.target.value || null)}
-                    className={`w-1/2 min-h-[40px] px-3 text-xs font-mono rounded-xl border outline-none ${
-                      theme === 'dark' ? 'bg-[#181818] border-white/15 text-white' : 'bg-slate-50 border-slate-200'
-                    }`}
+                    className="w-1/2 min-h-[40px] px-3 text-xs font-mono rounded-xl border outline-none bg-[var(--surface)] border-[var(--line)] text-[var(--ink)]"
                   />
                   <input
                     type="number"
@@ -844,9 +811,7 @@ export default function AuctionSearchPage() {
                     max="250000"
                     value={filters.price_max || ''}
                     onChange={(e) => updateFilter('price_max', e.target.value || null)}
-                    className={`w-1/2 min-h-[40px] px-3 text-xs font-mono rounded-xl border outline-none ${
-                      theme === 'dark' ? 'bg-[#181818] border-white/15 text-white' : 'bg-slate-50 border-slate-200'
-                    }`}
+                    className="w-1/2 min-h-[40px] px-3 text-xs font-mono rounded-xl border outline-none bg-[var(--surface)] border-[var(--line)] text-[var(--ink)]"
                   />
                 </div>
               </div>
@@ -862,9 +827,7 @@ export default function AuctionSearchPage() {
                     min="0"
                     value={filters.odometer_from || ''}
                     onChange={(e) => updateFilter('odometer_from', e.target.value || null)}
-                    className={`w-1/2 min-h-[40px] px-3 text-xs font-mono rounded-xl border outline-none ${
-                      theme === 'dark' ? 'bg-[#181818] border-white/15 text-white' : 'bg-slate-50 border-slate-200'
-                    }`}
+                    className="w-1/2 min-h-[40px] px-3 text-xs font-mono rounded-xl border outline-none bg-[var(--surface)] border-[var(--line)] text-[var(--ink)]"
                   />
                   <input
                     type="number"
@@ -873,9 +836,7 @@ export default function AuctionSearchPage() {
                     max="500000"
                     value={filters.odometer_to || ''}
                     onChange={(e) => updateFilter('odometer_to', e.target.value || null)}
-                    className={`w-1/2 min-h-[40px] px-3 text-xs font-mono rounded-xl border outline-none ${
-                      theme === 'dark' ? 'bg-[#181818] border-white/15 text-white' : 'bg-slate-50 border-slate-200'
-                    }`}
+                    className="w-1/2 min-h-[40px] px-3 text-xs font-mono rounded-xl border outline-none bg-[var(--surface)] border-[var(--line)] text-[var(--ink)]"
                   />
                 </div>
               </div>
@@ -891,9 +852,7 @@ export default function AuctionSearchPage() {
                     min="0"
                     value={filters.engine_size_from || ''}
                     onChange={(e) => updateFilter('engine_size_from', e.target.value || null)}
-                    className={`w-1/2 min-h-[40px] px-3 text-xs font-mono rounded-xl border outline-none ${
-                      theme === 'dark' ? 'bg-[#181818] border-white/15 text-white' : 'bg-slate-50 border-slate-200'
-                    }`}
+                    className="w-1/2 min-h-[40px] px-3 text-xs font-mono rounded-xl border outline-none bg-[var(--surface)] border-[var(--line)] text-[var(--ink)]"
                   />
                   <input
                     type="number"
@@ -902,9 +861,7 @@ export default function AuctionSearchPage() {
                     max="20"
                     value={filters.engine_size_to || ''}
                     onChange={(e) => updateFilter('engine_size_to', e.target.value || null)}
-                    className={`w-1/2 min-h-[40px] px-3 text-xs font-mono rounded-xl border outline-none ${
-                      theme === 'dark' ? 'bg-[#181818] border-white/15 text-white' : 'bg-slate-50 border-slate-200'
-                    }`}
+                    className="w-1/2 min-h-[40px] px-3 text-xs font-mono rounded-xl border outline-none bg-[var(--surface)] border-[var(--line)] text-[var(--ink)]"
                   />
                 </div>
               </div>
@@ -1166,40 +1123,30 @@ export default function AuctionSearchPage() {
           {/* RESULTS CONTENT */}
           <section className="lg:col-span-3">
             {isLoading ? (
-              // Loading State with subtle circular spinner animation
-              <div className={`py-28 px-6 rounded-3xl border flex flex-col items-center justify-center gap-4 text-center transition-colors ${
-                theme === 'dark' ? 'bg-[#121212] border-white/10 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-sm'
-              }`}>
-                <div className="w-10 h-10 rounded-full border-3 border-slate-200 dark:border-white/15 border-t-[#2B59FF] dark:border-t-[#2B59FF] animate-spin" />
-                <div className="space-y-1">
-                  <p className="font-mono text-xs font-bold tracking-wider text-slate-800 dark:text-zinc-200">
-                    Loading live auction vehicles...
-                  </p>
-                  <p className="font-mono text-[11px] text-slate-500 dark:text-zinc-400">
-                    Fetching latest inventory from Copart & IAAI feeds
-                  </p>
-                </div>
+              <div className="lx-card py-24 px-6 flex flex-col items-center justify-center gap-2 text-center">
+                <OriginalLoader label="Loading live auction vehicles..." />
+                <p className="font-mono text-[11px] text-[var(--ink-2)]">
+                  Fetching latest inventory from Copart &amp; IAAI feeds
+                </p>
               </div>
             ) : vehicles.length === 0 ? (
-              // Empty State
-              <div className={`py-20 px-6 text-center rounded-3xl border ${
-                theme === 'dark' ? 'bg-[#121212] border-white/10 text-white' : 'bg-white border-slate-200 text-slate-900'
-              }`}>
-                <ShieldCheck size={48} className="mx-auto text-[#2B59FF] mb-4 opacity-80" />
-                <h3 className="font-serif text-2xl font-bold mb-2">No vehicles match your active filters</h3>
-                <p className="text-xs font-mono max-w-md mx-auto mb-6 opacity-70">
+              <div className="lx-card py-20 px-6 text-center">
+                <ShieldCheck size={48} className="mx-auto text-[var(--accent)] mb-4 opacity-80" />
+                <h3 className="font-serif text-2xl font-normal mb-2 text-[var(--ink)]">
+                  No vehicles match your active filters
+                </h3>
+                <p className="text-xs font-mono max-w-md mx-auto mb-6 text-[var(--ink-2)]">
                   Try broadening your search by clearing specific filters such as damage, price, or exact series.
                 </p>
-                <button
+                <RippleButton
                   type="button"
                   onClick={clearAllFilters}
-                  className="px-6 py-3 bg-[#2B59FF] text-white text-xs font-mono font-bold uppercase tracking-wider rounded-xl hover:bg-blue-600 transition-all cursor-pointer shadow-lg shadow-blue-500/20"
+                  className="text-xs font-mono font-bold uppercase tracking-wider"
                 >
                   Reset All Filters
-                </button>
+                </RippleButton>
               </div>
             ) : (
-              // Vehicle Cards
               <div>
                 <div className={
                   viewMode === 'grid' 
@@ -1216,9 +1163,9 @@ export default function AuctionSearchPage() {
                   ))}
                 </div>
 
-                {/* CURSOR-BASED PAGINATION (Task 2 specification) */}
-                <div className="mt-12 p-4 rounded-2xl border flex flex-col sm:flex-row items-center justify-between gap-4 border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-xs font-mono">
-                  <div className="opacity-75">
+                {/* CURSOR-BASED PAGINATION */}
+                <div className="lx-card mt-12 p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono">
+                  <div className="text-[var(--ink-2)] tabular-nums">
                     <span>Page {currentPageIndex + 1}</span>
                     {totalCount !== null && (
                       <span className="ml-2">· {totalCount.toLocaleString()} lots total</span>
@@ -1230,7 +1177,7 @@ export default function AuctionSearchPage() {
                       type="button"
                       onClick={handlePrevPage}
                       disabled={currentPageIndex <= 0}
-                      className="px-4 py-2 rounded-xl border border-slate-300 dark:border-white/15 bg-white dark:bg-black font-bold flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-white/10"
+                      className="min-h-[40px] px-4 py-2 rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] font-bold flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed hover:border-[var(--accent)]"
                     >
                       <ChevronLeft size={14} />
                       <span>Previous</span>
@@ -1240,7 +1187,7 @@ export default function AuctionSearchPage() {
                       type="button"
                       onClick={handleNextPage}
                       disabled={!nextCursor || !hasMore}
-                      className="px-4 py-2 rounded-xl bg-[#2B59FF] text-white font-bold flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed hover:bg-blue-600 shadow-sm"
+                      className="min-h-[40px] px-5 py-2 rounded-full bg-[var(--accent)] text-[var(--accent-ink)] font-bold flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-sm hover:opacity-92"
                     >
                       <span>Next</span>
                       <ChevronRight size={14} />

@@ -8,11 +8,11 @@ export default function TestimonialsPage() {
   const data = SEO_DATA['/testimonials/'];
 
   return (
-    <div className="min-h-screen bg-background">
-      <PageHeader 
-        title={data.heading} 
-        subtitle={data.description} 
-        breadcrumbs={data.breadcrumbs} 
+    <div className="min-h-screen bg-[var(--bg)] text-[var(--ink)]">
+      <PageHeader
+        title={data.heading}
+        subtitle={data.description}
+        breadcrumbs={data.breadcrumbs}
       />
 
       <Testimonials />

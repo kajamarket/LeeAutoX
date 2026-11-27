@@ -46,6 +46,15 @@ function ScrollToTopOnNavigate() {
   return null;
 }
 
+function RouteOpacityShell({ children }: { children: React.ReactNode }) {
+  const { pathname } = useLocation();
+  return (
+    <div key={pathname} className="animate-[lx-fadeIn_0.28s_ease-out_both]">
+      {children}
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <ThemeProvider>
@@ -55,7 +64,7 @@ export default function App() {
             <ReviewsProvider>
             <Router>
             <HomepageIntroGate />
-            <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+            <div className="min-h-screen bg-[var(--bg)] text-[var(--ink)] overflow-x-clip">
               {/* Dynamic Runtime SEO Meta and Schema Manager */}
               <SEOHelmet />
               
@@ -66,6 +75,7 @@ export default function App() {
               <Navbar />
 
               <main>
+                <RouteOpacityShell>
                 <Routes>
                   {/* Primary Pages */}
                   <Route path="/" element={<Home />} />
@@ -159,6 +169,7 @@ export default function App() {
                   {/* Catch-all Redirect Fallback to Home */}
                   <Route path="*" element={<Home />} />
                 </Routes>
+                </RouteOpacityShell>
               </main>
 
               {/* Persistent Shared Footer */}

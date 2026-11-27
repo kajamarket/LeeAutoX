@@ -1,87 +1,62 @@
-import React, { useEffect, useRef } from 'react';
-import { motion } from 'motion/react';
-import { MessageCircle } from 'lucide-react';
-import gsap from 'gsap';
+import { useState } from 'react';
+import { MessageCircle, Phone, FileText, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { CONTACT_INFO } from '../constants';
 
 export default function WhatsAppFloat() {
-  const containerRef = useRef<HTMLAnchorElement>(null);
-  const iconWrapperRef = useRef<HTMLDivElement>(null);
-
-  // Scroll-triggered dynamic wobble/tilt
-  useEffect(() => {
-    let lastScrollY = window.scrollY;
-    let ticking = false;
-
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const currentScrollY = window.scrollY;
-          const delta = currentScrollY - lastScrollY;
-          lastScrollY = currentScrollY;
-
-          if (iconWrapperRef.current && Math.abs(delta) > 1) {
-            // Calculate tilt based on scroll velocity (capped at ±12deg)
-            const tilt = Math.max(-12, Math.min(12, delta * 0.35));
-            gsap.to(iconWrapperRef.current, {
-              rotation: tilt,
-              y: Math.max(-6, Math.min(6, -delta * 0.15)),
-              duration: 0.25,
-              ease: 'power1.out',
-              overwrite: 'auto',
-              onComplete: () => {
-                gsap.to(iconWrapperRef.current, {
-                  rotation: 0,
-                  y: 0,
-                  duration: 0.7,
-                  ease: 'elastic.out(1.2, 0.4)',
-                });
-              },
-            });
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const [expanded, setExpanded] = useState(false);
 
   return (
-    <motion.a
-      ref={containerRef}
-      href={`https://wa.me/${CONTACT_INFO.whatsappRaw}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      whileHover={{ scale: 1.18, rotate: -8 }}
-      whileTap={{ scale: 0.95 }}
-      transition={{ type: 'spring', stiffness: 350, damping: 20 }}
-      className="fixed bottom-28 right-8 z-[100] w-11 h-11 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-xl cursor-pointer border border-white/20 select-none group"
-      aria-label="Contact us on WhatsApp"
-    >
-      {/* Gentle Continuous Floating & Wobble Loop */}
-      <motion.div
-        ref={iconWrapperRef}
-        animate={{
-          y: [-3, 3, -3],
-          rotate: [-3, 3, -3],
-        }}
-        transition={{
-          repeat: Infinity,
-          duration: 3.5,
-          ease: 'easeInOut',
-        }}
-        className="flex items-center justify-center"
-      >
-        <MessageCircle size={22} fill="currentColor" className="text-white drop-shadow-sm" />
-      </motion.div>
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[var(--z-sticky)] flex flex-col items-end gap-2.5">
+      {expanded && (
+        <div className="flex flex-col items-end gap-2 mb-1">
+          <Link
+            to="/nigeria/import-duty-calculator/"
+            onClick={() => setExpanded(false)}
+            className="inline-flex items-center gap-2 rounded-full lx-glass px-4 py-2 text-xs font-semibold text-[var(--ink)] hover:border-[var(--accent)] transition-all"
+          >
+            <FileText size={14} className="text-[var(--accent)]" />
+            <span>Duty Calculator</span>
+          </Link>
+          <a
+            href={`tel:${CONTACT_INFO.phoneNG.replace(/\s+/g, '')}`}
+            className="inline-flex items-center gap-2 rounded-full lx-glass px-4 py-2 text-xs font-semibold text-[var(--ink)] hover:border-[var(--accent)] transition-all"
+          >
+            <Phone size={14} className="text-[var(--accent)]" />
+            <span>Call Lagos Desk</span>
+          </a>
+          <a
+            href={`https://wa.me/${CONTACT_INFO.whatsappRaw}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-2 text-xs font-bold text-white shadow-lg transition-transform hover:scale-105"
+          >
+            <MessageCircle size={14} fill="currentColor" />
+            <span>Chat on WhatsApp</span>
+          </a>
+        </div>
+      )}
 
-      {/* Pulsating Radar Ping Effect (Kept Intact) */}
-      <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-25 pointer-events-none" />
-    </motion.a>
+      <div className="flex items-center gap-2">
+        <a
+          href={`https://wa.me/${CONTACT_INFO.whatsappRaw}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Contact us on WhatsApp"
+          className="relative flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_12px_30px_-8px_rgba(37,211,102,0.65)] transition-transform duration-300 ease-[var(--spring)] hover:scale-105 active:scale-95"
+        >
+          <MessageCircle size={22} fill="currentColor" />
+        </a>
+        <button
+          type="button"
+          onClick={() => setExpanded((prev) => !prev)}
+          aria-label={expanded ? 'Close quick actions' : 'Open quick actions'}
+          aria-expanded={expanded}
+          className="hidden sm:flex h-9 w-9 items-center justify-center rounded-full lx-glass text-[var(--ink)] cursor-pointer transition-transform hover:scale-105 active:scale-95"
+        >
+          {expanded ? <X size={15} /> : <Phone size={15} />}
+        </button>
+      </div>
+    </div>
   );
 }
