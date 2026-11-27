@@ -153,8 +153,8 @@ export function InventoryProvider({ children }: { children: React.ReactNode }) {
       (error) => {
         setIsSyncing(false);
         setCloudSyncStatus('local_only');
-        setCloudSyncError(error?.message || 'Firestore connection in fallback mode');
-        console.warn('Firestore real-time listener error. Using local cached inventory.', error);
+        setCloudSyncError("We couldn't connect to live inventory right now. Showing saved listings for now.");
+        console.error('Firestore real-time listener error. Using local cached inventory.', error);
         try {
           handleFirestoreError(error, OperationType.GET, 'vehicles');
         } catch {
@@ -203,9 +203,9 @@ export function InventoryProvider({ children }: { children: React.ReactNode }) {
       setCloudSyncStatus('synced');
       setCloudSyncError(null);
     } catch (error: any) {
-      console.warn('Cloud sync failed on addVehicle, saved locally:', error);
+      console.error('Cloud sync failed on addVehicle, saved locally:', error);
       setCloudSyncStatus('local_only');
-      setCloudSyncError(error?.message || 'Remote sync denied. Please sign in as admin with Google.');
+      setCloudSyncError('Saved locally. Please sign in as admin with Google to sync changes.');
     }
 
     return newVehicle;
@@ -221,9 +221,9 @@ export function InventoryProvider({ children }: { children: React.ReactNode }) {
       setCloudSyncStatus('synced');
       setCloudSyncError(null);
     } catch (error: any) {
-      console.warn('Cloud sync failed on updateVehicle, saved locally:', error);
+      console.error('Cloud sync failed on updateVehicle, saved locally:', error);
       setCloudSyncStatus('local_only');
-      setCloudSyncError(error?.message || 'Remote sync denied. Please sign in as admin with Google.');
+      setCloudSyncError('Saved locally. Please sign in as admin with Google to sync changes.');
     }
   };
 
@@ -235,9 +235,9 @@ export function InventoryProvider({ children }: { children: React.ReactNode }) {
       setCloudSyncStatus('synced');
       setCloudSyncError(null);
     } catch (error: any) {
-      console.warn('Cloud sync failed on deleteVehicle, deleted locally:', error);
+      console.error('Cloud sync failed on deleteVehicle, deleted locally:', error);
       setCloudSyncStatus('local_only');
-      setCloudSyncError(error?.message || 'Remote sync denied. Please sign in as admin with Google.');
+      setCloudSyncError('Updated locally. Please sign in as admin with Google to sync changes.');
     }
   };
 
@@ -258,9 +258,9 @@ export function InventoryProvider({ children }: { children: React.ReactNode }) {
       setCloudSyncStatus('synced');
       setCloudSyncError(null);
     } catch (e: any) {
-      console.warn('Failed to reseed cloud defaults:', e);
+      console.error('Failed to reseed cloud defaults:', e);
       setCloudSyncStatus('local_only');
-      setCloudSyncError(e?.message || 'Failed to reseed cloud defaults');
+      setCloudSyncError("We couldn't sync the reset right now. Please try again shortly.");
     }
   };
 

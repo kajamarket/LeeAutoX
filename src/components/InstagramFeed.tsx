@@ -20,8 +20,8 @@ export default function InstagramFeed() {
   }, []);
 
   return (
-    <section className="lx-band-surface relative overflow-hidden px-4 sm:px-6 md:px-12 py-16 border-t border-[var(--line)] transition-colors duration-500">
-      <GraffitiLayer variant="social" surface="adaptive" words={['ARRIVALS']} />
+    <section className="lx-band-dark relative overflow-hidden px-4 sm:px-6 md:px-12 py-16 border-t border-[var(--line)] transition-colors duration-500">
+      <GraffitiLayer variant="social" surface="dark" words={['ARRIVALS']} />
       <div className="max-w-7xl mx-auto relative z-10">
         <Reveal variant="rise">
           <div className="text-center mb-12">

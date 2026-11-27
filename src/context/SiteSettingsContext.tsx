@@ -180,14 +180,15 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
         setSettingsLoaded(true);
         return { ok: true };
       } catch (error) {
-        const msg = error instanceof Error ? error.message : 'Failed to save setting to database.';
-        setSettingsError(msg);
+        console.error('[SiteSettings] Failed to save setting to database:', error);
+        const friendlyMsg = "We couldn't save that setting right now. Don't worry, it's on our end. Please try again shortly.";
+        setSettingsError(friendlyMsg);
         try {
           handleFirestoreError(error, OperationType.WRITE, SETTINGS_DOC_PATH);
         } catch {
           // Surface clean feedback via state
         }
-        return { ok: false, error: msg };
+        return { ok: false, error: friendlyMsg };
       } finally {
         setIsSavingSettings(false);
       }

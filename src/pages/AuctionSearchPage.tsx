@@ -5,6 +5,7 @@ import {
   ShieldCheck, ChevronDown, Check
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 import PageHeader from '../components/PageHeader';
 import { VehicleLotItem, AuctionFilterValues, FilterOptionsMetadata } from '../types/auction';
 import { 
@@ -19,6 +20,7 @@ import { OriginalLoader, RippleButton, RockerSwitch } from '../components/ui/Imp
 
 export default function AuctionSearchPage() {
   const { theme } = useTheme();
+  const { isAdmin } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // View state: grid vs list
@@ -188,6 +190,9 @@ export default function AuctionSearchPage() {
         setNextCursor(res.meta.next_cursor || null);
         setHasMore(Boolean(res.meta.has_more));
         setDataSource(res.source);
+        if (res.source === 'fallback') {
+          console.error('[AuctionSearch] Live auction feed unavailable:', res.diagnostics);
+        }
         if (res.diagnostics) {
           setDiagnostics((prev) => ({
             ...prev,
@@ -431,10 +436,9 @@ export default function AuctionSearchPage() {
           <div className="mb-6 p-3.5 px-4 rounded-2xl border flex items-center gap-2.5 text-xs font-mono bg-amber-50 border-amber-200 text-amber-900 dark:bg-amber-950/30 dark:border-amber-800/40 dark:text-amber-300">
             <AlertCircle size={15} className="text-amber-500 shrink-0" />
             <span>
-              Live auction feed unavailable (
-              {diagnostics.status ? `HTTP ${diagnostics.status}` : 'Network error'}
-              {diagnostics.error_class && diagnostics.error_class !== 'None' ? ` · ${diagnostics.error_class}` : ''}
-              ) — showing sample auction lots.
+              {isAdmin
+                ? `Live auction feed unavailable (${diagnostics.status ? `HTTP ${diagnostics.status}` : 'Network error'}${diagnostics.error_class && diagnostics.error_class !== 'None' ? ` · ${diagnostics.error_class}` : ''}) — showing sample auction lots.`
+                : "Oops! We couldn't load live auctions right now. Don't worry, it's on our end. Showing sample listings for now."}
             </span>
           </div>
         ) : (

@@ -261,11 +261,11 @@ export default function Testimonials() {
   return (
     <section
       id="testimonials"
-      className="lx-band-white relative overflow-hidden border-t border-[var(--line)] transition-colors duration-500 pt-6 pb-16"
+      className="lx-band-dark relative overflow-hidden border-t border-[var(--line)] transition-colors duration-500 pt-6 pb-16"
     >
       <GraffitiLayer
         variant="testimonials"
-        surface="adaptive"
+        surface="dark"
         words={['TRUSTED', 'CLIENTS', 'DELIVERED']}
       />
 
@@ -274,10 +274,10 @@ export default function Testimonials() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 pb-6 border-b border-[var(--line)]">
             <div>
               <span className="inline-block text-[11px] font-mono uppercase tracking-[0.22em] text-[var(--accent)] font-bold mb-2">
-                Verified Client Proof
+                Verified Client Reviews
               </span>
               <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-[var(--ink)]">
-                <AnimatedText text="Trusted by Drivers Nationwide" variant="blur-in" />
+                <AnimatedText text="Testimonials" variant="blur-in" />
               </h2>
             </div>
 
@@ -335,7 +335,7 @@ export default function Testimonials() {
                   ))}
                 </div>
                 {activeReview.verified && (
-                  <span className="inline-flex items-center gap-1.5 text-[11px] font-mono tracking-wider uppercase px-3 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 rounded-full">
+                  <span className="inline-flex items-center gap-1.5 text-[11px] font-mono tracking-wider uppercase px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 rounded-full">
                     <ShieldCheck size={12} /> Verified Delivery
                   </span>
                 )}

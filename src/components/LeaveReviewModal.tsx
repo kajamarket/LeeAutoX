@@ -96,8 +96,9 @@ export default function LeaveReviewModal({ isOpen, onClose }: LeaveReviewModalPr
         setMediaUrl('');
         setMediaFileName('');
       }, 2200);
-    } catch {
-      setError('Failed to submit review. Please try again.');
+    } catch (err) {
+      console.error('[LeaveReviewModal] Failed to submit review:', err);
+      setError("We couldn't send your review. Don't worry, it's on our end. Please try again shortly.");
     } finally {
       setIsSubmitting(false);
     }

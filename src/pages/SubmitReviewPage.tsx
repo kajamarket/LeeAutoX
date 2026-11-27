@@ -101,8 +101,9 @@ export default function SubmitReviewPage() {
       });
 
       setSuccess(true);
-    } catch {
-      setError('Failed to submit review. Please try again or reach out on WhatsApp.');
+    } catch (err) {
+      console.error('[SubmitReviewPage] Failed to submit review:', err);
+      setError("We couldn't send your review. Don't worry, it's on our end. Please try again shortly, or reach out on WhatsApp.");
     } finally {
       setIsSubmitting(false);
     }

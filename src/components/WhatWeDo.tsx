@@ -5,6 +5,7 @@ import cargoContainersImg from '../assets/cargo-containers.jpg';
 import carPartsImg from '../assets/images/car_parts_accessories_1792921764930.jpg';
 import AnimatedText from './ui/AnimatedText';
 import Reveal from './ui/Reveal';
+import GraffitiLayer from './ui/GraffitiLayer';
 import gsap from 'gsap';
 
 export default function WhatWeDo() {
@@ -120,6 +121,14 @@ export default function WhatWeDo() {
           }}
         />
       </div>
+      <GraffitiLayer
+        variant="footer"
+        surface="adaptive"
+        brand="LEEAUTOX"
+        words={['WHAT WE DO', 'LOGISTICS']}
+        year="2024"
+        className="[mask-image:radial-gradient(ellipse_38%_18%_at_50%_11%,rgba(0,0,0,0.18)_0%,#000_65%)] [-webkit-mask-image:radial-gradient(ellipse_38%_18%_at_50%_11%,rgba(0,0,0,0.18)_0%,#000_65%)]"
+      />
       <div className="w-full max-w-7xl mx-auto flex flex-col justify-center items-center relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14 pointer-events-none select-none relative z-0">

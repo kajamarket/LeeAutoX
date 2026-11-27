@@ -152,13 +152,29 @@ export default function AdminBackend() {
     try {
       const res = await checkRelayStatus(true);
       setDiagnostics(res);
+      if (!res.ok) {
+        console.error('[AdminBackend] Auction relay check failed:', res);
+      }
+      if (isAdmin) {
+        showToast(
+          res.ok
+            ? `Auction Relay upstream check passed: ${res.status} OK`
+            : `Auction Relay issue: ${res.status ? `HTTP ${res.status}` : 'Network error'} (${res.error_class || 'Error'})`
+        );
+      } else {
+        showToast(
+          res.ok
+            ? 'Auction connection check passed.'
+            : "We couldn't reach the auction service right now. Please try again shortly."
+        );
+      }
+    } catch (err) {
+      console.error('[AdminBackend] Auction Relay ping request failed:', err);
       showToast(
-        res.ok
-          ? `Auction Relay upstream check passed: ${res.status} OK`
-          : `Auction Relay issue: ${res.status ? `HTTP ${res.status}` : 'Network error'} (${res.error_class || 'Error'})`
+        isAdmin
+          ? 'Auction Relay ping request failed'
+          : "We couldn't reach the auction service right now. Please try again shortly."
       );
-    } catch {
-      showToast('Auction Relay ping request failed');
     } finally {
       setIsTestingRelay(false);
     }
@@ -193,7 +209,8 @@ export default function AdminBackend() {
       }
       showToast('Signed in with Google. Real-time cross-device sync active.');
     } catch (e: any) {
-      showToast(`Google Sign-In failed: ${e?.message || 'Error'}`);
+      console.error('[AdminBackend] Google Sign-In failed:', e);
+      showToast("We couldn't complete Google Sign-In right now. Please try again shortly.");
     } finally {
       setIsSigningIn(false);
     }
@@ -644,6 +661,7 @@ export default function AdminBackend() {
         </div>
 
         {/* ADMIN-ONLY RELAY DIAGNOSTICS PANEL */}
+        {isAdmin && (
         <div className="mb-8 lx-card p-6 bg-[var(--card)] border border-[var(--line)] text-[var(--ink)] font-mono text-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[var(--line)]">
             <div className="flex items-center gap-3">
@@ -765,6 +783,7 @@ export default function AdminBackend() {
             </div>
           )}
         </div>
+        )}
 
         {/* Stats Metrics Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-8">
