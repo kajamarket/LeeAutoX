@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title data-i18n="text">UI Moments · Interactive UI Gallery</title>
+<meta name="description" content="Play with interactive UI examples and customize and export loading animations." data-i18n="content">
+<meta property="og:title" content="UI Moments · Interactive UI Gallery">
+<meta property="og:description" content="A hands-on gallery of interactive UI and motion.">
+<meta property="og:image" content="https://guanmo-ai.github.io/ui-moments/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="UI Moments with a collage of original controls">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://guanmo-ai.github.io/ui-moments/assets/og.jpg">
+<meta name="twitter:image:alt" content="UI Moments with a collage of original controls">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0b0b0c" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://guanmo-ai.github.io/ui-moments/">
+<meta property="og:url" content="https://guanmo-ai.github.io/ui-moments/">
+<meta name="ui-moments:repository" content="https://github.com/guanmo-ai/ui-moments">
+<meta name="ui-moments:ref" content="main">
+<link rel="icon" href="assets/icon.svg">
+<script>
+  try { if (localStorage.getItem('ui-moments-theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch {}
+</script>
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="gallery/loaders/style.css">
+<link rel="stylesheet" href="assets/gallery.css">
+</head>
+<body class="gallery-page">
+<a class="skip" href="#works" data-i18n="text">Skip to the gallery</a>
+<header class="top" id="top"><div class="wrap nav-inner"><a class="site-brand" href="index.html" aria-label="UI Moments home" data-i18n="aria-label"><span class="site-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></span><span>UI Moments</span></a><div class="nav-end"><a class="nav-follow" href="https://x.com/guanmo_ai" target="_blank" rel="noopener" data-i18n="text">Follow @guanmo_ai ↗</a><a class="nav-follow nav-github" href="https://github.com/guanmo-ai/ui-moments" target="_blank" rel="noopener" aria-label="GitHub repository" data-i18n="aria-label"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg><span>GitHub</span></a><button class="language-btn" id="language" type="button" hidden><span></span></button><button class="theme-btn" id="theme" type="button" aria-label="Switch to light mode"></button></div></div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <h1 data-i18n="text">Interactive UI Gallery</h1>
+      <p id="gallery-intro">Explore <span data-stat="total"></span> live UI examples.</p>
+    </div>
+    <a class="hero-demo" href="#jelly-pad"><span>Try Jelly Cube</span> <span aria-hidden="true">→</span></a>
+  </section>
+  <section id="works" aria-label="UI components" data-i18n="aria-label">
+    <div class="gallery-toolbar">
+      <div id="categories" role="group" aria-label="Filter by category" data-i18n="aria-label"><!-- gallery categories --></div>
+      <div class="tool-actions">
+        <label class="work-search">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg>
+          <span class="sr-only" data-i18n="text">Search UI</span>
+          <input id="work-search" type="search" placeholder="Search" autocomplete="off" data-i18n="placeholder">
+          <kbd aria-hidden="true">/</kbd>
+        </label>
+        <button id="motion" type="button" aria-pressed="false">Pause motion</button>
+        <button id="gallery-favorites" type="button" aria-pressed="false" title="Favorites" data-i18n="title">
+          <svg data-bookmark-mark viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v16l-6-4-6 4z"/></svg>
+          <span data-i18n="text">Favorites</span>
+        </button>
+      </div>
+    </div>
+    <div class="gallery-refinements">
+      <p id="ui-count" class="sr-only" aria-live="polite"></p>
+      <div id="shape-row" class="shape-row" hidden><span id="shape-label" data-shape-label data-i18n="text">Shape</span><div id="shapes" role="group" aria-labelledby="shape-label"></div></div>
+    </div>
+    <noscript><p>Enable JavaScript to explore the gallery. You can also browse the <a href="gallery/originals/">original components</a>.</p></noscript>
+    <div id="ui-grid" class="ui-grid"><!-- initial gallery cards --></div>
+    <div id="empty" class="empty" hidden>
+      <p id="empty-message" data-i18n="text">No components match your search.</p>
+      <button id="reset-filters" type="button" data-i18n="text">Clear filters</button>
+    </div>
+  </section>
+</main>
+<footer class="site-foot" id="sources">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="site-brand" href="index.html"><span class="site-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></span><span>UI Moments</span></a>
+        <p data-i18n="text">An open-source gallery of UI interactions and motion.</p>
+      </div>
+      <nav aria-label="Explore" data-i18n="aria-label"><strong data-i18n="text">Explore</strong><a href="./#works" data-i18n="text">All UI</a></nav>
+      <nav aria-label="Project" data-i18n="aria-label"><strong data-i18n="text">Project</strong><a href="https://github.com/guanmo-ai/ui-moments" target="_blank" rel="noopener" data-i18n="text">GitHub repository</a><a href="https://github.com/guanmo-ai/ui-moments/blob/main/CREDITS.md" target="_blank" rel="noopener" data-i18n="text">Credits</a></nav>
+      <nav aria-label="Community" data-i18n="aria-label"><strong data-i18n="text">Community</strong><a href="https://github.com/guanmo-ai/ui-moments/issues/new/choose" target="_blank" rel="noopener" data-i18n="text">Report an issue</a><a href="https://github.com/guanmo-ai/ui-moments/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener" data-i18n="text">Contribute</a><a href="https://x.com/guanmo_ai" target="_blank" rel="noopener">@guanmo_ai</a></nav>
+    </div>
+    <div class="foot-legal"><span>© 2026 观默 (Guanmo) · UI Moments</span><span><span data-i18n="text">Project code</span> <a href="https://github.com/guanmo-ai/ui-moments/blob/main/LICENSE">MIT</a> <span data-i18n="text">· Third-party work retains its original license</span></span></div>
+  </div>
+</footer>
+  <dialog id="detail" aria-labelledby="detail-title">
+    <div class="dialog-head">
+      <div><p id="detail-group" class="eyebrow"></p><h2 lang="en" id="detail-title"></h2></div>
+      <button type="button" class="save-work" data-save-work aria-pressed="false" aria-label="Save component"><svg data-bookmark-mark viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v16l-6-4-6 4z"/></svg></button>
+      <button id="close" class="close" type="button" autofocus aria-label="Close animation details" data-i18n="aria-label">×</button>
+    </div>
+    <div class="code-toolbar loader-actions">
+      <div class="code-tabs" role="tablist" aria-label="Code format" data-i18n="aria-label"><button id="tab-html" role="tab" aria-selected="true" aria-controls="code-panel" type="button" data-format="html">HTML + CSS</button><button id="tab-react" role="tab" aria-selected="false" aria-controls="code-panel" tabindex="-1" type="button" data-format="react">React</button></div>
+      <div class="code-actions"><button id="download" class="primary" type="button">Download HTML</button><button id="copy" type="button" data-i18n="text">Copy code</button><button type="button" data-copy-link data-i18n="text">Copy link</button></div>
+    </div>
+    <div class="editor">
+      <section class="large-preview" aria-label="Animation preview" data-i18n="aria-label"><div id="selected-preview"></div><p lang="en" id="detail-description"></p></section>
+      <section class="settings" aria-label="Animation settings" data-i18n="aria-label"><div class="settings-head"><h3 data-i18n="text">Animation settings</h3><button id="reset" type="button" data-i18n="text">Reset</button></div><div id="controls"></div></section>
+    </div>
+    <section class="code-section" aria-label="Code" data-i18n="aria-label">
+      <p id="code-help">Save as an .html file and open it in a browser.</p>
+      <div id="code-panel" role="tabpanel" aria-labelledby="tab-html"><textarea lang="en" id="code" aria-label="Example code" readonly spellcheck="false" wrap="off" data-i18n="aria-label"></textarea></div>
+      <p class="code-credit"><span></span><a href="https://github.com/guanmo-ai/ui-moments/blob/main/LICENSE" data-i18n="text">View license</a></p>
+    </section>
+  </dialog>
+  <p id="toast" class="toast" role="status" aria-live="polite" hidden></p>
+<dialog id="component-detail" aria-labelledby="component-title">
+  <div class="dialog-head">
+    <div><p id="component-kind" class="eyebrow"></p><h2 lang="en" id="component-title"></h2></div>
+    <button type="button" class="save-work" data-save-work aria-pressed="false" aria-label="Save component"><svg data-bookmark-mark viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v16l-6-4-6 4z"/></svg></button>
+    <button id="component-close" class="close" type="button" autofocus aria-label="Close component details" data-i18n="aria-label">×</button>
+  </div>
+  <div class="component-actions">
+    <span id="component-reuse" hidden><a id="component-download" class="primary" download data-i18n="text">Download standalone HTML</a></span>
+    <a id="component-source" target="_blank" rel="noopener" data-i18n="text">View source ↗</a>
+    <a id="component-open" target="_blank" rel="noopener" data-i18n="text">Open demo ↗</a>
+  </div>
+  <div class="component-preview">
+    <iframe id="component-frame" title="Interactive component" allow="fullscreen; clipboard-write" data-i18n="title"></iframe>
+    <div class="component-preview-feedback" id="component-preview-feedback" hidden>
+      <p id="component-preview-status" role="status"></p>
+      <button type="button" id="component-retry" hidden data-i18n="text">Retry preview</button>
+    </div>
+  </div>
+  <div class="component-meta">
+    <p lang="en" id="component-description"></p>
+    <button id="component-copy" type="button">Copy HTML</button>
+    <button type="button" data-copy-link data-i18n="text">Copy link</button>
+  </div>
+</dialog>
+<script type="module" src="assets/gallery.mjs"></script>
+</body>
+</html>

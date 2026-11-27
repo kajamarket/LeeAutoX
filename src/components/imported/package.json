@@ -1,0 +1,39 @@
+{
+  "name": "ui-moments",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A hands-on gallery of interactive UI and motion",
+  "license": "MIT",
+  "author": {
+    "name": "观默 (Guanmo)",
+    "url": "https://x.com/guanmo_ai"
+  },
+  "homepage": "https://guanmo-ai.github.io/ui-moments/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guanmo-ai/ui-moments.git"
+  },
+  "bugs": {
+    "url": "https://github.com/guanmo-ai/ui-moments/issues"
+  },
+  "type": "module",
+  "engines": {
+    "node": "^22.18.0 || >=24.11.0"
+  },
+  "scripts": {
+    "setup": "npm ci --ignore-scripts && npm ci --ignore-scripts --prefix gallery/fluent-ui && npm ci --ignore-scripts --prefix gallery/astryx && npm ci --ignore-scripts --prefix gallery/astryx/experimental",
+    "build": "node tools/build-standalone.mjs && npm --prefix gallery/fluent-ui run build && npm --prefix gallery/astryx run build",
+    "predev": "npm run build",
+    "dev": "python3 -m http.server 5173 --bind 127.0.0.1",
+    "package:site": "node tools/package-site.mjs",
+    "test": "node --test tools/standalone.test.mjs tools/release-browser.test.mjs tools/performance.test.mjs",
+    "test:browser": "node --test tools/release-browser.test.mjs tools/card-previews.test.mjs",
+    "test:performance": "node --test tools/performance.test.mjs",
+    "test:standalone": "node --test tools/standalone.test.mjs",
+    "test:cards": "node --test tools/card-previews.test.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.65.1",
+    "esbuild": "0.28.2"
+  }
+}
