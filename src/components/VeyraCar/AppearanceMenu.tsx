@@ -8,6 +8,7 @@ interface AppearanceMenuProps {
   loaded: Set<string>;
   unavailable: Set<string>;
   waiting: boolean;
+  isAutoPlaying?: boolean;
   onSelect: (id: string) => void;
   onClose: () => void;
 }
@@ -18,6 +19,7 @@ export default function AppearanceMenu({
   loaded,
   unavailable,
   waiting,
+  isAutoPlaying = false,
   onSelect,
   onClose,
 }: AppearanceMenuProps) {
@@ -81,10 +83,14 @@ export default function AppearanceMenu({
         })}
       </div>
 
-      <div className="appearance-caption" aria-live="polite">
+      <div className="appearance-caption" aria-live={isAutoPlaying ? 'off' : 'polite'}>
         {waiting ? 'Returning to exterior…' : current.label}
         <small>
-          {unavailable.size ? 'Some options could not load' : 'Close to explore other options'}
+          {unavailable.size
+            ? 'Some options could not load'
+            : isAutoPlaying
+              ? 'Auto-preview · Click any option to customize'
+              : 'Close to explore other options'}
         </small>
       </div>
     </div>

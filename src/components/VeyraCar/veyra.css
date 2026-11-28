@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500&display=swap');
 
 .veyra-scope {
+  --veyra-stage-bg: #09090b;
   --sky: #708fa2;
   --acid: #edff39;
   --ink: #fff;
@@ -39,7 +40,7 @@
   margin: 0 auto;
 }
 
-/* Image Plane strictly adheres to 1672:941 aspect ratio */
+/* Image Plane strictly adheres to 1672:941 aspect ratio across 320px-1920px */
 .veyra-scope .image-plane {
   position: relative;
   width: 100%;
@@ -47,7 +48,7 @@
   isolation: isolate;
 }
 
-/* Seamless borderless black stage */
+/* Seamless borderless stage */
 .veyra-scope .media-envelope {
   position: absolute;
   inset: 0;
@@ -75,6 +76,13 @@
   inset: 0;
   overflow: hidden;
   pointer-events: none;
+  transform-origin: var(--focus-x, 50%) var(--focus-y, 50%);
+  transition: transform 1.4s cubic-bezier(0.65, 0, 0.25, 1);
+}
+
+.veyra-scope.phase-entering .car-visual,
+.veyra-scope.phase-detail .car-visual {
+  transform: scale(1.5);
 }
 
 .veyra-scope .car-image {
@@ -89,12 +97,43 @@
   display: block;
 }
 
+.veyra-scope .hover-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.24s ease;
+}
+
+.veyra-scope .fallback-still {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.9s var(--ease);
+}
+
+.veyra-scope .fallback-still.shown {
+  opacity: 1;
+}
+
 .veyra-scope .appearance-visual {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 0.24s ease;
+  transition: opacity 0.35s var(--ease);
   pointer-events: none;
+}
+
+.veyra-scope.is-autoplaying .appearance-visual {
+  transition: opacity 0.95s var(--ease);
 }
 
 .veyra-scope .appearance-visual.shown {
@@ -102,11 +141,58 @@
 }
 
 .veyra-scope .appearance-visual img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
   object-position: center;
   display: block;
+}
+
+.veyra-scope .appearance-layer-active.crossfade {
+  animation: veyra-variant-fade 0.36s var(--ease) both;
+}
+
+.veyra-scope.is-autoplaying .appearance-layer-active.crossfade {
+  animation-duration: 0.95s;
+}
+
+@keyframes veyra-variant-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.veyra-scope .detail-visual {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.95s var(--ease);
+}
+
+.veyra-scope .detail-visual.shown {
+  opacity: 1;
+}
+
+.veyra-scope .detail-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  transform: scale(1.08);
+  transition: transform 1.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.veyra-scope .detail-visual.shown .detail-image {
+  transform: scale(1);
 }
 
 /* Hotspots: 48px touch target with 28px electric-green disc */
@@ -124,6 +210,11 @@
   padding: 0;
   border-radius: 50%;
   transition: opacity var(--ui-fast);
+}
+
+.veyra-scope .hotspot.hotspot-hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 .veyra-scope .hotspot:focus-visible {
@@ -209,6 +300,11 @@
 .veyra-scope .hotspot:hover:not(:disabled) .hotspot-label {
   opacity: 1;
   transform: translate(-50%, 0);
+}
+
+/* Hide tooltip labels during passive autoplay so panels/labels stay quiet */
+.veyra-scope.is-autoplaying .hotspot.active .hotspot-label {
+  opacity: 0;
 }
 
 /* Hotspot positioning and interactive corridor */
@@ -388,10 +484,292 @@
   margin-top: 2px;
 }
 
+/* Detail View Controls: Back button, hardware callout pins & detail drawer */
+.veyra-scope .detail-back {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 35;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--acid);
+  color: var(--on-acid);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transition: background var(--ui-fast), opacity var(--ui-fast);
+  animation: veyra-fade-in var(--ui-enter) var(--ease);
+}
+
+.veyra-scope .detail-back:hover:not(:disabled) {
+  background: #f3ff86;
+}
+
+.veyra-scope .detail-back:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.veyra-scope .detail-back:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.veyra-scope .detail-back kbd {
+  font: inherit;
+  font-size: 11px;
+  border-left: 1px solid rgba(16, 25, 12, 0.25);
+  padding-left: 8px;
+  margin-left: 2px;
+}
+
+@keyframes veyra-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.veyra-scope .annotation {
+  position: absolute;
+  z-index: 25;
+  transform: translate(-50%, -50%);
+  border: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px;
+  border-radius: 50%;
+}
+
+.veyra-scope .annotation:focus-visible {
+  outline: 2px solid var(--acid);
+  outline-offset: 2px;
+}
+
+.veyra-scope .annotation-index {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--acid);
+  color: var(--on-acid);
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  transition: transform var(--ui-fast), box-shadow var(--ui-fast);
+}
+
+.veyra-scope .annotation.open .annotation-index,
+.veyra-scope .annotation:hover .annotation-index {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 5px rgba(237, 255, 57, 0.28);
+}
+
+.veyra-scope .annotation-label {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translate(-50%, 4px);
+  padding: 7px 11px;
+  border-radius: var(--radius-control);
+  background: var(--acid);
+  color: var(--on-acid);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.25;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  transition: opacity var(--ui-fast), transform var(--ui-enter) var(--ease);
+}
+
+.veyra-scope .annotation:hover .annotation-label,
+.veyra-scope .annotation:focus-visible .annotation-label,
+.veyra-scope .annotation.open .annotation-label {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.veyra-scope .veyra-detail-panel {
+  margin-top: 14px;
+  padding: 18px 20px;
+  border-radius: var(--radius-panel);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(24, 38, 52, 0.92);
+  color: var(--ink);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.42);
+  animation: veyra-fade-in var(--ui-enter) var(--ease);
+}
+
+.veyra-scope .detail-panel-header {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.veyra-scope .detail-kicker {
+  font-size: 12px;
+  color: var(--acid);
+  letter-spacing: 0.04em;
+}
+
+.veyra-scope .detail-title {
+  margin: 0;
+  font-size: clamp(20px, 2.2vw, 28px);
+  font-weight: 500;
+  line-height: 1.1;
+  color: #ffffff;
+}
+
+.veyra-scope .detail-summary {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.veyra-scope .detail-benefit {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.veyra-scope .part-list {
+  margin-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.veyra-scope .part-item-btn {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 0;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  text-align: left;
+  color: #ffffff;
+  transition: color var(--ui-fast);
+}
+
+.veyra-scope .part-item-btn:hover,
+.veyra-scope .part-item-btn.selected {
+  color: var(--acid);
+}
+
+.veyra-scope .part-item-btn:focus-visible {
+  outline: 2px solid var(--acid);
+  outline-offset: 2px;
+}
+
+.veyra-scope .part-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.veyra-scope .part-row small {
+  font-size: 11px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.veyra-scope .part-row svg {
+  margin-left: auto;
+  flex-shrink: 0;
+  transition: transform var(--ui-enter) var(--ease);
+}
+
+.veyra-scope .part-item-btn.selected .part-row svg {
+  transform: rotate(45deg);
+}
+
+.veyra-scope .part-description {
+  display: block;
+  padding: 6px 0 2px 24px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+@media (max-width: 1023px) {
+  .veyra-scope .appearance-menu {
+    top: calc(100% + 8px);
+    padding: 8px 14px 10px;
+  }
+  .veyra-scope .appearance-heading {
+    min-height: 28px;
+    padding-bottom: 4px;
+    font-size: 14px;
+  }
+  .veyra-scope .appearance-close {
+    width: 32px;
+    height: 32px;
+  }
+  .veyra-scope .appearance-options {
+    margin-top: 8px;
+  }
+  .veyra-scope .appearance-option {
+    min-width: 40px;
+    height: 40px;
+  }
+  .veyra-scope .paint-chip {
+    width: 26px;
+    height: 26px;
+  }
+  .veyra-scope .appearance-menu.wheels .appearance-option {
+    width: 70px;
+    height: 52px;
+  }
+  .veyra-scope .wheel-chip {
+    width: 58px;
+    height: 42px;
+  }
+  .veyra-scope .appearance-caption {
+    margin-top: 6px;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+  .veyra-scope .detail-back {
+    top: 8px;
+    left: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  .veyra-scope .detail-back kbd {
+    display: none;
+  }
+  .veyra-scope .veyra-detail-panel {
+    padding: 14px 16px;
+  }
+}
+
 @media (max-width: 480px) {
   .veyra-scope .appearance-menu {
     width: 288px;
-    padding: 10px 14px 12px;
+    padding: 8px 14px 10px;
   }
   .veyra-scope .hotspot-ring {
     width: 26px;
@@ -401,12 +779,17 @@
     font-size: 12px;
   }
   .veyra-scope .appearance-menu.wheels .appearance-option {
-    width: 70px;
-    height: 56px;
+    width: 68px;
+    height: 50px;
   }
   .veyra-scope .wheel-chip {
-    width: 58px;
-    height: 46px;
+    width: 56px;
+    height: 40px;
+  }
+  .veyra-scope .annotation-label {
+    max-width: 160px;
+    white-space: normal;
+    text-align: left;
   }
 }
 
@@ -417,5 +800,8 @@
   .veyra-scope *::after {
     animation: none !important;
     transition-duration: 0.01ms !important;
+  }
+  .veyra-scope .car-visual {
+    transform: none !important;
   }
 }
